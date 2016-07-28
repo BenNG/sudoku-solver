@@ -1,0 +1,2 @@
+defmodule Sudoku do
+end
