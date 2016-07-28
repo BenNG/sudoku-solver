@@ -1,5 +1,17 @@
 defmodule Sudoku.Algo1 do
+  @moduledoc """
+    Provide set of functions to solve sudoku puzzles
+  """
   def times(a,b), do: a*b
+  @doc """
+  given a string of 81 codepoints, it returns a map
+
+      "00600..."
+      %{
+        {2, 0} => 6
+      }
+
+  """
   def create_built_in_map(data) do
 
     if String.length(data) !== 81, do: raise Sudoku.Algo1.BadInputLength
