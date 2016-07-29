@@ -118,7 +118,7 @@ defmodule Sudoku.Algo1 do
     stack_values = get_stack_values(stack, coordinates)
     built_in_values = get_built_in_values(built_in_map, coordinates)
 
-    Enum.sort(stack_values ++ built_in_values, fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
+    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
   end
 
   @doc """
@@ -130,7 +130,7 @@ defmodule Sudoku.Algo1 do
     stack_values = get_stack_values(stack, coordinates)
     built_in_values = get_built_in_values(built_in_map, coordinates)
 
-    Enum.sort(stack_values ++ built_in_values, fn({{_,ord1},_},{{_,ord2},_}) -> ord1 < ord2 end)
+    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{_,ord1},_},{{_,ord2},_}) -> ord1 < ord2 end)
   end
 
   @doc """
@@ -142,25 +142,63 @@ defmodule Sudoku.Algo1 do
     stack_values = get_stack_values(stack, coordinates)
     built_in_values = get_built_in_values(built_in_map, coordinates)
 
-    Enum.sort(stack_values ++ built_in_values, fn({{abs1,ord1},_},{{abs2,ord2},_}) ->
+    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{abs1,ord1},_},{{abs2,ord2},_}) ->
       if abs1 === abs2, do: ord1 < ord2, else: abs1 < abs2
     end)
   end
 
   def is_row_valid?(row_num, stack, built_in_values) do
     values = get_row(row_num, stack, built_in_values) |> get_values
-    values === Enum.dedup(values)
+    Enum.sort(values) === Enum.dedup(Enum.sort(values))
+  end
+
+  def is_rows_valid?(stack, built_in_values) do
+    [true] === Enum.map(0..8, fn(row_num) ->
+      is_row_valid?(row_num, stack, built_in_values)
+    end)
+    |> Enum.dedup
+  end
+
+  def is_cols_valid?(stack, built_in_values) do
+    [true] === Enum.map(0..8, fn(col_num) ->
+      is_col_valid?(col_num, stack, built_in_values)
+    end)
+    |> Enum.dedup
   end
 
   def is_col_valid?(col_num, stack, built_in_values) do
     values = get_col(col_num, stack, built_in_values) |> get_values
-    values === Enum.dedup(values)
+    Enum.sort(values) === Enum.dedup(Enum.sort(values))
   end
 
   def is_box_valid?(tuple, stack, built_in_values) do
     values = get_box(tuple, stack, built_in_values) |> get_values
-    values === Enum.dedup(values)
+    Enum.sort(values) === Enum.dedup(Enum.sort(values))
   end
+
+  def is_valid?(stack, built_in_values) do
+    rows = Enum.map(0..8, fn(row_num) ->
+      is_row_valid?(row_num, stack, built_in_values)
+    end)
+
+    cols = Enum.map(0..8, fn(col_num) ->
+      is_col_valid?(col_num, stack, built_in_values)
+    end)
+
+    boxes = Enum.map(0..8, fn(num) ->
+      is_box_valid?({num,num}, stack, built_in_values)
+    end)
+
+    [true] === Enum.dedup(rows) &&
+    [true] === Enum.dedup(cols) &&
+    [true] === Enum.dedup(boxes)
+
+  end
+
+
+
+  # ###########################################################################
+  # private
 
   defp get_values(list_of_tuple) do
     list_of_tuple
@@ -178,6 +216,16 @@ defmodule Sudoku.Algo1 do
   defp get_built_in_values(built_in_map, coordinates) do
     Enum.reduce(coordinates, [], fn(tuple,acc) ->
       if (v = Map.get(built_in_map, tuple)) !== nil, do: [{tuple,v}|acc], else: acc
+    end)
+  end
+
+  def concat_uniq(stack, built_in_values) do
+    list_of_tuple_prioritary = Enum.map(stack, fn({tuple,_}) ->
+      tuple
+    end)
+
+    stack ++ Enum.reduce(built_in_values, [], fn({tuple,v} = item,acc) ->
+      if Enum.member?(list_of_tuple_prioritary, tuple), do: acc, else: [item|acc]
     end)
   end
 
