@@ -83,17 +83,30 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
+  @doc """
+  return the linked boxe given a tuple
+      {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
+  """
+  def get_box(tuple) do
+    Enum.find(create_boxes, fn(boxe) ->
+      Enum.member?(boxe, tuple)
+    end)
+  end
 
-    @doc """
-    return the linked boxe given a tuple
-        {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
-    """
-    def get_box(tuple) do
-      Enum.find(create_boxes, fn(boxe) ->
-        Enum.member?(boxe, tuple)
-      end)
-    end
+  @doc """
+  return the linked col given col number
+      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+  """
+  def get_col(col_num) do
+    Enum.at(create_cols, col_num)
+  end
 
-
+  @doc """
+  return the linked row given row number
+      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+  """
+  def get_row(row_num) do
+    Enum.at(create_rows, row_num)
+  end
 
 end
