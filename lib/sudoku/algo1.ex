@@ -207,6 +207,7 @@ defmodule Sudoku.Algo1 do
       is_box_valid?({num,num}, stack, built_in_values)
     end)
 
+    length(merge_uniq(stack, built_in_values)) === 81 &&
     [true] === Enum.dedup(rows) &&
     [true] === Enum.dedup(cols) &&
     [true] === Enum.dedup(boxes)
