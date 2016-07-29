@@ -34,4 +34,19 @@ defmodule Sudoku.Algo1 do
     def message(_), do: "Please provide an input with 81 codepoints"
   end
 
+  @doc """
+  generate all the cols coordinates
+      [{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],...
+  """
+  def create_cols do
+    Enum.reduce(0..8, [], fn(abs,acc) ->
+      col = Enum.reduce(0..8, [], fn(ord, accu) ->
+        [{abs,ord}|accu]
+      end)
+      |> Enum.reverse
+      [col | acc]
+    end)
+    |> Enum.reverse
+  end
+
 end
