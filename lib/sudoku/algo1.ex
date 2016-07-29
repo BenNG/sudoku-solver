@@ -135,7 +135,7 @@ defmodule Sudoku.Algo1 do
 
   @doc """
   Returns the values within the box
-      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+      {3,1} -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_box(tuple, stack, built_in_map) do
     coordinates = get_box_coordinates(tuple)
@@ -147,13 +147,35 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
-  def get_stack_values(stack, list_of_tuple) do
+  def is_row_valid?(row_num, stack, built_in_values) do
+    values = get_row(row_num, stack, built_in_values) |> get_values
+    values === Enum.dedup(values)
+  end
+
+  def is_col_valid?(col_num, stack, built_in_values) do
+    values = get_col(col_num, stack, built_in_values) |> get_values
+    values === Enum.dedup(values)
+  end
+
+  def is_box_valid?(tuple, stack, built_in_values) do
+    values = get_box(tuple, stack, built_in_values) |> get_values
+    values === Enum.dedup(values)
+  end
+
+  defp get_values(list_of_tuple) do
+    list_of_tuple
+    |> Enum.map(fn({_,v}) ->
+      v
+    end)
+  end
+
+  defp get_stack_values(stack, list_of_tuple) do
     Enum.reduce(stack, [], fn({tuple,_} = item, acc) ->
       if Enum.member?(list_of_tuple, tuple), do: [item|acc], else: acc
     end)
   end
 
-  def get_built_in_values(built_in_map, coordinates) do
+  defp get_built_in_values(built_in_map, coordinates) do
     Enum.reduce(coordinates, [], fn(tuple,acc) ->
       if (v = Map.get(built_in_map, tuple)) !== nil, do: [{tuple,v}|acc], else: acc
     end)

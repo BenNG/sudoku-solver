@@ -142,6 +142,97 @@ defmodule SudokuAlgo1Test do
       [{{6,6}, "1"}, {{6,8},"9"}, {{7,6},"2"},{{7,7},"5"}]
   end
 
+  test "is_row_valid? should be true" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "003020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_row_valid?(0, [{{0,0}, "1"}], built_in_values) == true
+  end
+
+
+  test "is_row_valid? should be false" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "001020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_row_valid?(0, [{{0,0}, "1"}], built_in_values) == false
+  end
+
+  test "is_col_valid? should be true" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "001020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, "1"}], built_in_values) == true
+  end
+
+  test "is_col_valid? should be false" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "001020600" <>
+      "000000000" <>
+      "100000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, "1"}], built_in_values) == false
+  end
+
+  test "is_box_valid?" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "009020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_box_valid?({0,0}, [{{0,0}, "1"}], built_in_values) == true
+  end
+
+  test "is_box_valid? should be false" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "005020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.is_box_valid?({0,0}, [{{0,0}, "1"}], built_in_values) == false
+  end
+
 
 
 end
