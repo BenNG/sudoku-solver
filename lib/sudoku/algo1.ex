@@ -49,4 +49,19 @@ defmodule Sudoku.Algo1 do
     |> Enum.reverse
   end
 
+  @doc """
+  generate all the rows coordinates
+      [{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],...
+  """
+  def create_rows do
+    Enum.reduce(0..8, [], fn(ord,acc) ->
+      col = Enum.reduce(0..8, [], fn(abs, accu) ->
+        [{abs,ord}|accu]
+      end)
+      |> Enum.reverse
+      [col | acc]
+    end)
+    |> Enum.reverse
+  end
+
 end
