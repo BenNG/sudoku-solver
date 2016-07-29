@@ -286,9 +286,21 @@ defmodule Sudoku.Algo1 do
   def get_next_coordonates({{8 = abs,ord},v}), do: {0, ord + 1}
   def get_next_coordonates({{abs, ord},v}), do: {abs + 1, ord}
 
+  def increase([]), do: raise Sudoku.Algo1.IncreaseEmptyStack
+  def increase([{tuple, "9"}|t]), do: :drop
+  def increase([{tuple, v}|t]) do
+    [{tuple, Integer.to_string(String.to_integer(v) + 1)} |t]
+  end
+
+
   defmodule LastElement do
     defexception []
     def message(_), do: "{8,8} is the latest element"
+  end
+
+  defmodule IncreaseEmptyStack do
+    defexception []
+    def message(_), do: "Could not increase an empty stack"
   end
 
 end

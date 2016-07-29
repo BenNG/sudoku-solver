@@ -398,9 +398,12 @@ end
   end
 
   # @tag :pending
-  # test "increase" do
-  #   assert Sudoku.Algo1.increase(stack) == {1,0}
-  # end
+  test "increase" do
+    assert Sudoku.Algo1.increase([{{3,0}, "0"}, {{2,0}, "5"}, {{1,0}, "2"}, {{0,0}, "3"}])
+      == [{{3,0}, "1"}, {{2,0}, "5"}, {{1,0}, "2"}, {{0,0}, "3"}]
+    assert Sudoku.Algo1.increase([{{3,0}, "9"}, {{2,0}, "5"}, {{1,0}, "2"}, {{0,0}, "3"}])
+      == :drop
+  end
 
 
 end
