@@ -145,14 +145,14 @@ end
   end
 
   # @tag :pending
-  test "concat uniq 2" do
-    assert Sudoku.Algo1.concat_uniq([{{0,0}, "1"}], [{{0,0}, "1"}]) ==
+  test "merge uniq 2" do
+    assert Sudoku.Algo1.merge_uniq([{{0,0}, "1"}], [{{0,0}, "1"}]) ==
       [{{0,0}, "1"}]
   end
 
   # @tag :pending
-  test "concat uniq" do
-    assert Sudoku.Algo1.concat_uniq([{{0,0}, "1"}, {{1,1}, "1"}, {{2,2}, "2"}], [{{0,0}, "1"}, {{2,2}, "2"}]) ==
+  test "merge uniq" do
+    assert Sudoku.Algo1.merge_uniq([{{0,0}, "1"}, {{1,1}, "1"}, {{2,2}, "2"}], [{{0,0}, "1"}, {{2,2}, "2"}]) ==
       [{{0,0}, "1"}, {{1,1}, "1"}, {{2,2}, "2"}]
   end
 

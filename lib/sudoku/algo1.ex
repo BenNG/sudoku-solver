@@ -4,7 +4,7 @@ defmodule Sudoku.Algo1 do
   """
   def times(a,b), do: a*b
   @doc """
-  given a string of 81 codepoints, it returns a map
+  Generate a map that represents the input sudoku
 
       "00600..."
       %{
@@ -35,7 +35,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  generate all the cols coordinates
+  generate coordinates for columns
       [[{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],...]
   """
   def create_cols(size \\ 9) do
@@ -50,7 +50,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  generate all the rows coordinates
+  generate coordinates for rows
       [[{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],...]
   """
   def create_rows(size \\ 9) do
@@ -65,7 +65,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  generate all the boxes coordinates
+  generate coordinates for boxes
       [[{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}],...]
   """
   def create_boxes(size \\ 3) do
@@ -84,7 +84,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  Returns all the coordinates of the box
+  Return coordinates of the box
       {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
   """
   def get_box_coordinates(tuple) do
@@ -94,7 +94,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  Returns all the coordinates of the col
+  Return coordinates of the column
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_col_coordinates(col_num) do
@@ -102,7 +102,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  Returns all the coordinates of the row
+  Return coordinates of the row
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_row_coordinates(row_num) do
@@ -110,48 +110,54 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  Returns the values within the row
+  Return values of the row
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_row(row_num, stack, built_in_map) do
     coordinates = get_row_coordinates(row_num)
-    stack_values = get_stack_values(stack, coordinates)
-    built_in_values = get_built_in_values(built_in_map, coordinates)
+    stack_values = filter_stack_by_coordinates(stack, coordinates)
+    built_in_values = built_in_values_to_stack_structure(built_in_map, coordinates)
 
-    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
+    Enum.sort(merge_uniq(stack_values, built_in_values), fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
   end
 
   @doc """
-  Returns the values within the col
+  Return coordinates of the col
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_col(col_num, stack, built_in_map) do
     coordinates = get_col_coordinates(col_num)
-    stack_values = get_stack_values(stack, coordinates)
-    built_in_values = get_built_in_values(built_in_map, coordinates)
+    stack_values = filter_stack_by_coordinates(stack, coordinates)
+    built_in_values = built_in_values_to_stack_structure(built_in_map, coordinates)
 
-    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{_,ord1},_},{{_,ord2},_}) -> ord1 < ord2 end)
+    Enum.sort(merge_uniq(stack_values, built_in_values), fn({{_,ord1},_},{{_,ord2},_}) -> ord1 < ord2 end)
   end
 
   @doc """
-  Returns the values within the box
+  Return coordinates of the box
       {3,1} -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_box(tuple, stack, built_in_map) do
     coordinates = get_box_coordinates(tuple)
-    stack_values = get_stack_values(stack, coordinates)
-    built_in_values = get_built_in_values(built_in_map, coordinates)
+    stack_values = filter_stack_by_coordinates(stack, coordinates)
+    built_in_values = built_in_values_to_stack_structure(built_in_map, coordinates)
 
-    Enum.sort(concat_uniq(stack_values, built_in_values), fn({{abs1,ord1},_},{{abs2,ord2},_}) ->
+    Enum.sort(merge_uniq(stack_values, built_in_values), fn({{abs1,ord1},_},{{abs2,ord2},_}) ->
       if abs1 === abs2, do: ord1 < ord2, else: abs1 < abs2
     end)
   end
 
+  @doc """
+  Check if a row is valid
+  """
   def is_row_valid?(row_num, stack, built_in_values) do
     values = get_row(row_num, stack, built_in_values) |> get_values
     Enum.sort(values) === Enum.dedup(Enum.sort(values))
   end
 
+  @doc """
+  Check if all rows are valid
+  """
   def is_rows_valid?(stack, built_in_values) do
     [true] === Enum.map(0..8, fn(row_num) ->
       is_row_valid?(row_num, stack, built_in_values)
@@ -159,6 +165,17 @@ defmodule Sudoku.Algo1 do
     |> Enum.dedup
   end
 
+  @doc """
+  Check if a column is valid
+  """
+  def is_col_valid?(col_num, stack, built_in_values) do
+    values = get_col(col_num, stack, built_in_values) |> get_values
+    Enum.sort(values) === Enum.dedup(Enum.sort(values))
+  end
+
+  @doc """
+  Check if all columns are valid
+  """
   def is_cols_valid?(stack, built_in_values) do
     [true] === Enum.map(0..8, fn(col_num) ->
       is_col_valid?(col_num, stack, built_in_values)
@@ -166,16 +183,17 @@ defmodule Sudoku.Algo1 do
     |> Enum.dedup
   end
 
-  def is_col_valid?(col_num, stack, built_in_values) do
-    values = get_col(col_num, stack, built_in_values) |> get_values
-    Enum.sort(values) === Enum.dedup(Enum.sort(values))
-  end
-
+  @doc """
+  Check if a box is valid
+  """
   def is_box_valid?(tuple, stack, built_in_values) do
     values = get_box(tuple, stack, built_in_values) |> get_values
     Enum.sort(values) === Enum.dedup(Enum.sort(values))
   end
 
+  @doc """
+  check if the entire sudoku is valid
+  """
   def is_valid?(stack, built_in_values) do
     rows = Enum.map(0..8, fn(row_num) ->
       is_row_valid?(row_num, stack, built_in_values)
@@ -200,6 +218,9 @@ defmodule Sudoku.Algo1 do
   # ###########################################################################
   # private
 
+  @doc """
+  extract values from the stack
+  """
   defp get_values(list_of_tuple) do
     list_of_tuple
     |> Enum.map(fn({_,v}) ->
@@ -207,25 +228,36 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
-  defp get_stack_values(stack, list_of_tuple) do
-    Enum.reduce(stack, [], fn({tuple,_} = item, acc) ->
-      if Enum.member?(list_of_tuple, tuple), do: [item|acc], else: acc
+  @doc """
+  extract tuples from the stack
+  """
+  defp get_tuples(list_of_tuple) do
+    list_of_tuple
+    |> Enum.map(fn({tuple,v}) ->
+      tuple
     end)
   end
 
-  defp get_built_in_values(built_in_map, coordinates) do
+  defp filter_stack_by_coordinates(stack, list_of_tuple) do
+    Enum.filter(stack, fn({tuple,_} = item) ->
+      Enum.member?(list_of_tuple, tuple)
+    end)
+  end
+  @doc """
+  transform and filter built_in_map to have the same structure as stack
+  """
+  defp built_in_values_to_stack_structure(built_in_map, coordinates) do
     Enum.reduce(coordinates, [], fn(tuple,acc) ->
       if (v = Map.get(built_in_map, tuple)) !== nil, do: [{tuple,v}|acc], else: acc
     end)
   end
 
-  def concat_uniq(stack, built_in_values) do
-    list_of_tuple_prioritary = Enum.map(stack, fn({tuple,_}) ->
-      tuple
-    end)
-
-    stack ++ Enum.reduce(built_in_values, [], fn({tuple,v} = item,acc) ->
-      if Enum.member?(list_of_tuple_prioritary, tuple), do: acc, else: [item|acc]
+  @doc """
+  put item that is not already in the stack
+  """
+  def merge_uniq(stack, items) do
+    stack ++ Enum.reduce(items, [], fn({tuple,v} = item,acc) ->
+      if Enum.member?(get_tuples(stack), tuple), do: acc, else: [item|acc]
     end)
   end
 
