@@ -342,7 +342,7 @@ end
   test "add" do
     built_in_values =
       Sudoku.Algo1.create_built_in_values(
-      "005020600" <>
+      "300020600" <>
       "000000000" <>
       "500000030" <>
       "070000000" <>
@@ -351,11 +351,42 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.add([{{0,0}, "5"}], built_in_values) ==
-      [{{0,0}, "5"}, {{1,0}, "0"}]
-    assert Sudoku.Algo1.add([{{8,0}, "5"}], built_in_values) ==
-      [{{8,0}, "5"}, {{0,1}, "0"}]
-    assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.add([{{8,8}, "5"}], built_in_values) end
+    assert Sudoku.Algo1.add([], built_in_values) ==
+      [{{1,0}, "0"}, {{0,0}, "3"}]
+  end
+
+  # @tag :pending
+  test "add 2" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "320020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.add([], built_in_values) ==
+      [{{2,0}, "0"}, {{1,0}, "2"}, {{0,0}, "3"}]
+  end
+  # @tag :pending
+  test "add 3" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "325020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.add([], built_in_values) ==
+      [{{3,0}, "0"}, {{2,0}, "5"}, {{1,0}, "2"}, {{0,0}, "3"}]
+    assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.add([{{8,8}, "3"}], built_in_values) end
   end
 
   # @tag :pending
@@ -365,5 +396,11 @@ end
     assert Sudoku.Algo1.get_next_coordonates({{8,3}, "5"}) == {0,4}
     assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.get_next_coordonates({{8,8}, "5"}) end
   end
+
+  # @tag :pending
+  # test "increase" do
+  #   assert Sudoku.Algo1.increase(stack) == {1,0}
+  # end
+
 
 end
