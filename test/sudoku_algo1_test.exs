@@ -79,18 +79,18 @@ defmodule SudokuAlgo1Test do
     ]
   end
 
-  test "get boxe" do
-    assert Sudoku.Algo1.get_box({5,5}) ==
+  test "get box coordinates" do
+    assert Sudoku.Algo1.get_box_coordinates({5,5}) ==
       [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
   end
 
-  test "get col" do
-    assert Sudoku.Algo1.get_col(3) ==
+  test "get col coordinates" do
+    assert Sudoku.Algo1.get_col_coordinates(3) ==
       [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   end
 
-  test "get row" do
-    assert Sudoku.Algo1.get_row(4) ==
+  test "get row coordinates" do
+    assert Sudoku.Algo1.get_row_coordinates(4) ==
       [{0,4},{1,4},{2,4},{3,4},{4,4},{5,4},{6,4},{7,4},{8,4}]
   end
 
