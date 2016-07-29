@@ -262,4 +262,23 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
+  def add([], built_in_values) do
+    [{{0,0}, Map.get(built_in_values, {0,0}, "0")}]
+  end
+  def add(stack, built_in_values) do
+    [h|t] = Enum.reverse(stack)
+    coor = get_next_coordonates(h)
+    [{coor, Map.get(built_in_values, coor, "0")}|stack]
+    |> Enum.reverse
+  end
+
+  def get_next_coordonates({{8,8},v}), do: raise Sudoku.Algo1.LastElement
+  def get_next_coordonates({{8 = abs,ord},v}), do: {0, ord + 1}
+  def get_next_coordonates({{abs, ord},v}), do: {abs + 1, ord}
+
+  defmodule LastElement do
+    defexception []
+    def message(_), do: "{8,8} is the latest element"
+  end
+
 end

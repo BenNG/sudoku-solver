@@ -338,4 +338,32 @@ end
     assert Sudoku.Algo1.is_valid?([{{0,0}, "5"}], built_in_values) == true
   end
 
+  # @tag :pending
+  test "add" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "005020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.add([{{0,0}, "5"}], built_in_values) ==
+      [{{0,0}, "5"}, {{1,0}, "0"}]
+    assert Sudoku.Algo1.add([{{8,0}, "5"}], built_in_values) ==
+      [{{8,0}, "5"}, {{0,1}, "0"}]
+    assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.add([{{8,8}, "5"}], built_in_values) end
+  end
+
+  # @tag :pending
+  test "get next coordinates" do
+    assert Sudoku.Algo1.get_next_coordonates({{0,0}, "5"}) == {1,0}
+    assert Sudoku.Algo1.get_next_coordonates({{8,0}, "5"}) == {0,1}
+    assert Sudoku.Algo1.get_next_coordonates({{8,3}, "5"}) == {0,4}
+    assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.get_next_coordonates({{8,8}, "5"}) end
+  end
+
 end
