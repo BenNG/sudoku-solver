@@ -7,7 +7,7 @@ defmodule SudokuAlgo1Test do
   end
 
   test "create built in map" do
-    assert Sudoku.Algo1.create_built_in_map("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
+    assert Sudoku.Algo1.create_built_in_values("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
       == %{
         {2,0} => "3",
         {4,0} => "2",
@@ -16,7 +16,7 @@ defmodule SudokuAlgo1Test do
   end
 
   test "create built in map2" do
-    assert Sudoku.Algo1.create_built_in_map("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
+    assert Sudoku.Algo1.create_built_in_values("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
       == %{
         {2,0} => "3",
         {4,0} => "2",
@@ -92,6 +92,54 @@ defmodule SudokuAlgo1Test do
   test "get row coordinates" do
     assert Sudoku.Algo1.get_row_coordinates(4) ==
       [{0,4},{1,4},{2,4},{3,4},{4,4},{5,4},{6,4},{7,4},{8,4}]
+  end
+
+  test "get row" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "003020600" <>
+      "000000000" <>
+      "000000000" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000000" <>
+      "000000000" <>
+      "000000900")
+    assert Sudoku.Algo1.get_row(0, [{{0,0}, "1"}], built_in_values) ==
+      [{{0,0},"1"},{{2,0},"3"},{{4,0},"2"},{{6,0},"6"}]
+  end
+
+  test "get col" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "003020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000090" <>
+      "900000000" <>
+      "000000900")
+    assert Sudoku.Algo1.get_col(7, [{{7,0}, "1"}], built_in_values) ==
+      [{{7,0},"1"},{{7,2},"3"},{{7,6},"9"}]
+  end
+
+  test "get box" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "003020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.get_box({6,7}, [{{6,6}, "1"}], built_in_values) ==
+      [{{6,6}, "1"}, {{6,8},"9"}, {{7,6},"2"},{{7,7},"5"}]
   end
 
 

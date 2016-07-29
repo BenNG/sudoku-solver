@@ -12,7 +12,7 @@ defmodule Sudoku.Algo1 do
       }
 
   """
-  def create_built_in_map(data) do
+  def create_built_in_values(data) do
 
     if String.length(data) !== 81, do: raise Sudoku.Algo1.BadInputLength
 
@@ -84,7 +84,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  return the linked boxe given a tuple
+  Returns all the coordinates of the box
       {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
   """
   def get_box_coordinates(tuple) do
@@ -94,7 +94,7 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  return the linked col given col number
+  Returns all the coordinates of the col
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_col_coordinates(col_num) do
@@ -102,11 +102,61 @@ defmodule Sudoku.Algo1 do
   end
 
   @doc """
-  return the linked row given row number
+  Returns all the coordinates of the row
       3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   """
   def get_row_coordinates(row_num) do
     Enum.at(create_rows, row_num)
+  end
+
+  @doc """
+  Returns the values within the row
+      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+  """
+  def get_row(row_num, stack, built_in_map) do
+    coordinates = get_row_coordinates(row_num)
+    stack_values = get_stack_values(stack, coordinates)
+    built_in_values = get_built_in_values(built_in_map, coordinates)
+
+    Enum.sort(stack_values ++ built_in_values, fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
+  end
+
+  @doc """
+  Returns the values within the col
+      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+  """
+  def get_col(col_num, stack, built_in_map) do
+    coordinates = get_col_coordinates(col_num)
+    stack_values = get_stack_values(stack, coordinates)
+    built_in_values = get_built_in_values(built_in_map, coordinates)
+
+    Enum.sort(stack_values ++ built_in_values, fn({{_,ord1},_},{{_,ord2},_}) -> ord1 < ord2 end)
+  end
+
+  @doc """
+  Returns the values within the box
+      3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
+  """
+  def get_box(tuple, stack, built_in_map) do
+    coordinates = get_box_coordinates(tuple)
+    stack_values = get_stack_values(stack, coordinates)
+    built_in_values = get_built_in_values(built_in_map, coordinates)
+
+    Enum.sort(stack_values ++ built_in_values, fn({{abs1,ord1},_},{{abs2,ord2},_}) ->
+      if abs1 === abs2, do: ord1 < ord2, else: abs1 < abs2
+    end)
+  end
+
+  def get_stack_values(stack, list_of_tuple) do
+    Enum.reduce(stack, [], fn({tuple,_} = item, acc) ->
+      if Enum.member?(list_of_tuple, tuple), do: [item|acc], else: acc
+    end)
+  end
+
+  def get_built_in_values(built_in_map, coordinates) do
+    Enum.reduce(coordinates, [], fn(tuple,acc) ->
+      if (v = Map.get(built_in_map, tuple)) !== nil, do: [{tuple,v}|acc], else: acc
+    end)
   end
 
 end
