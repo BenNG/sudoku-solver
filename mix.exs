@@ -4,6 +4,8 @@ defmodule Sudoku.Mixfile do
   def project do
     [app: :sudoku,
      version: "0.1.0",
+     name: "Sudoku",
+     source_url: "https://bitbucket.org/BenNG/sudoku",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
@@ -27,6 +29,8 @@ defmodule Sudoku.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [ ex_doc: "~> 0.13.0",
+      earmark: "~> 1.0"
+    ]
   end
 end
