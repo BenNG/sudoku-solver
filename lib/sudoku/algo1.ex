@@ -36,7 +36,7 @@ defmodule Sudoku.Algo1 do
 
   @doc """
   generate all the cols coordinates
-      [{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],...
+      [[{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],...]
   """
   def create_cols(size \\ 9) do
     Enum.reduce(0..size - 1, [], fn(abs,acc) ->
@@ -51,7 +51,7 @@ defmodule Sudoku.Algo1 do
 
   @doc """
   generate all the rows coordinates
-      [{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],...
+      [[{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],...]
   """
   def create_rows(size \\ 9) do
     Enum.reduce(0..size - 1, [], fn(ord,acc) ->
@@ -66,7 +66,7 @@ defmodule Sudoku.Algo1 do
 
   @doc """
   generate all the boxes coordinates
-      [{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}],
+      [[{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}],...]
   """
   def create_boxes(size \\ 3) do
     range = Enum.slice([0..2, 3..5, 6..8], 0..size - 1 )
@@ -82,6 +82,17 @@ defmodule Sudoku.Algo1 do
       acc ++ col_boxes
     end)
   end
+
+
+    @doc """
+    return the linked boxe given a tuple
+        {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
+    """
+    def get_box(tuple) do
+      Enum.find(create_boxes, fn(boxe) ->
+        Enum.member?(boxe, tuple)
+      end)
+    end
 
 
 

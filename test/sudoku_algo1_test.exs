@@ -79,6 +79,11 @@ defmodule SudokuAlgo1Test do
     ]
   end
 
+  test "get boxe" do
+    assert Sudoku.Algo1.get_box({5,5}) ==
+      [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
+  end
+
 
 
 end
