@@ -271,16 +271,20 @@ defmodule Sudoku.Algo1 do
       [{{0,0}, 0}]
     end
   end
-  def add(stack, built_in_values) do
-    [h|t] = stack
-    coor = get_next_coordonates(h)
 
+  def add([h|t] = stack, built_in_values) do
+    coor = get_next_coordonates(h)
+    # IF BUILT IN
     if (v = Map.get(built_in_values, coor)) !== nil do
-      add([{coor, v}|stack], built_in_values)
+      if coor !== {8,8} do
+        add([{coor, v}|stack], built_in_values)
+      else
+        # on ne rappel pas la fonction add meme si {8,8 est un built in}
+        [{coor, v}|stack]
+      end
     else
       [{coor, 0}|stack]
     end
-
   end
 
   def get_next_coordonates({{8,8},_}), do: raise Sudoku.Algo1.LastElement
