@@ -18,13 +18,14 @@ defmodule Sudoku.Algo1 do
 
     data
     |> String.codepoints
+    |> Enum.map(fn(x) -> String.to_integer(x) end)
     |> Enum.chunk(9,9)
     |> Enum.with_index
     |> Enum.reduce(%{}, fn({list, ord},acc) ->
       list
       |> Enum.with_index
       |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== "0", do: Map.put(acc, {abs, ord}, value), else: acc
+        if value !== 0, do: Map.put(acc, {abs, ord}, value), else: acc
       end)
     end)
   end
@@ -207,6 +208,7 @@ defmodule Sudoku.Algo1 do
       is_box_valid?({num,num}, stack, built_in_values)
     end)
 
+    length(merge_uniq(stack, built_in_values)) === 81 &&
     [true] === Enum.dedup(rows) &&
     [true] === Enum.dedup(cols) &&
     [true] === Enum.dedup(boxes)
@@ -259,6 +261,54 @@ defmodule Sudoku.Algo1 do
     stack ++ Enum.reduce(items, [], fn({tuple,v} = item,acc) ->
       if Enum.member?(get_tuples(stack), tuple), do: acc, else: [item|acc]
     end)
+  end
+
+
+  def add([], built_in_values) do
+    if (v = Map.get(built_in_values, {0,0})) !== nil do
+      add([{{0,0}, v}], built_in_values)
+    else
+      [{{0,0}, 0}]
+    end
+  end
+  def add(stack, built_in_values) do
+    [h|t] = stack
+    coor = get_next_coordonates(h)
+
+    if (v = Map.get(built_in_values, coor)) !== nil do
+      add([{coor, v}|stack], built_in_values)
+    else
+      [{coor, 0}|stack]
+    end
+
+  end
+
+  def get_next_coordonates({{8,8},_}), do: raise Sudoku.Algo1.LastElement
+  def get_next_coordonates({{8 = abs,ord},v}), do: {0, ord + 1}
+  def get_next_coordonates({{abs, ord},v}), do: {abs + 1, ord}
+
+  def increase([]), do: raise Sudoku.Algo1.IncreaseEmptyStack
+  def increase([{tuple, 9}|t]), do: :drop
+  def increase([{tuple, v}|t]) do
+    [{tuple, v + 1} |t]
+  end
+
+  def drop([], map), do: []
+  def drop([h|[]], map), do: []
+  def drop([first|tail] , map) do
+    [{tuple,v}|t] = tail
+    if Map.get(map, tuple), do: drop(tail, map), else: tail
+  end
+
+
+  defmodule LastElement do
+    defexception []
+    def message(_), do: "{8,8} is the latest element"
+  end
+
+  defmodule IncreaseEmptyStack do
+    defexception []
+    def message(_), do: "Could not increase an empty stack"
   end
 
 end
