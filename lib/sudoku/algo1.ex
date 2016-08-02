@@ -208,13 +208,13 @@ defmodule Sudoku.Algo1 do
       is_box_valid?({num,num}, stack, built_in_values)
     end)
 
-    length(merge_uniq(stack, built_in_values)) === 81 &&
     [true] === Enum.dedup(rows) &&
     [true] === Enum.dedup(cols) &&
     [true] === Enum.dedup(boxes)
 
   end
 
+  def is_complete?(stack), do: length(stack) === 81
 
 
   # ###########################################################################
@@ -297,9 +297,12 @@ defmodule Sudoku.Algo1 do
   def drop([h|[]], map), do: []
   def drop([first|tail] , map) do
     [{tuple,v}|t] = tail
-    if Map.get(map, tuple), do: drop(tail, map), else: tail
+    if Map.get(map, tuple) || v === 9 do
+      drop(tail, map)
+    else
+      tail
+    end
   end
-
 
   defmodule LastElement do
     defexception []

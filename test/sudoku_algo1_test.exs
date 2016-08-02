@@ -389,6 +389,7 @@ end
     assert_raise Sudoku.Algo1.LastElement, fn -> Sudoku.Algo1.add([{{8,8}, 3}], built_in_values) end
   end
 
+
   # @tag :pending
   test "get next coordinates" do
     assert Sudoku.Algo1.get_next_coordonates({{0,0}, 5}) == {1,0}
@@ -437,9 +438,8 @@ end
       "000000900")
     assert Sudoku.Algo1.drop([{{4,0}, 9}, {{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}], built_in_values)
       == [{{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}]
+    assert Sudoku.Algo1.drop([{{5,0}, 9}, {{4,0}, 9}, {{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}], built_in_values)
+      == [{{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}]
   end
-
-
-
 
 end
