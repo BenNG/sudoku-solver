@@ -1,6 +1,8 @@
 defmodule Sudoku.Algo1 do
   @moduledoc """
     Provide set of functions to solve sudoku puzzles
+    Using all the possibilities
+    End now
   """
   def times(a,b), do: a*b
   @doc """
