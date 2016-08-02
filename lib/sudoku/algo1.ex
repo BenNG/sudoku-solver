@@ -293,6 +293,13 @@ defmodule Sudoku.Algo1 do
     [{tuple, v + 1} |t]
   end
 
+  def drop([], map), do: []
+  def drop([h|[]], map), do: []
+  def drop([first|tail] , map) do
+    [{tuple,v}|t] = tail
+    if Map.get(map, tuple), do: drop(tail, map), else: tail
+  end
+
 
   defmodule LastElement do
     defexception []

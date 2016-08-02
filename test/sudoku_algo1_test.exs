@@ -405,4 +405,41 @@ end
       == :drop
   end
 
+  # @tag :pending
+  test "drop" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "325020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.drop([{{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}], built_in_values)
+      == []
+  end
+
+  # @tag :pending
+  test "drop 2" do
+    built_in_values =
+      Sudoku.Algo1.create_built_in_values(
+      "325000600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+    assert Sudoku.Algo1.drop([{{4,0}, 9}, {{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}], built_in_values)
+      == [{{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}]
+  end
+
+
+
+
 end
