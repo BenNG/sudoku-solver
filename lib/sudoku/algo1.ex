@@ -18,13 +18,14 @@ defmodule Sudoku.Algo1 do
 
     data
     |> String.codepoints
+    |> Enum.map(fn(x) -> String.to_integer(x) end)
     |> Enum.chunk(9,9)
     |> Enum.with_index
     |> Enum.reduce(%{}, fn({list, ord},acc) ->
       list
       |> Enum.with_index
       |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== "0", do: Map.put(acc, {abs, ord}, value), else: acc
+        if value !== 0, do: Map.put(acc, {abs, ord}, value), else: acc
       end)
     end)
   end
@@ -267,7 +268,7 @@ defmodule Sudoku.Algo1 do
     if (v = Map.get(built_in_values, {0,0})) !== nil do
       add([{{0,0}, v}], built_in_values)
     else
-      [{{0,0}, "0"}]
+      [{{0,0}, 0}]
     end
   end
   def add(stack, built_in_values) do
@@ -277,7 +278,7 @@ defmodule Sudoku.Algo1 do
     if (v = Map.get(built_in_values, coor)) !== nil do
       add([{coor, v}|stack], built_in_values)
     else
-      [{coor, "0"}|stack]
+      [{coor, 0}|stack]
     end
 
   end
@@ -287,9 +288,9 @@ defmodule Sudoku.Algo1 do
   def get_next_coordonates({{abs, ord},v}), do: {abs + 1, ord}
 
   def increase([]), do: raise Sudoku.Algo1.IncreaseEmptyStack
-  def increase([{tuple, "9"}|t]), do: :drop
+  def increase([{tuple, 9}|t]), do: :drop
   def increase([{tuple, v}|t]) do
-    [{tuple, Integer.to_string(String.to_integer(v) + 1)} |t]
+    [{tuple, v + 1} |t]
   end
 
 
