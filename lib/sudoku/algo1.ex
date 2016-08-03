@@ -225,7 +225,7 @@ defmodule Sudoku.Algo1 do
   @doc """
   extract values from the stack
   """
-  defp get_values(list_of_tuple) do
+  def get_values(list_of_tuple) do
     list_of_tuple
     |> Enum.map(fn({_,v}) ->
       v
@@ -235,22 +235,22 @@ defmodule Sudoku.Algo1 do
   @doc """
   extract tuples from the stack
   """
-  defp get_tuples(list_of_tuple) do
+  def get_tuples(list_of_tuple) do
     list_of_tuple
-    |> Enum.map(fn({tuple,v}) ->
+    |> Enum.map(fn({tuple,_}) ->
       tuple
     end)
   end
 
   defp filter_stack_by_coordinates(stack, list_of_tuple) do
-    Enum.filter(stack, fn({tuple,_} = item) ->
+    Enum.filter(stack, fn({tuple,_}) ->
       Enum.member?(list_of_tuple, tuple)
     end)
   end
   @doc """
   transform and filter built_in_map to have the same structure as stack
   """
-  defp built_in_values_to_stack_structure(built_in_map, coordinates) do
+  def built_in_values_to_stack_structure(built_in_map, coordinates) do
     Enum.reduce(coordinates, [], fn(tuple,acc) ->
       if (v = Map.get(built_in_map, tuple)) !== nil, do: [{tuple,v}|acc], else: acc
     end)
@@ -260,7 +260,7 @@ defmodule Sudoku.Algo1 do
   put item that is not already in the stack
   """
   def merge_uniq(stack, items) do
-    stack ++ Enum.reduce(items, [], fn({tuple,v} = item,acc) ->
+    stack ++ Enum.reduce(items, [], fn({tuple,_} = item,acc) ->
       if Enum.member?(get_tuples(stack), tuple), do: acc, else: [item|acc]
     end)
   end
@@ -274,7 +274,7 @@ defmodule Sudoku.Algo1 do
     end
   end
 
-  def add([h|t] = stack, built_in_values) do
+  def add([h|_] = stack, built_in_values) do
     coor = get_next_coordonates(h)
     # IF BUILT IN
     if (v = Map.get(built_in_values, coor)) !== nil do
@@ -290,19 +290,19 @@ defmodule Sudoku.Algo1 do
   end
 
   def get_next_coordonates({{8,8},_}), do: raise Sudoku.Algo1.LastElement
-  def get_next_coordonates({{8 = abs,ord},v}), do: {0, ord + 1}
-  def get_next_coordonates({{abs, ord},v}), do: {abs + 1, ord}
+  def get_next_coordonates({{8 = _,ord},_}), do: {0, ord + 1}
+  def get_next_coordonates({{abs, ord},_}), do: {abs + 1, ord}
 
   def increase([]), do: raise Sudoku.Algo1.IncreaseEmptyStack
-  def increase([{tuple, 9}|t]), do: :drop
+  def increase([{_, 9}|_]), do: :drop
   def increase([{tuple, v}|t]) do
     [{tuple, v + 1} |t]
   end
 
-  def drop([], map), do: []
-  def drop([h|[]], map), do: []
-  def drop([first|tail] , map) do
-    [{tuple,v}|t] = tail
+  def drop([], _), do: []
+  def drop([_|[]], _), do: []
+  def drop([_|tail] , map) do
+    [{tuple,v}|_] = tail
     if Map.get(map, tuple) || v === 9 do
       drop(tail, map)
     else
