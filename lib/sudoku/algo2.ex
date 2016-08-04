@@ -1,4 +1,5 @@
 defmodule Sudoku.Algo2 do
+  import Sudoku.Display
   @moduledoc """
     Provide set of functions to solve sudoku puzzles
     Using Constraint Propagation
@@ -62,52 +63,59 @@ defmodule Sudoku.Algo2 do
         do: {abs, ord}
   end
 
-  def pretty(map, display_coor \\ true) do
-    IO.puts ""
-    size_item = if display_coor, do: 16, else: 10
+  def run(raw, pretty \\ false) do
+    given_values = raw_data_to_map(raw)
+    initial_map = initial_posibilities_to_map
 
-    draw_line(size_item)
 
-    order
-    |> Enum.chunk(27,27)
-    |> Enum.each(fn(block) ->
-      block
-      |> Enum.chunk(9,9)
-      |> Enum.each(fn(list) ->
-          IO.write " | "
-          Enum.chunk(list, 3,3)
-          |> Enum.each(fn(items) ->
-              Enum.each(items, fn(tuple) ->
-                pretty_item(map, tuple, display_coor)
-              end)
-          IO.write " | "
-          end)
-          IO.puts ""
-      end)
+    map = apply_values(initial_map, given_values)
 
-      draw_line(size_item)
+    if Enum.sum(Enum.map(Map.values(map), &length(&1))) === 81 do
+       {:ok, (if pretty, do: pretty(map), else: map_to_raw_data(map))}
+    else
+      # pretty(map)
+      # isolated_values = isolated_values(map)
+      # map = apply_isolated_values(map, isolated_values)
+      pretty(map)
+      {:error}
+    end
+  end
 
+
+  def run_file(filename) do
+    Sudoku.Loader.load_file(filename)
+    |> Enum.map(fn(raw) ->
+      run(raw)
     end)
   end
 
-  def pretty_item(map, tuple, display_coor) do
-    coor = if display_coor, do: String.pad_trailing("{#{elem(tuple,0)},#{elem(tuple,1)}}", 6), else: ""
-    size_item = if display_coor, do: 16, else: 10
-    v = Map.get(map, tuple)
-    IO.write String.pad_trailing("#{coor}#{Enum.join(v)}", size_item)
+  def resolve_euler_96 do
+    run_file("./lib/sudoku/p096_sudoku.txt")
+    |> Enum.reduce(0, fn(res, acc) ->
+      acc + (String.slice(res, 0..2) |> String.to_integer)
+    end)
   end
 
-  def draw_line(size_item) do
-    IO.write " | "
-    0..2
-    |> Enum.each(fn(_) ->
-      0..2
-      |> Enum.each(fn(_) ->
-        String.duplicate("-", size_item) |> IO.write
+  # We apply the given values to the map of possibilities
+  # It possibly create new single values which values we can count on (like given values)
+  def apply_values(map, values) do
+      new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
+      new_values = new_values_found(new_map, map)
+
+      if Enum.empty?(new_values), do: new_map, else: apply_values(new_map, new_values)
+  end
+
+  def filter_single_values(map) do
+      Enum.reduce(Map.keys(map), %{}, fn(key, acc) ->
+        v = Map.get(map, key)
+        if length(v) === 1, do: Map.put(acc, key, v), else: acc
       end)
-      IO.write " | "
-    end)
-    IO.puts ""
+  end
+
+  def new_values_found(new_map, old_map) do
+    new_map = new_map |> filter_single_values
+    old_map = old_map |> filter_single_values
+    Map.drop(new_map, Map.keys(old_map))
   end
 
   def apply_value(map, {abs, ord} = tuple, value) do
@@ -124,46 +132,6 @@ defmodule Sudoku.Algo2 do
       Map.put(acc, coord, values)
     end)
 
-  end
-
-  def possible_values(map) do
-    Map.values(map)
-    |> Enum.reduce(0, fn(list,acc) ->
-      acc + length(list)
-    end)
-  end
-
-  def new_single_values(map, given_values) do
-    Map.drop(map, Map.keys(given_values))
-    |> Map.keys
-    |> Enum.reduce([], fn(tuple, acc) ->
-      if length(Map.get(map, tuple)) === 1, do: [tuple|acc], else: acc
-    end)
-  end
-
-  def run(raw) do
-    given_values = raw_data_to_map(raw)
-    apply_values(initial_posibilities_to_map, given_values, Map.keys(given_values))
-  end
-
-  # We apply the given values to the map of possibilities
-  # It possibly create new single values which values we can count on (like given values)
-  def apply_values(map, given_values, coords) do
-      map = Enum.reduce(coords, map, &(apply_value(&2, &1, Map.get(given_values, &1))))
-      news = new_single_values(map, given_values)
-
-      do_apply_values(map, given_values, news)
-  end
-  # on recupere les valeurs qui sont dans la map par application des contraintes
-  def do_apply_values(map, _, []), do: map
-  def do_apply_values(map, given_values, coords) do
-      map = Enum.reduce(coords, map, &(apply_value(&2, &1, Map.get(map, &1))))
-      news = new_single_values(map, given_values)
-
-      new_kind_of_given_values = Enum.reduce(coords, %{}, &(Map.put(&2, &1, Map.get(map, &1))))
-      given_values = Map.merge(given_values, new_kind_of_given_values)
-
-      do_apply_values(map, given_values, news)
   end
 
 end
