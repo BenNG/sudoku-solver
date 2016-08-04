@@ -67,8 +67,9 @@ defmodule Sudoku.Algo2 do
     given_values = raw_data_to_map(raw)
     initial_map = initial_posibilities_to_map
 
-
+    # only 2 strategies for the moment
     map = apply_values(initial_map, given_values)
+    map = apply_isolated_values(map)
 
     if Enum.sum(Enum.map(Map.values(map), &length(&1))) === 81 do
        {:ok, (if pretty, do: pretty(map), else: map_to_raw_data(map))}
@@ -132,6 +133,39 @@ defmodule Sudoku.Algo2 do
       Map.put(acc, coord, values)
     end)
 
+  end
+
+  def apply_isolated_values(map) do
+    values = isolated_values(map)
+    map = apply_values(map, values)
+    values = isolated_values(map)
+    if Enum.empty?(values), do: map, else: apply_isolated_values(map)
+  end
+
+  def isolated_values(map) do
+    rows = Sudoku.Algo1.generate_board_rows
+    cols = Sudoku.Algo1.generate_board_columns
+    boxes = Sudoku.Algo1.generate_board_boxes
+
+    Enum.reduce(1..9, %{}, fn(n, acc) ->
+      ans3 = Enum.reduce([rows, cols, boxes], %{}, fn(items, acc) ->
+        ans2 = Enum.reduce(items, %{}, fn(unit, acc) ->
+
+          Map.merge(acc, appear_once(map, unit, n))
+
+        end)
+        Map.merge(acc, ans2)
+      end)
+      Map.merge(acc, ans3)
+    end)
+  end
+
+  def appear_once(map, unit, n) do
+    seen = Enum.reduce(unit, %{}, fn(coord, acc) ->
+      values = Map.get(map, coord)
+      if Enum.member?(values, n) && length(values) > 1, do: Map.put(acc, coord, n), else: acc
+    end)
+    if length(Map.keys(seen)) === 1, do: seen, else: %{}
   end
 
 end
