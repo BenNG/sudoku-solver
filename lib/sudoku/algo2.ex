@@ -29,7 +29,7 @@
       list
       |> Enum.with_index
       |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== 0, do: Map.put(acc, {abs, ord}, value), else: acc
+        if value !== 0, do: Map.put(acc, {abs, ord}, [value]), else: acc
       end)
     end)
   end

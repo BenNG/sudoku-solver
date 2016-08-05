@@ -45,9 +45,9 @@ end
   test "create built in map" do
     assert Sudoku.Algo2.input_to_map("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
       == %{
-        {2,0} => 3,
-        {4,0} => 2,
-        {6,0} => 6,
+        {2,0} => [3],
+        {4,0} => [2],
+        {6,0} => [6],
       }
   end
 
@@ -55,12 +55,12 @@ end
   test "create built in map2" do
     assert Sudoku.Algo2.input_to_map("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
       == %{
-        {2,0} => 3,
-        {4,0} => 2,
-        {6,0} => 6,
-        {1,3} => 7,
-        {2,6} => 5,
-        {6,8} => 9,
+        {2,0} => [3],
+        {4,0} => [2],
+        {6,0} => [6],
+        {1,3} => [7],
+        {2,6} => [5],
+        {6,8} => [9],
       }
   end
 
@@ -163,8 +163,8 @@ end
       "005000000" <>
       "000000000" <>
       "000000900")
-    assert Sudoku.Algo1.get_row(0, [{{0,0}, 1}], built_in_values) ==
-      [{{0,0},1},{{2,0},3},{{4,0},2},{{6,0},6}]
+    assert Sudoku.Algo1.get_row(0, [{{0,0}, [1]}], built_in_values) ==
+      [{{0,0},[1]},{{2,0},[3]},{{4,0},[2]},{{6,0},[6]}]
   end
 
   # @tag :pending
@@ -180,8 +180,8 @@ end
       "005000090" <>
       "900000000" <>
       "000000900")
-    assert Sudoku.Algo1.get_col(7, [{{7,0}, 1}], built_in_values) ==
-      [{{7,0},1},{{7,2},3},{{7,6},9}]
+    assert Sudoku.Algo1.get_col(7, [{{7,0}, [1]}], built_in_values) ==
+      [{{7,0},[1]},{{7,2},[3]},{{7,6},[9]}]
   end
 
   # @tag :pending
@@ -197,8 +197,8 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.get_box({6,7}, [{{6,6}, 1}], built_in_values) ==
-      [{{6,6}, 1}, {{6,8},9}, {{7,6},2},{{7,7},5}]
+    assert Sudoku.Algo1.get_box({6,7}, [{{6,6}, [1]}], built_in_values) ==
+      [{{6,6}, [1]}, {{6,8},[9]}, {{7,6},[2]},{{7,7},[5]}]
   end
 
   # @tag :pending
@@ -224,7 +224,7 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.is_row_valid?(0, [{{0,0}, 1}], built_in_values) == false
+    assert Sudoku.Algo1.is_row_valid?(0, [{{0,0}, [1]}], built_in_values) == false
   end
 
 
@@ -251,7 +251,7 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, 1}], built_in_values) == true
+    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, [1]}], built_in_values) == true
   end
 
   # @tag :pending
@@ -267,7 +267,7 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, 1}], built_in_values) == false
+    assert Sudoku.Algo1.is_col_valid?(0, [{{0,0}, [1]}], built_in_values) == false
   end
 
   # @tag :pending
@@ -307,7 +307,7 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.is_box_valid?({0,0}, [{{0,0}, 1}], built_in_values) == false
+    assert Sudoku.Algo1.is_box_valid?({0,0}, [{{0,0}, [1]}], built_in_values) == false
   end
 
   # @tag :pending
@@ -476,12 +476,28 @@ end
   end
 
   # @tag :pending
-  # test "increase" do
-  #   assert Sudoku.Algo1.increase([{{3,0}, 0}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}])
-  #     == [{{3,0}, 1}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}]
-  #   assert Sudoku.Algo1.increase([{{3,0}, 9}, {{2,0}, 5}, {{1,0}, 2}, {{0,0}, 3}])
-  #     == :drop
-  # end
+  test "increase 4" do
+    input = Sudoku.Algo2.input_to_map(
+      "325020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+
+      map = Map.merge(Sudoku.Algo2.initial_posibilities_to_map, input)
+
+      map |> Sudoku.Display.pretty
+
+      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      map = Map.put(map, {3,0}, [7,8,9])
+      assert Sudoku.Algo1.increase( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
+
+  end
+
 
   # @tag :pending
   test "drop" do
