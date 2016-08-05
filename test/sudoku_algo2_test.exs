@@ -153,7 +153,7 @@ defmodule SudokuAlgo2Test do
   # @tag :pending
   test "apply values" do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
-    raw_map = Sudoku.Algo1.create_built_in_values(raw)
+    raw_map = Sudoku.Algo2.input_to_map(raw)
     values = Sudoku.Algo2.initial_posibilities_to_map
     assert Sudoku.Algo2.apply_values(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
@@ -555,20 +555,71 @@ defmodule SudokuAlgo2Test do
 
   end
 
-  @tag :pending
+  # @tag :pending
+  test "map to stack to map" do
+
+    map = %{
+              {7, 6} => [1],
+              {7, 8} => [2],
+              {4, 0} => [2],
+              {2, 1} => [4],
+              {0, 0} => [1],
+              {6, 3} => [1],
+              {5, 7} => [6],
+              {2, 7} => [1],
+              {5, 1} => '\a',
+              {8, 7} => [5],
+              {5, 6} => '\t',
+              {6, 2} => [2],
+              {8, 2} => [1],
+              {1, 3} => [5],
+              {1, 8} => [4],
+              {5, 4} => [2],
+              {3, 5} => '\a',
+              {7, 2} => '\a',
+              {7, 5} => '\t',
+              {7, 7} => [4],
+              {3, 4} => [1],
+              {4, 7} => [3],
+              {1, 5} => [1],
+              {5, 8} => [1],
+              {3, 0} => '\t',
+              {4, 1} => [1],
+              {6, 7} => '\t',
+              {1, 6} => [6],
+              {8, 8} => [6],
+              {8, 1} => '\t',
+              {5, 3} => '\b',
+              {1, 1} => [2],
+              {2, 5} => [2],
+              {0, 5} => [4],
+              {8, 3} => [2],
+              {4, 8} => '\a',
+              {0, 1} => [5]
+            }
+
+
+    new_map = map
+    |> Sudoku.Algo1.map_to_stack
+    |> Sudoku.Algo1.stack_to_map
+    assert map == new_map
+  end
+
+  # @tag :pending
+  # |> Sudoku.Display.pretty
   test "resove harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
     {atom, map} = Sudoku.Algo2.run(raw)
-
-    min_length = map
-    |> Sudoku.DataStructureUtils.remove_fixed_values
-    |> Sudoku.DataStructureUtils.get_min_length_of_values
-    |> IO.inspect
+    #
+    # min_length = map
+    # |> Sudoku.DataStructureUtils.remove_fixed_values
+    # |> Sudoku.DataStructureUtils.get_min_length_of_values
+    # |> IO.inspect
 
     map
-    |> Sudoku.DataStructureUtils.filter_length_of_values(min_length)
-    |> Sudoku.DataStructureUtils.values_left
+    |> Sudoku.DataStructureUtils.filter_fixed_values
+    |> Sudoku.Algo1.map_to_stack
     |> IO.inspect
     assert map == %{}
   end

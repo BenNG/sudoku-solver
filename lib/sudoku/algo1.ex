@@ -4,31 +4,19 @@ defmodule Sudoku.Algo1 do
     Using all the possibilities
     End now
   """
-  def times(a,b), do: a*b
-  @doc """
-  Generate a map that represents the input sudoku
 
-      "00600..."
-      %{
-        {2, 0} => 6
-      }
 
-  """
-  def create_built_in_values(data) do
 
-    if String.length(data) !== 81, do: raise Sudoku.Algo1.BadInputLength
+  def map_to_stack(map) do
+    Map.keys(map)
+    |> Enum.reduce([], fn(coor, acc) ->
+      [{coor, Map.get(map, coor)}|acc]
+    end)
+  end
 
-    data
-    |> String.codepoints
-    |> Enum.map(&String.to_integer(&1))
-    |> Enum.chunk(9,9)
-    |> Enum.with_index
-    |> Enum.reduce(%{}, fn({list, ord},acc) ->
-      list
-      |> Enum.with_index
-      |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== 0, do: Map.put(acc, {abs, ord}, value), else: acc
-      end)
+  def stack_to_map(stack) do
+    Enum.reduce(stack, %{}, fn({coor,v}, acc) ->
+      Map.merge(acc, %{coor => v})
     end)
   end
 
