@@ -1,7 +1,5 @@
 defmodule SudokuAlgo2Test do
   use ExUnit.Case, async: true
-  import Sudoku.Algo2
-
 
   test "length values == 1 in map" do
     assert Sudoku.Algo2.filter_single_values(%{
@@ -12,7 +10,6 @@ defmodule SudokuAlgo2Test do
         "wxc" => [1]
       }
   end
-
 
   test "new values found" do
 
@@ -257,7 +254,7 @@ defmodule SudokuAlgo2Test do
           {6, 0} => [3],
           {5, 0} => [1, 4, 9],
         })
-    assert Sudoku.Algo2.isolated_values(map) == %{ {8, 0} => 6}
+    assert Sudoku.Search.search_for_naked_single(map) == %{ {8, 0} => 6}
   end
 
   # @tag :pending
@@ -274,7 +271,7 @@ defmodule SudokuAlgo2Test do
           {1, 7} => [2],
           {1, 1} => [6],
         })
-    assert Sudoku.Algo2.isolated_values(map) == %{ {1, 0} => 4}
+    assert Sudoku.Search.search_for_naked_single(map) == %{ {1, 0} => 4}
   end
 
   # @tag :pending
@@ -291,7 +288,7 @@ defmodule SudokuAlgo2Test do
       {1,8} => [5,8,9],
       {2,8} => [4],
     })
-    assert Sudoku.Algo2.isolated_values(map) == %{ {0, 8} => 6}
+    assert Sudoku.Search.search_for_naked_single(map) == %{ {0, 8} => 6}
   end
 
   # @tag :pending
@@ -326,7 +323,7 @@ defmodule SudokuAlgo2Test do
       {1, 8} => [5,8,9],
       {2, 8} => [4],
     })
-    assert Sudoku.Algo2.isolated_values(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
+    assert Sudoku.Search.search_for_naked_single(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
   end
 
   # @tag :pending
@@ -421,22 +418,118 @@ defmodule SudokuAlgo2Test do
           {7, 3} => [2, 3, 7, 9]
       }
 
-  assert Sudoku.Algo2.isolated_values(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
+  assert Sudoku.Search.search_for_naked_single(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
 
   end
 
   # @tag :pending
+  test "get values by length" do
+    blocked_map =
+      %{
+          {3, 3} => [3],
+          {2, 2} => [3],
+          {6, 4} => [3],
+          {2, 0} => [3],
+          {8, 6} => [3],
+          {8, 7} => [3],
+        }
+
+        mm = blocked_map
+        |> Sudoku.DataStructureUtils.length_to_values
+
+        assert mm == %{
+          1 => [{{8, 7}, [3]},{{8, 6}, [3]},{{6, 4}, [3]},{{3, 3}, [3]},{{2, 2}, [3]},{{2, 0}, [3]}]
+        }
+
+  end
+
+  # @tag :pending
+  test "get min values by length" do
+    blocked_map =
+      %{
+          {3, 3} => [3, 4, 6],
+          {2, 2} => [3, 6, 8, 9],
+          {6, 4} => [3, 4, 5, 6, 7, 8],
+          {2, 0} => [3, 6, 7, 8],
+          {8, 6} => [3, 7, 8],
+          {8, 7} => [3, 7, 8],
+        }
+
+        mm = blocked_map
+        |> Sudoku.Algo2.get_min_possibilities
+
+        assert mm == [{{8, 7}, [3, 7, 8]}, {{8, 6}, [3, 7, 8]}, {{3, 3}, [3, 4, 6]}]
+  end
+
+  # @tag :pending
+  test "get min values by length splited" do
+    blocked_map =
+      %{
+          {3, 3} => [3, 4, 6],
+          {2, 2} => [3, 6, 8, 9],
+          {6, 4} => [3, 4, 5, 6, 7, 8],
+          {2, 0} => [3, 6, 7, 8],
+          {8, 6} => [3, 7, 8],
+          {8, 7} => [3, 7, 8],
+        }
+
+        mm = blocked_map
+        |> Sudoku.Algo2.get_min_possibilities
+        |> Sudoku.Algo2.split_into_single_element
+
+
+        assert mm == [
+          {{8, 7}, 3},{{8, 7}, 7},{{8, 7}, 8},
+          {{8, 6}, 3},{{8, 6}, 7},{{8, 6}, 8},
+          {{3, 3}, 3},{{3, 3}, 4},{{3, 3}, 6},
+        ]
+  end
+
+  # @tag :pending
+  test "get no min values by length" do
+    blocked_map = %{}
+
+        mm = blocked_map
+        |> Sudoku.Algo2.get_min_possibilities
+        |> Sudoku.Algo2.split_into_single_element
+
+        assert mm == []
+  end
+
+
+  # @tag :pending
+  test "any_empty?" do
+    assert %{"ze" => [1]} |> Sudoku.Validation.any_empty?  == false
+  end
+
+  # @tag :pending
+  test "is_valid?" do
+    assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == true
+  end
+
+# @tag :pending
   test "resove simple sudoku" do
     raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
     answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
-    assert Sudoku.Algo2.run(raw) == {:ok, answer}
+    {:ok, result} = raw |> Sudoku.Algo2.run
+    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
   end
 
   # @tag :pending
   test "resove harder sudoku" do
     raw = "200080300060070084030500209000105408000000000402706000301007040720040060004010003"
     answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
-    assert Sudoku.Algo2.run(raw) == {:ok, answer}
+
+    {:ok, result} = raw |> Sudoku.Algo2.run
+    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
+
+  end
+
+  @tag :pending
+  test "resove harder harder sudoku" do
+    raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
+    # answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
+    assert Sudoku.Algo2.run(raw, :debug) == %{}
   end
 
 end

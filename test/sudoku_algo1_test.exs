@@ -1,6 +1,5 @@
 defmodule SudokuAlgo1Test do
   use ExUnit.Case, async: true
-  import Sudoku.Algo1
 
   setup do
 

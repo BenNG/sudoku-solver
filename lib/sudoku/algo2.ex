@@ -1,5 +1,7 @@
-defmodule Sudoku.Algo2 do
+ defmodule Sudoku.Algo2 do
   import Sudoku.Display
+  # import Sudoku.Validation
+  # import Sudoku.Search
   @moduledoc """
     Provide set of functions to solve sudoku puzzles
     Using Constraint Propagation
@@ -14,7 +16,7 @@ defmodule Sudoku.Algo2 do
       }
 
   """
-  def raw_data_to_map(raw) do
+  def input_to_map(raw) do
 
     if String.length(raw) !== 81, do: raise Sudoku.Algo1.BadInputLength
 
@@ -63,25 +65,40 @@ defmodule Sudoku.Algo2 do
         do: {abs, ord}
   end
 
-  def run(raw, pretty \\ false) do
-    given_values = raw_data_to_map(raw)
+  def run(raw, output \\ :map) do
+    input_values = input_to_map(raw)
     initial_map = initial_posibilities_to_map
 
-    # only 2 strategies for the moment
-    map = apply_values(initial_map, given_values)
-    map = apply_isolated_values(map)
+    map = compute(initial_map, input_values)
 
     if Enum.sum(Enum.map(Map.values(map), &length(&1))) === 81 do
-       {:ok, (if pretty, do: pretty(map), else: map_to_raw_data(map))}
+
+      case output do
+        :map -> {:ok, map}
+        :debug -> {:ok, pretty(map)}
+        :raw -> {:ok, map_to_raw_data(map)}
+      end
+
     else
-      # pretty(map)
-      # isolated_values = isolated_values(map)
-      # map = apply_isolated_values(map, isolated_values)
-      pretty(map)
-      {:error}
+
+      case output do
+        :map -> {:error, map}
+        :debug ->
+          IO.inspect "nbr of possibilities left: #{map |> possible_values}"
+          IO.inspect(map, limit: :infinity)
+          pretty(map)
+        :raw -> {:error, map_to_raw_data(map)}
+      end
+
+      raise "could not resolve this :( #{raw}"
     end
   end
 
+  def compute(map, values) do
+    map
+    |> apply_values(values)
+    |> apply_isolated_values
+  end
 
   def run_file(filename) do
     Sudoku.Loader.load_file(filename)
@@ -113,6 +130,13 @@ defmodule Sudoku.Algo2 do
       end)
   end
 
+  def filter_multiple_values(map) do
+      Enum.reduce(Map.keys(map), %{}, fn(key, acc) ->
+        v = Map.get(map, key)
+        if length(v) !== 1, do: Map.put(acc, key, v), else: acc
+      end)
+  end
+
   def new_values_found(new_map, old_map) do
     new_map = new_map |> filter_single_values
     old_map = old_map |> filter_single_values
@@ -136,36 +160,37 @@ defmodule Sudoku.Algo2 do
   end
 
   def apply_isolated_values(map) do
-    values = isolated_values(map)
+    values = Sudoku.Search.search_for_naked_single(map)
     map = apply_values(map, values)
-    values = isolated_values(map)
+    values = Sudoku.Search.search_for_naked_single(map)
     if Enum.empty?(values), do: map, else: apply_isolated_values(map)
   end
 
-  def isolated_values(map) do
-    rows = Sudoku.Algo1.generate_board_rows
-    cols = Sudoku.Algo1.generate_board_columns
-    boxes = Sudoku.Algo1.generate_board_boxes
 
-    Enum.reduce(1..9, %{}, fn(n, acc) ->
-      ans3 = Enum.reduce([rows, cols, boxes], %{}, fn(items, acc) ->
-        ans2 = Enum.reduce(items, %{}, fn(unit, acc) ->
 
-          Map.merge(acc, appear_once(map, unit, n))
-
-        end)
-        Map.merge(acc, ans2)
-      end)
-      Map.merge(acc, ans3)
+  def possible_values(map) do
+    Map.values(map)
+    |> Enum.reduce(0, fn(list,acc) ->
+      acc + length(list)
     end)
   end
 
-  def appear_once(map, unit, n) do
-    seen = Enum.reduce(unit, %{}, fn(coord, acc) ->
-      values = Map.get(map, coord)
-      if Enum.member?(values, n) && length(values) > 1, do: Map.put(acc, coord, n), else: acc
+  def get_min_possibilities(map) do
+    map = Sudoku.DataStructureUtils.length_to_values(map)
+    if Enum.empty?(map) do
+      []
+    else
+      min = Enum.min(Map.keys(map))
+      Map.get(map, min)
+    end
+  end
+
+  def split_into_single_element(list) do
+    Enum.reduce(list , [], fn({tuple, v}, acc) ->
+      acc ++ Enum.map(v, fn(n) ->
+        {tuple, n}
+      end)
     end)
-    if length(Map.keys(seen)) === 1, do: seen, else: %{}
   end
 
 end
