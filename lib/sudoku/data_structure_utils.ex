@@ -8,8 +8,11 @@ defmodule Sudoku.DataStructureUtils do
     end)
   end
 
-  def filter_fixed_values(map) do
-    filter_length_of_values(map, 1)
+  def filter_fixed_values(map, values_only \\ false) do
+    Enum.reduce(Map.keys(map), %{}, fn(key, acc) ->
+      v = Map.get(map, key)
+      if length(v) === 1, do: Map.put(acc, key,  (if values_only === false, do: v, else: Enum.at(v, 0))), else: acc
+    end)
   end
 
   def get_min_length_of_values(map) do

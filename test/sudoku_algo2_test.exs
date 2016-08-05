@@ -1,6 +1,7 @@
 defmodule SudokuAlgo2Test do
   use ExUnit.Case, async: true
 
+  # @tag :pending
   test "length values == 1 in map" do
     assert Sudoku.DataStructureUtils.filter_fixed_values(%{
       "aze" => [1,2,3],
@@ -10,7 +11,7 @@ defmodule SudokuAlgo2Test do
         "wxc" => [1]
       }
   end
-
+  # @tag :pending
   test "new values found" do
 
     new_map = %{
@@ -42,7 +43,7 @@ defmodule SudokuAlgo2Test do
     }
 
   end
-
+  # @tag :pending
   test "no new values found" do
 
     new_map = %{
@@ -61,7 +62,7 @@ defmodule SudokuAlgo2Test do
 
   end
 
-
+  # @tag :pending
   test "initial values" do
     map = Sudoku.Algo2.initial_posibilities_to_map
     assert map == %{
@@ -605,22 +606,29 @@ defmodule SudokuAlgo2Test do
     assert map == new_map
   end
 
-  # @tag :pending
+  @tag :pending
   # |> Sudoku.Display.pretty
   test "resove harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
     {atom, map} = Sudoku.Algo2.run(raw)
+
+    map |> Sudoku.Display.pretty
+
     #
     # min_length = map
     # |> Sudoku.DataStructureUtils.remove_fixed_values
     # |> Sudoku.DataStructureUtils.get_min_length_of_values
     # |> IO.inspect
 
-    map
-    |> Sudoku.DataStructureUtils.filter_fixed_values
-    |> Sudoku.Algo1.map_to_stack
-    |> IO.inspect
+    fixed_values = map
+    |> Sudoku.DataStructureUtils.filter_fixed_values(true)
+
+    multiple_values = map
+    |> Sudoku.DataStructureUtils.remove_fixed_values
+
+    Sudoku.Algo1.run([], map)
+
     assert map == %{}
   end
 

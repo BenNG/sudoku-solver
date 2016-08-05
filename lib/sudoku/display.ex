@@ -1,5 +1,5 @@
 defmodule Sudoku.Display do
-  
+
   def pretty(map, display_coor \\ true) do
     IO.puts ""
     size_item = if display_coor, do: 16, else: 10
@@ -31,7 +31,7 @@ defmodule Sudoku.Display do
   def pretty_item(map, tuple, display_coor) do
     coor = if display_coor, do: String.pad_trailing("{#{elem(tuple,0)},#{elem(tuple,1)}}", 6), else: ""
     size_item = if display_coor, do: 16, else: 10
-    v = Map.get(map, tuple)
+    v = Map.get(map, tuple, [1,2,3,4,5,6,7,8,9])
     IO.write String.pad_trailing("#{coor}#{Enum.join(v)}", size_item)
   end
 
