@@ -18,7 +18,7 @@
   """
   def input_to_map(raw) do
 
-    if String.length(raw) !== 81, do: raise Sudoku.Algo1.BadInputLength
+    if String.length(raw) !== 81, do: raise Sudoku.Backtracking.BadInputLength
 
     raw
     |> String.codepoints
@@ -80,7 +80,7 @@
     else
       # last chance
       # map |> Sudoku.Display.pretty
-      map = Sudoku.Algo1.run(map)
+      map = Sudoku.Backtracking.run(map)
 
       if Sudoku.Validation.is_complete?(map) do
         case output do
@@ -138,9 +138,9 @@
 
   def apply_value(map, {abs, ord} = tuple, value) do
     value = if is_list(value), do: Enum.at(value, 0), else: value
-    rows = Sudoku.Algo1.get_row_coordinates(ord) -- [tuple]
-    columns = Sudoku.Algo1.get_col_coordinates(abs) -- [tuple]
-    box = Sudoku.Algo1.get_box_coordinates(tuple) -- [tuple]
+    rows = Sudoku.Backtracking.get_row_coordinates(ord) -- [tuple]
+    columns = Sudoku.Backtracking.get_col_coordinates(abs) -- [tuple]
+    box = Sudoku.Backtracking.get_box_coordinates(tuple) -- [tuple]
 
     map = Map.put(map, tuple, [value])
 

@@ -601,8 +601,8 @@ defmodule SudokuAlgo2Test do
 
 
     new_map = map
-    |> Sudoku.Algo1.map_to_stack
-    |> Sudoku.Algo1.stack_to_map
+    |> Sudoku.Backtracking.map_to_stack
+    |> Sudoku.Backtracking.stack_to_map
     assert map == new_map
   end
 

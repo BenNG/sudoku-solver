@@ -1,11 +1,9 @@
-defmodule Sudoku.Algo1 do
+defmodule Sudoku.Backtracking do
   @moduledoc """
     Provide set of functions to solve sudoku puzzles
     Using all the possibilities
     End now
   """
-
-
 
   def map_to_stack(map) do
     Map.keys(map)
@@ -261,7 +259,7 @@ defmodule Sudoku.Algo1 do
     Sudoku.Algo2.compute(map, stack_to_map(stack))
   end
 
-  def is_last_value_to_test?([], _), do: raise Sudoku.Algo1.EmptyStack
+  def is_last_value_to_test?([], _), do: raise Sudoku.Backtracking.EmptyStack
   def is_last_value_to_test?([{coor,v}|_], map) do
     mv = Map.get(map, coor)
     index = Enum.find_index(mv, fn(x) -> x == v end)
@@ -329,16 +327,16 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
-  def get_next_coordonates({{8,8},_}), do: raise Sudoku.Algo1.LastElement
+  def get_next_coordonates({{8,8},_}), do: raise Sudoku.Backtracking.LastElement
   def get_next_coordonates({{8 = _,ord},_}), do: {0, ord + 1}
   def get_next_coordonates({{abs, ord},_}), do: {abs + 1, ord}
 
-  def increase([], _, _), do: raise Sudoku.Algo1.EmptyStack
+  def increase([], _, _), do: raise Sudoku.Backtracking.EmptyStack
   def increase([{coor, v}|t], _, map) do
     values = Map.get(map, coor)
     index = Enum.find_index(values, fn(x) -> x == v end)
     if index === length(values) - 1 do
-      raise Sudoku.Algo1.EndOfElements
+      raise Sudoku.Backtracking.EndOfElements
     else
       new_v = Enum.fetch!(values, index + 1)
       # IO.inspect "increase from #{inspect {coor, v} } to #{inspect {coor, new_v} }"
@@ -346,7 +344,7 @@ defmodule Sudoku.Algo1 do
     end
   end
 
-  def drop([], _), do: raise Sudoku.Algo1.EmptyStack
+  def drop([], _), do: raise Sudoku.Backtracking.EmptyStack
   def drop([_h|t] = stack, map) do
     # IO.inspect "droping: #{inspect _h}"
     # IO.inspect "stack: #{inspect stack}"
