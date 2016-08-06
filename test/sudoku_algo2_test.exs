@@ -622,5 +622,13 @@ defmodule SudokuAlgo2Test do
     {_, result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
+  # @tag :pending
+  # |> Sudoku.Display.pretty
+  test "resove harder harder harder harder sudoku" do
+    raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
+    answer = "145327698839654127672918543496185372218473956753296481367542819984761235521839764"
+    {_, result} = Sudoku.Algo2.run(raw, :raw)
+    assert result == answer
+  end
 
 end
