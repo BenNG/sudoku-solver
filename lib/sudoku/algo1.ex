@@ -203,80 +203,80 @@ defmodule Sudoku.Algo1 do
 
   end
 
-  # def run(stack, map) do
-  #   Agent.start(fn -> map end, name: MV)
-  #
-  #   fixed_values = map
-  #   |> Sudoku.DataStructureUtils.filter_fixed_values(true)
-  #
-  #   moving_values =
-  #     Map.drop(Sudoku.Algo2.order, Map.keys(map))
-  #     |> Map.to_list
-  #
-  #   # map |> Sudoku.Display.pretty
-  #   # stack = add(stack, fixed_values, moving_values, map)
-  #   # {stack, map} = increase(stack, map)
-  #   do_run(stack, fixed_values, moving_values, map)
-  # end
-  #
-  # def do_run(stack, fixed_values, moving_values, map) do
-  #
-  #   if Sudoku.Validation.is_valid?(map) === false do
-  #
-  #     IO.inspect "valid"
-  #     if is_complete?(stack) do
-  #       IO.inspect "c'est bon !"
-  #     else
-  #       # stack = add(stack, fixed_values, moving_values, map)
-  #       # {stack, map} = increase(stack, map)
-  #       do_run(stack, fixed_values, moving_values, map)
-  #     end
-  #   else
-  #     if is_last_value_to_test?(stack, map) do
-  #       IO.inspect "pas valid drop:"
-  #       IO.inspect stack
-  #       map |> Sudoku.Display.pretty
-  #
-  #       map = Agent.get(MV,&(&1))
-  #       fixed_values = Sudoku.DataStructureUtils.filter_fixed_values(map, true)
-  #       # stack = drop(stack, fixed_values, map)
-  #       IO.inspect stack
-  #
-  #       # {stack, map} = increase(stack, map)
-  #       # en dropant on se retrouve dans un etat valid
-  #       # on re applique donc les valeurs applique apparavant
-  #       map = Sudoku.Algo2.compute(Agent.get(MV,&(&1)), stack_to_map(stack))
-  #       do_run(stack, Sudoku.DataStructureUtils.filter_fixed_values(map, true), moving_values, map)
-  #     else
-  #       IO.inspect "pas valid increase"
-  #       # {stack, map} = increase(stack, map)
-  #       map = Sudoku.Algo2.compute(Agent.get(MV,&(&1)), stack_to_map(stack))
-  #       do_run(stack, fixed_values, moving_values, map)
-  #     end
-  #   end
-  # end
+  def run(map, output \\ :map) do
+    Agent.start(fn -> map end, name: MV)
 
-  def is_last_value_to_test?([], map), do: true
+    moving_coords = Sudoku.Algo2.order -- Map.keys(Sudoku.DataStructureUtils.filter_fixed_values(map))
+
+    # IO.inspect "moving_coords: #{inspect moving_coords}"
+
+    stack = add([], moving_coords, map)
+    map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+    # map |> Sudoku.Display.pretty
+    do_run(stack, moving_coords, map, output, 0)
+  end
+
+  def do_run(stack, moving_coords, map, output, count) do
+
+    if count === 10, do: raise "count === #{count}"
+
+    if Sudoku.Validation.is_valid?(map) === false do
+      if Sudoku.Validation.is_complete?(map) do
+        # IO.inspect "c'est bon !"
+        case output do
+          :map -> map
+          :raw -> Sudoku.Algo2.map_to_raw_data(map)
+        end
+      else
+        # IO.inspect "valid: add"
+        stack = add(stack, moving_coords, map)
+        # IO.inspect "stack is now: #{inspect stack}"
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        # map |> Sudoku.Display.pretty
+
+        do_run(stack, moving_coords, map, output, count + 1)
+      end
+    else
+      if is_last_value_to_test?(stack, Agent.get(MV, &(&1))) do
+        # IO.inspect "not valid: drop"
+        stack = drop(stack)
+        # IO.inspect "stack is now: #{inspect stack}"
+        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        do_run(stack, moving_coords, map, output, count + 1)
+      else
+        # IO.inspect "not valid: increase"
+        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        do_run(stack, moving_coords, map, output, count + 1)
+      end
+    end
+  end
+
+  def apply_stack_to_map(stack, map) do
+    Sudoku.Algo2.compute(map, stack_to_map(stack))
+  end
+
+  def is_last_value_to_test?([], map), do: raise Sudoku.Algo1.EmptyStack
   def is_last_value_to_test?([{coor,v}|t], map) do
-    IO.inspect "bla"
     mv = Map.get(map, coor)
     index = Enum.find_index(mv, fn(x) -> x == v end)
     if index === length(mv) - 1, do: true, else: false
   end
 
-
-
   def add([], [coor|t] = moving_coords, map) do
     values = Map.get(map, coor)
     v = Enum.fetch!(values, 0)
+    # IO.inspect "adding: #{inspect {coor, v}}"
     [{coor, v}]
   end
 
   def add([h|_] = stack, moving_coords, map) do
-    index = Enum.find_index(stack, fn(x) -> x == h end)
+    index = Enum.find_index(moving_coords, fn(x) -> x == elem(h,0) end)
     coor = Enum.fetch!(moving_coords, index + 1)
     values = Map.get(map, coor)
     v = Enum.fetch!(values, 0)
+    # IO.inspect "adding: #{inspect {coor, v}}"
     [{coor, v}|stack]
   end
 
@@ -355,14 +355,16 @@ defmodule Sudoku.Algo1 do
   def get_next_coordonates({{8 = _,ord},_}), do: {0, ord + 1}
   def get_next_coordonates({{abs, ord},_}), do: {abs + 1, ord}
 
-  def increase([], _, _), do: raise Sudoku.Algo1.IncreaseEmptyStack
+  def increase([], _, _), do: raise Sudoku.Algo1.EmptyStack
   def increase([{coor, v}|t], moving_coords, map) do
+    # IO.inspect "increase from #{inspect {coor, v} }"
     values = Map.get(map, coor)
     index = Enum.find_index(values, fn(x) -> x == v end)
     if index === length(values) - 1 do
       raise Sudoku.Algo1.EndOfElements
     else
       v = Enum.fetch!(values, index + 1)
+      # IO.inspect "to #{inspect {coor, v} }"
       [{coor, v}|t]
     end
   end
@@ -401,7 +403,7 @@ defmodule Sudoku.Algo1 do
   #   end
   # end
 
-  def drop([]), do: raise Sudoku.Algo1.DropEmptyStack
+  def drop([]), do: raise Sudoku.Algo1.EmptyStack
   def drop([h|t]) do
     t
   end
@@ -416,12 +418,12 @@ defmodule Sudoku.Algo1 do
     def message(_), do: "{8,8} is the latest element"
   end
 
-  defmodule IncreaseEmptyStack do
+  defmodule EmptyStack do
     defexception []
     def message(_), do: "Could not increase an empty stack"
   end
 
-  defmodule DropEmptyStack do
+  defmodule EmptyStack do
     defexception []
     def message(_), do: "Could not increase an empty stack"
   end

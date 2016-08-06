@@ -414,7 +414,7 @@ end
 
       moving_coords = Sudoku.Algo2.order -- Map.keys(input)
       map = Map.merge(Sudoku.Algo2.initial_posibilities_to_map, input)
-      assert_raise Sudoku.Algo1.IncreaseEmptyStack, fn -> Sudoku.Algo1.increase([], moving_coords, map) end
+      assert_raise Sudoku.Algo1.EmptyStack, fn -> Sudoku.Algo1.increase([], moving_coords, map) end
 
   end
   # @tag :pending
@@ -501,26 +501,12 @@ end
 
   # @tag :pending
   test "drop" do
-    input = Sudoku.Algo2.input_to_map(
-      "325020600" <>
-      "000000000" <>
-      "500000030" <>
-      "070000000" <>
-      "000000000" <>
-      "000000000" <>
-      "005000020" <>
-      "900000050" <>
-      "000000900")
-
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
-      map = Map.merge(Sudoku.Algo2.initial_posibilities_to_map, input)
-      assert Sudoku.Algo1.drop([{{3,0}, 8}]) == []
-
+    assert Sudoku.Algo1.drop([{{3,0}, 8}]) == []
   end
 
   # @tag :pending
   test "drop 2" do
-    assert_raise Sudoku.Algo1.DropEmptyStack, fn ->  Sudoku.Algo1.drop([])  end
+    assert_raise Sudoku.Algo1.EmptyStack, fn ->  Sudoku.Algo1.drop([])  end
   end
 
 end

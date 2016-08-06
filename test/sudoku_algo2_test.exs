@@ -606,14 +606,14 @@ defmodule SudokuAlgo2Test do
     assert map == new_map
   end
 
-  @tag :pending
+  # @tag :pending
   # |> Sudoku.Display.pretty
   test "resove harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
-    answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
-    {atom, map} = Sudoku.Algo2.run(raw)
+    answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
+    {_, map} = Sudoku.Algo2.run(raw)
 
-    map |> Sudoku.Display.pretty
+    # map |> Sudoku.Display.pretty
 
     #
     # min_length = map
@@ -621,15 +621,15 @@ defmodule SudokuAlgo2Test do
     # |> Sudoku.DataStructureUtils.get_min_length_of_values
     # |> IO.inspect
 
-    fixed_values = map
-    |> Sudoku.DataStructureUtils.filter_fixed_values(true)
+    # fixed_values = map
+    # |> Sudoku.DataStructureUtils.filter_fixed_values(true)
+    #
+    # multiple_values = map
+    # |> Sudoku.DataStructureUtils.remove_fixed_values
 
-    multiple_values = map
-    |> Sudoku.DataStructureUtils.remove_fixed_values
 
-    Sudoku.Algo1.run([], map)
 
-    assert map == %{}
+    assert Sudoku.Algo1.run(map, :raw) == answer
   end
 
 end
