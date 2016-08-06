@@ -445,60 +445,6 @@ defmodule SudokuAlgo2Test do
   end
 
   # @tag :pending
-  test "get min values by length" do
-    blocked_map =
-      %{
-          {3, 3} => [3, 4, 6],
-          {2, 2} => [3, 6, 8, 9],
-          {6, 4} => [3, 4, 5, 6, 7, 8],
-          {2, 0} => [3, 6, 7, 8],
-          {8, 6} => [3, 7, 8],
-          {8, 7} => [3, 7, 8],
-        }
-
-        mm = blocked_map
-        |> Sudoku.DataStructureUtils.get_min_possibilities
-
-        assert mm == [{{8, 7}, [3, 7, 8]}, {{8, 6}, [3, 7, 8]}, {{3, 3}, [3, 4, 6]}]
-  end
-
-  # @tag :pending
-  test "get min values by length splited" do
-    blocked_map =
-      %{
-          {3, 3} => [3, 4, 6],
-          {2, 2} => [3, 6, 8, 9],
-          {6, 4} => [3, 4, 5, 6, 7, 8],
-          {2, 0} => [3, 6, 7, 8],
-          {8, 6} => [3, 7, 8],
-          {8, 7} => [3, 7, 8],
-        }
-
-        mm = blocked_map
-        |> Sudoku.DataStructureUtils.get_min_possibilities
-        |> Sudoku.Algo2.split_into_single_element
-
-
-        assert mm == [
-          {{8, 7}, 3},{{8, 7}, 7},{{8, 7}, 8},
-          {{8, 6}, 3},{{8, 6}, 7},{{8, 6}, 8},
-          {{3, 3}, 3},{{3, 3}, 4},{{3, 3}, 6},
-        ]
-  end
-
-  # @tag :pending
-  test "get no min values by length" do
-    blocked_map = %{}
-
-        mm = blocked_map
-        |> Sudoku.DataStructureUtils.get_min_possibilities
-        |> Sudoku.Algo2.split_into_single_element
-
-        assert mm == []
-  end
-
-
-  # @tag :pending
   test "is_valid?" do
     assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == false
   end
@@ -506,19 +452,6 @@ defmodule SudokuAlgo2Test do
   # @tag :pending
   test "is_complete?" do
     assert %{"ze" => [1]} |> Sudoku.Validation.is_complete?  == true
-  end
-
-  # @tag :pending
-  test "get min length of values" do
-    map = %{
-              {3, 3} => [3, 4, 6],
-              {2, 2} => [3, 6, 8, 9],
-              {6, 4} => [3, 4, 5, 6, 7, 8],
-              {2, 0} => [3, 6, 7, 8],
-              {8, 6} => [3, 7, 8],
-              {8, 7} => [3, 7],
-            }
-    assert map |> Sudoku.DataStructureUtils.get_min_length_of_values  == 2
   end
 
   # @tag :pending
@@ -599,10 +532,9 @@ defmodule SudokuAlgo2Test do
               {0, 1} => [5]
             }
 
-
     new_map = map
-    |> Sudoku.Backtracking.map_to_stack
-    |> Sudoku.Backtracking.stack_to_map
+    |> Sudoku.DataStructureUtils.map_to_stack
+    |> Sudoku.DataStructureUtils.stack_to_map
     assert map == new_map
   end
 

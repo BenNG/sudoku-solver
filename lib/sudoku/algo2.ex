@@ -88,7 +88,7 @@
           :raw -> {:ok, map_to_raw_data(map)}
         end
       else
-        IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.values_left}"
+        IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left}"
         IO.inspect(map, limit: :infinity)
         # map |> Sudoku.Display.pretty
         case output do
@@ -138,9 +138,9 @@
 
   def apply_value(map, {abs, ord} = tuple, value) do
     value = if is_list(value), do: Enum.at(value, 0), else: value
-    rows = Sudoku.Backtracking.get_row_coordinates(ord) -- [tuple]
-    columns = Sudoku.Backtracking.get_col_coordinates(abs) -- [tuple]
-    box = Sudoku.Backtracking.get_box_coordinates(tuple) -- [tuple]
+    rows = Sudoku.Board.get_row_coordinates(ord) -- [tuple]
+    columns = Sudoku.Board.get_col_coordinates(abs) -- [tuple]
+    box = Sudoku.Board.get_box_coordinates(tuple) -- [tuple]
 
     map = Map.put(map, tuple, [value])
 
@@ -157,14 +157,6 @@
     map = apply_values(map, values)
     values = Sudoku.Search.search_for_naked_single(map)
     if Enum.empty?(values), do: map, else: apply_isolated_values(map)
-  end
-
-  def split_into_single_element(list) do
-    Enum.reduce(list , [], fn({tuple, v}, acc) ->
-      acc ++ Enum.map(v, fn(n) ->
-        {tuple, n}
-      end)
-    end)
   end
 
 end
