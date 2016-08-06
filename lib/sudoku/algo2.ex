@@ -71,21 +71,30 @@
 
     map = compute(initial_map, input_values)
 
-    if Enum.sum(Enum.map(Map.values(map), &length(&1))) === 81 do
+    if Sudoku.Validation.is_complete?(map) do
       case output do
         :map -> {:ok, map}
-        :debug -> {:ok, pretty(map)}
         :raw -> {:ok, map_to_raw_data(map)}
       end
     else
-      case output do
-        :map -> {:error, map}
-        :debug ->
-          IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.values_left}"
-          IO.inspect(map, limit: :infinity)
-          pretty(map)
-        :raw -> {:error, map_to_raw_data(map)}
+
+      map = Sudoku.Algo1.run(map)
+
+      if Sudoku.Validation.is_complete?(map) do
+        case output do
+          :map -> {:ok, map}
+          :raw -> {:ok, map_to_raw_data(map)}
+        end
+      else
+        IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.values_left}"
+        IO.inspect(map, limit: :infinity)
+        map |> Sudoku.Display.pretty
+        case output do
+          :map -> {:error, map}
+          :raw -> {:error, map_to_raw_data(map)}
+        end
       end
+
     end
   end
 

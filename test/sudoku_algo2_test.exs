@@ -611,7 +611,7 @@ defmodule SudokuAlgo2Test do
   test "resove harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
-    {_, map} = Sudoku.Algo2.run(raw)
+    {_, result} = Sudoku.Algo2.run(raw, :raw)
 
     # map |> Sudoku.Display.pretty
 
@@ -629,7 +629,7 @@ defmodule SudokuAlgo2Test do
 
 
 
-    assert Sudoku.Algo1.run(map, :raw) == answer
+    assert result == answer
   end
 
 end
