@@ -184,7 +184,7 @@ defmodule Sudoku.Algo1 do
   @doc """
   check if the entire sudoku is valid
   """
-  def is_valid?(stack, built_in_values) do
+  def is_complete?(stack, built_in_values) do
     rows = Enum.map(0..8, fn(row_num) ->
       is_row_valid?(row_num, stack, built_in_values)
     end)
@@ -202,9 +202,6 @@ defmodule Sudoku.Algo1 do
     [true] === Enum.dedup(boxes)
 
   end
-
-  def is_complete?(stack), do: length(stack) === 81
-
 
   # def run(stack, map) do
   #   Agent.start(fn -> map end, name: MV)
@@ -224,7 +221,7 @@ defmodule Sudoku.Algo1 do
   #
   # def do_run(stack, fixed_values, moving_values, map) do
   #
-  #   if Sudoku.Validation.any_empty?(map) === false do
+  #   if Sudoku.Validation.is_valid?(map) === false do
   #
   #     IO.inspect "valid"
   #     if is_complete?(stack) do

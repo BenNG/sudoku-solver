@@ -499,13 +499,13 @@ defmodule SudokuAlgo2Test do
 
 
   # @tag :pending
-  test "any_empty?" do
-    assert %{"ze" => [1]} |> Sudoku.Validation.any_empty?  == false
+  test "is_valid?" do
+    assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == false
   end
 
   # @tag :pending
-  test "is_valid?" do
-    assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == true
+  test "is_complete?" do
+    assert %{"ze" => [1]} |> Sudoku.Validation.is_complete?  == true
   end
 
   # @tag :pending

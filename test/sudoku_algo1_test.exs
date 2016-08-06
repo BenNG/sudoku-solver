@@ -311,7 +311,7 @@ end
   end
 
   # @tag :pending
-  test "is_valid? should be false" do
+  test "is_complete? should be false" do
     built_in_values =
       Sudoku.Algo2.input_to_map(
       "005020600" <>
@@ -323,13 +323,13 @@ end
       "005000020" <>
       "900000050" <>
       "000000900")
-    assert Sudoku.Algo1.is_valid?([{{0,0}, 1}], built_in_values) == false
+    assert Sudoku.Algo1.is_complete?([{{0,0}, 1}], built_in_values) == false
   end
 
   # @tag :pending
-  test "is_valid?", context do
+  test "is_complete?", context do
     built_in_values = Sudoku.Algo2.input_to_map(context[:a_valid_sudoku_2])
-    assert Sudoku.Algo1.is_valid?([{{0,0}, 5}], built_in_values) == true
+    assert Sudoku.Algo1.is_complete?([{{0,0}, 5}], built_in_values) == true
   end
 
   # @tag :pending
@@ -490,7 +490,7 @@ end
 
       map = Map.merge(Sudoku.Algo2.initial_posibilities_to_map, input)
 
-      map |> Sudoku.Display.pretty
+      # map |> Sudoku.Display.pretty
 
       moving_coords = Sudoku.Algo2.order -- Map.keys(input)
       map = Map.put(map, {3,0}, [7,8,9])
