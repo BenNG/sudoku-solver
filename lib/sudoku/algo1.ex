@@ -4,31 +4,19 @@ defmodule Sudoku.Algo1 do
     Using all the possibilities
     End now
   """
-  def times(a,b), do: a*b
-  @doc """
-  Generate a map that represents the input sudoku
 
-      "00600..."
-      %{
-        {2, 0} => 6
-      }
 
-  """
-  def create_built_in_values(data) do
 
-    if String.length(data) !== 81, do: raise Sudoku.Algo1.BadInputLength
+  def map_to_stack(map) do
+    Map.keys(map)
+    |> Enum.reduce([], fn(coor, acc) ->
+      [{coor, Map.get(map, coor)}|acc]
+    end)
+  end
 
-    data
-    |> String.codepoints
-    |> Enum.map(&String.to_integer(&1))
-    |> Enum.chunk(9,9)
-    |> Enum.with_index
-    |> Enum.reduce(%{}, fn({list, ord},acc) ->
-      list
-      |> Enum.with_index
-      |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== 0, do: Map.put(acc, {abs, ord}, value), else: acc
-      end)
+  def stack_to_map(stack) do
+    Enum.reduce(stack, %{}, fn({coor,v}, acc) ->
+      Map.merge(acc, %{coor => v})
     end)
   end
 
@@ -121,8 +109,7 @@ defmodule Sudoku.Algo1 do
     stack_values = filter_stack_by_coordinates(stack, coordinates)
     built_in_values = built_in_values_to_stack_structure(built_in_map, coordinates)
 
-    Enum.sort(merge_uniq(stack_values, built_in_values), fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)
-  end
+    Enum.sort(merge_uniq(stack_values, built_in_values), fn({{abs1,_},_},{{abs2,_},_}) -> abs1 < abs2 end)  end
 
   @doc """
   Return coordinates of the col
@@ -197,7 +184,7 @@ defmodule Sudoku.Algo1 do
   @doc """
   check if the entire sudoku is valid
   """
-  def is_valid?(stack, built_in_values) do
+  def is_complete?(stack, built_in_values) do
     rows = Enum.map(0..8, fn(row_num) ->
       is_row_valid?(row_num, stack, built_in_values)
     end)
@@ -216,11 +203,110 @@ defmodule Sudoku.Algo1 do
 
   end
 
-  def is_complete?(stack), do: length(stack) === 81
+  def run(map, output \\ :map) do
+    Agent.start(fn -> map end, name: MV)
+
+    moving_coords = Sudoku.Algo2.order -- Map.keys(Sudoku.DataStructureUtils.filter_fixed_values(map))
+
+    # IO.inspect "moving_coords: #{inspect moving_coords}"
+
+    stack = add([], moving_coords, map)
+    map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+    # map |> Sudoku.Display.pretty
+    do_run(stack, moving_coords, map, output, 0)
+  end
+
+  def do_run(stack, moving_coords, map, output, count) do
+
+    if count === 10, do: raise "count === #{count}"
+
+    if Sudoku.Validation.is_valid?(map) === false do
+      if Sudoku.Validation.is_complete?(map) do
+        # IO.inspect "c'est bon !"
+        case output do
+          :map -> map
+          :raw -> Sudoku.Algo2.map_to_raw_data(map)
+        end
+      else
+        # IO.inspect "valid: add"
+        stack = add(stack, moving_coords, map)
+        # IO.inspect "stack is now: #{inspect stack}"
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        # map |> Sudoku.Display.pretty
+
+        do_run(stack, moving_coords, map, output, count + 1)
+      end
+    else
+      if is_last_value_to_test?(stack, Agent.get(MV, &(&1))) do
+        # IO.inspect "not valid: drop"
+        stack = drop(stack)
+        # IO.inspect "stack is now: #{inspect stack}"
+        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        do_run(stack, moving_coords, map, output, count + 1)
+      else
+        # IO.inspect "not valid: increase"
+        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        do_run(stack, moving_coords, map, output, count + 1)
+      end
+    end
+  end
+
+  def apply_stack_to_map(stack, map) do
+    Sudoku.Algo2.compute(map, stack_to_map(stack))
+  end
+
+  def is_last_value_to_test?([], map), do: raise Sudoku.Algo1.EmptyStack
+  def is_last_value_to_test?([{coor,v}|t], map) do
+    mv = Map.get(map, coor)
+    index = Enum.find_index(mv, fn(x) -> x == v end)
+    if index === length(mv) - 1, do: true, else: false
+  end
+
+  def add([], [coor|t] = moving_coords, map) do
+    values = Map.get(map, coor)
+    v = Enum.fetch!(values, 0)
+    # IO.inspect "adding: #{inspect {coor, v}}"
+    [{coor, v}]
+  end
+
+  def add([h|_] = stack, moving_coords, map) do
+    index = Enum.find_index(moving_coords, fn(x) -> x == elem(h,0) end)
+    coor = Enum.fetch!(moving_coords, index + 1)
+    values = Map.get(map, coor)
+    v = Enum.fetch!(values, 0)
+    # IO.inspect "adding: #{inspect {coor, v}}"
+    [{coor, v}|stack]
+  end
 
 
-  # ###########################################################################
-  # private
+  # def add([], fixed_values, moving_values, multiple_values) do
+  #   if (v = Map.get(fixed_values, {0,0})) !== nil do
+  #     add([{{0,0}, v}], fixed_values, moving_values, multiple_values)
+  #   else
+  #     # multi_v = Map.get(multiple_values, {0,0})
+  #     [{{0,0}, 0}]
+  #   end
+  # end
+  #
+  # def add([h|_] = stack, fixed_values, moving_values, multiple_values) do
+  #
+  #   coor = get_next_coordonates(h)
+  #   # IF BUILT IN
+  #   if (v = Map.get(fixed_values, coor)) !== nil do
+  #     if coor !== {8,8} do
+  #       add([{coor, v}|stack], fixed_values, moving_values, multiple_values)
+  #     else
+  #       # on ne rappel pas la fonction add meme si {8,8 est un built in}
+  #       [{coor, v}|stack]
+  #     end
+  #   else
+  #     # multi_v = Map.get(multiple_values, coor)
+  #     [{coor, 0}|stack]
+  #   end
+  # end
+
 
   @doc """
   extract values from the stack
@@ -265,49 +351,66 @@ defmodule Sudoku.Algo1 do
     end)
   end
 
-
-  def add([], built_in_values) do
-    if (v = Map.get(built_in_values, {0,0})) !== nil do
-      add([{{0,0}, v}], built_in_values)
-    else
-      [{{0,0}, 0}]
-    end
-  end
-
-  def add([h|_] = stack, built_in_values) do
-    coor = get_next_coordonates(h)
-    # IF BUILT IN
-    if (v = Map.get(built_in_values, coor)) !== nil do
-      if coor !== {8,8} do
-        add([{coor, v}|stack], built_in_values)
-      else
-        # on ne rappel pas la fonction add meme si {8,8 est un built in}
-        [{coor, v}|stack]
-      end
-    else
-      [{coor, 0}|stack]
-    end
-  end
-
   def get_next_coordonates({{8,8},_}), do: raise Sudoku.Algo1.LastElement
   def get_next_coordonates({{8 = _,ord},_}), do: {0, ord + 1}
   def get_next_coordonates({{abs, ord},_}), do: {abs + 1, ord}
 
-  def increase([]), do: raise Sudoku.Algo1.IncreaseEmptyStack
-  def increase([{_, 9}|_]), do: :drop
-  def increase([{tuple, v}|t]) do
-    [{tuple, v + 1} |t]
+  def increase([], _, _), do: raise Sudoku.Algo1.EmptyStack
+  def increase([{coor, v}|t], moving_coords, map) do
+    # IO.inspect "increase from #{inspect {coor, v} }"
+    values = Map.get(map, coor)
+    index = Enum.find_index(values, fn(x) -> x == v end)
+    if index === length(values) - 1 do
+      raise Sudoku.Algo1.EndOfElements
+    else
+      v = Enum.fetch!(values, index + 1)
+      # IO.inspect "to #{inspect {coor, v} }"
+      [{coor, v}|t]
+    end
+  end
+  # def increase([{_, 9}|_], _), do: :drop
+  # def increase([{coor, 0}|t], map) do
+  #   map |> Sudoku.Display.pretty
+  #   mv = Map.get(map, coor)
+  #   v = Enum.at(mv, 0)
+  #   IO.inspect "increase: #{inspect {coor,v}}"
+  #   if v === nil, do: raise "nil value with #{inspect coor} and #{inspect v}"
+  #   map = Sudoku.Algo2.compute(map, %{coor => v})
+  #   map |> Sudoku.Display.pretty
+  #   {[{coor, v} |t], map}
+  # end
+  # def increase([{coor, v}|t], map) do
+  #   map |> Sudoku.Display.pretty
+  #   mv = Map.get(map, coor)
+  #   index = Enum.find_index(mv, fn(x) -> x == v end)
+  #   v = Enum.fetch!(mv, index + 1)
+  #   IO.inspect "increase: #{inspect {coor,v}}"
+  #   if v === nil, do: raise "nil value with #{inspect coor} and #{inspect v}"
+  #   map = Sudoku.Algo2.compute(map, %{coor => v})
+  #   map |> Sudoku.Display.pretty
+  #   {[{coor, v} |t], map}
+  # end
+
+  # def drop([], _, multiple_values), do: []
+  # def drop([_|[]], _, multiple_values), do: []
+  # def drop([h|tail] = stack , fixed_values, multiple_values) do
+  #   [{tuple,v}|_] = tail
+  #   IO.inspect "drop: #{inspect h}"
+  #   if is_last_value_to_test?(tail, multiple_values) do
+  #     drop(tail, fixed_values, multiple_values)
+  #   else
+  #     tail
+  #   end
+  # end
+
+  def drop([]), do: raise Sudoku.Algo1.EmptyStack
+  def drop([h|t]) do
+    t
   end
 
-  def drop([], _), do: []
-  def drop([_|[]], _), do: []
-  def drop([_|tail] , map) do
-    [{tuple,v}|_] = tail
-    if Map.get(map, tuple) || v === 9 do
-      drop(tail, map)
-    else
-      tail
-    end
+  defmodule EndOfElements do
+    defexception []
+    def message(_), do: "No more values, you probably have to drop the element"
   end
 
   defmodule LastElement do
@@ -315,7 +418,12 @@ defmodule Sudoku.Algo1 do
     def message(_), do: "{8,8} is the latest element"
   end
 
-  defmodule IncreaseEmptyStack do
+  defmodule EmptyStack do
+    defexception []
+    def message(_), do: "Could not increase an empty stack"
+  end
+
+  defmodule EmptyStack do
     defexception []
     def message(_), do: "Could not increase an empty stack"
   end
