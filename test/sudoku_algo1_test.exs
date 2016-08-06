@@ -501,12 +501,30 @@ end
 
   # @tag :pending
   test "drop" do
-    assert Sudoku.Algo1.drop([{{3,0}, 8}]) == []
+    input = Sudoku.Algo2.input_to_map(
+      "000020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+
+    map = Map.merge(Sudoku.Algo2.initial_posibilities_to_map, input)
+    map = Map.put(map, {1,0}, [7,8,9])
+    # map |> Sudoku.Display.pretty
+    Agent.start(fn -> map end, name: MV)
+    assert Sudoku.Algo1.drop([{{2,0}, 1}, {{1,0}, 9}, {{0,0}, 0}], map) == [{{0,0}, 0}]
+    Agent.stop(MV)
   end
 
   # @tag :pending
   test "drop 2" do
-    assert_raise Sudoku.Algo1.EmptyStack, fn ->  Sudoku.Algo1.drop([])  end
+    Agent.start(fn -> %{} end, name: MV)
+    assert_raise Sudoku.Algo1.EmptyStack, fn ->  Sudoku.Algo1.drop([], %{})  end
+    Agent.stop(MV)
   end
 
 end

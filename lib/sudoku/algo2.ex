@@ -1,5 +1,5 @@
  defmodule Sudoku.Algo2 do
-  import Sudoku.Display
+  # import Sudoku.Display
   # import Sudoku.Validation
   # import Sudoku.Search
   @moduledoc """
@@ -66,6 +66,7 @@
   end
 
   def run(raw, output \\ :map) do
+    # IO.inspect "starting with #{raw}"
     input_values = input_to_map(raw)
     initial_map = initial_posibilities_to_map
 
@@ -77,7 +78,8 @@
         :raw -> {:ok, map_to_raw_data(map)}
       end
     else
-
+      # last chance
+      # map |> Sudoku.Display.pretty
       map = Sudoku.Algo1.run(map)
 
       if Sudoku.Validation.is_complete?(map) do
@@ -88,7 +90,7 @@
       else
         IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.values_left}"
         IO.inspect(map, limit: :infinity)
-        map |> Sudoku.Display.pretty
+        # map |> Sudoku.Display.pretty
         case output do
           :map -> {:error, map}
           :raw -> {:error, map_to_raw_data(map)}
@@ -107,7 +109,8 @@
   def run_file(filename) do
     Sudoku.Loader.load_file(filename)
     |> Enum.map(fn(raw) ->
-      run(raw)
+      {:ok, result} = run(raw, :raw)
+      result
     end)
   end
 

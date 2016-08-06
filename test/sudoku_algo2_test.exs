@@ -612,23 +612,14 @@ defmodule SudokuAlgo2Test do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
     {_, result} = Sudoku.Algo2.run(raw, :raw)
-
-    # map |> Sudoku.Display.pretty
-
-    #
-    # min_length = map
-    # |> Sudoku.DataStructureUtils.remove_fixed_values
-    # |> Sudoku.DataStructureUtils.get_min_length_of_values
-    # |> IO.inspect
-
-    # fixed_values = map
-    # |> Sudoku.DataStructureUtils.filter_fixed_values(true)
-    #
-    # multiple_values = map
-    # |> Sudoku.DataStructureUtils.remove_fixed_values
-
-
-
+    assert result == answer
+  end
+  # @tag :pending
+  # |> Sudoku.Display.pretty
+  test "resove harder harder harder sudoku" do
+    raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
+    answer = "859612437723854169164379528986147352375268914241593786432981675617425893598736241"
+    {_, result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
 
