@@ -38,7 +38,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.Algo2.new_values_found(new_map, old_map) === %{
+    assert Sudoku.Algo2.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
@@ -58,7 +58,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [8],
     }
 
-    assert Sudoku.Algo2.new_values_found(new_map, new_map) === %{}
+    assert Sudoku.Algo2.new_single_value_found(new_map, new_map) === %{}
 
   end
 
@@ -564,8 +564,8 @@ defmodule SudokuAlgo2Test do
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
-  test "resolve euler 96" do
-    assert Sudoku.Algo2.resolve_euler_96 == 24702
+  test "resolve --- euler 96 ---" do
+    assert Sudoku.File.resolve_euler_96 == 24702
   end
 
 end

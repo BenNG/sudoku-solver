@@ -106,31 +106,16 @@
     |> apply_isolated_values
   end
 
-  def run_file(filename) do
-    Sudoku.Loader.load_file(filename)
-    |> Enum.map(fn(raw) ->
-      {:ok, result} = run(raw, :raw)
-      result
-    end)
-  end
-
-  def resolve_euler_96 do
-    run_file("./lib/sudoku/p096_sudoku.txt")
-    |> Enum.reduce(0, fn(res, acc) ->
-      acc + (String.slice(res, 0..2) |> String.to_integer)
-    end)
-  end
-
   # We apply the given values to the map of possibilities
   # It possibly create new single values which values we can count on (like given values)
   def apply_values(map, values) do
       new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
-      new_values = new_values_found(new_map, map)
+      new_values = new_single_value_found(new_map, map)
 
       if Enum.empty?(new_values), do: new_map, else: apply_values(new_map, new_values)
   end
 
-  def new_values_found(new_map, old_map) do
+  def new_single_value_found(new_map, old_map) do
     new_map = new_map |> Sudoku.DataStructureUtils.filter_fixed_values
     old_map = old_map |> Sudoku.DataStructureUtils.filter_fixed_values
     Map.drop(new_map, Map.keys(old_map))
