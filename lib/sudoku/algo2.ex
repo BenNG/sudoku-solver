@@ -1,7 +1,7 @@
  defmodule Sudoku.Algo2 do
   # import Sudoku.Display
   # import Sudoku.Validation
-  # import Sudoku.Search
+  # import Sudoku.Strategies.NakedSingle
   @moduledoc """
     Provide set of functions to solve sudoku puzzles
     Using Constraint Propagation
@@ -138,9 +138,9 @@
   end
 
   def apply_isolated_values(map) do
-    values = Sudoku.Search.search_for_naked_single(map)
+    values = Sudoku.Strategies.NakedSingle.run(map)
     map = apply_values(map, values)
-    values = Sudoku.Search.search_for_naked_single(map)
+    values = Sudoku.Strategies.NakedSingle.run(map)
     if Enum.empty?(values), do: map, else: apply_isolated_values(map)
   end
 

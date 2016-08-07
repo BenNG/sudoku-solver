@@ -255,7 +255,8 @@ defmodule SudokuAlgo2Test do
           {6, 0} => [3],
           {5, 0} => [1, 4, 9],
         })
-    assert Sudoku.Search.search_for_naked_single(map) == %{ {8, 0} => 6}
+        
+    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {8, 0} => 6}
   end
 
   # @tag :pending
@@ -272,7 +273,7 @@ defmodule SudokuAlgo2Test do
           {1, 7} => [2],
           {1, 1} => [6],
         })
-    assert Sudoku.Search.search_for_naked_single(map) == %{ {1, 0} => 4}
+    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {1, 0} => 4}
   end
 
   # @tag :pending
@@ -289,7 +290,7 @@ defmodule SudokuAlgo2Test do
       {1,8} => [5,8,9],
       {2,8} => [4],
     })
-    assert Sudoku.Search.search_for_naked_single(map) == %{ {0, 8} => 6}
+    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {0, 8} => 6}
   end
 
   # @tag :pending
@@ -324,7 +325,7 @@ defmodule SudokuAlgo2Test do
       {1, 8} => [5,8,9],
       {2, 8} => [4],
     })
-    assert Sudoku.Search.search_for_naked_single(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
+    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
   end
 
   # @tag :pending
@@ -419,7 +420,7 @@ defmodule SudokuAlgo2Test do
           {7, 3} => [2, 3, 7, 9]
       }
 
-  assert Sudoku.Search.search_for_naked_single(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
+  assert Sudoku.Strategies.NakedSingle.run(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
 
   end
 
