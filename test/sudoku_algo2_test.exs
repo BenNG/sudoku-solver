@@ -472,24 +472,6 @@ defmodule SudokuAlgo2Test do
             }
   end
 
-# @tag :pending
-  test "resolve simple sudoku" do
-    raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
-    answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
-    {:ok, result} = raw |> Sudoku.Algo2.run
-    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
-  end
-
-  # @tag :pending
-  test "resolve harder sudoku" do
-    raw = "200080300060070084030500209000105408000000000402706000301007040720040060004010003"
-    answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
-
-    {:ok, result} = raw |> Sudoku.Algo2.run
-    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
-
-  end
-
   # @tag :pending
   test "map to stack to map" do
 
@@ -539,12 +521,30 @@ defmodule SudokuAlgo2Test do
     assert map == new_map
   end
 
+# @tag :pending
+  test "resolve simple sudoku" do
+    raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
+    answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
+    {_, result} = raw |> Sudoku.Algo2.run
+    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
+  end
+
+  # @tag :pending
+  test "resolve harder sudoku" do
+    raw = "200080300060070084030500209000105408000000000402706000301007040720040060004010003"
+    answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
+
+    {_, result} = raw |> Sudoku.Algo2.run(:raw)
+    assert result == answer
+
+  end
+
   # @tag :pending
   # |> Sudoku.Display.pretty
   test "resolve harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
-    {_, result} = Sudoku.Algo2.run(raw, :raw)
+    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
   # @tag :pending
@@ -552,7 +552,7 @@ defmodule SudokuAlgo2Test do
   test "resolve harder harder harder sudoku" do
     raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
     answer = "859612437723854169164379528986147352375268914241593786432981675617425893598736241"
-    {_, result} = Sudoku.Algo2.run(raw, :raw)
+    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
   # @tag :pending
@@ -560,7 +560,7 @@ defmodule SudokuAlgo2Test do
   test "resolve harder harder harder harder sudoku" do
     raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
     answer = "145327698839654127672918543496185372218473956753296481367542819984761235521839764"
-    {_, result} = Sudoku.Algo2.run(raw, :raw)
+    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
   # @tag :pending

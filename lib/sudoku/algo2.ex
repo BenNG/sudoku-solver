@@ -70,7 +70,18 @@
     input_values = input_to_map(raw)
     initial_map = initial_posibilities_to_map
 
-    map = compute(initial_map, input_values)
+    # test only
+    # map = apply_values(initial_map, input_values, false)
+    map = apply_values(initial_map, input_values)
+
+    map = [
+      fn(map) -> apply_isolated_values(map)   end,
+      fn(map) -> Sudoku.Backtracking.run(map) end,
+    ]
+    |> Enum.reduce_while(map, fn(strategy, acc) ->
+      if Sudoku.Validation.is_complete?(acc), do: {:halt, acc}, else: {:cont, strategy.(acc) }
+    end)
+
 
     if Sudoku.Validation.is_complete?(map) do
       case output do
@@ -78,31 +89,25 @@
         :raw -> {:ok, map_to_raw_data(map)}
       end
     else
-      # last chance
+      # IO.puts ""
+      # IO.inspect ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+      # IO.inspect "failed to solve #{raw}"
       # map |> Sudoku.Display.pretty
-      map = Sudoku.Backtracking.run(map)
-
-      if Sudoku.Validation.is_complete?(map) do
-        case output do
-          :map -> {:ok, map}
-          :raw -> {:ok, map_to_raw_data(map)}
-        end
-      else
-        IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left}"
-        IO.inspect(map, limit: :infinity)
-        # map |> Sudoku.Display.pretty
-        case output do
-          :map -> {:error, map}
-          :raw -> {:error, map_to_raw_data(map)}
-        end
+      # IO.inspect "#{(map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left) - 81} extra values"
+      # IO.inspect "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+      # IO.puts ""
+      case output do
+        :map -> {:error, map}
+        :raw -> {:error, map_to_raw_data(map)}
       end
-
     end
   end
 
-  def compute(map, values) do
-    map = apply_values(map, values)
-    # apply_isolated_values(map)
+  # debug only
+  def apply_values(map, values, spread = false) do
+      Enum.reduce(Map.keys(values), map, fn(key, acc) ->
+        Map.put(acc, key, Map.get(values, key))
+      end)
   end
 
   # We apply the given values to the map of possibilities

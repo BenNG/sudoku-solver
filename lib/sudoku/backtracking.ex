@@ -7,7 +7,6 @@ defmodule Sudoku.Backtracking do
 
   def run(map, output \\ :map) do
     # IO.inspect "starting 1 ... with"
-    # IO.inspect "nbr of possibilities left: #{map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left}"
     # map |> Sudoku.Display.pretty
     Agent.start(fn -> map end, name: MV)
 
@@ -23,7 +22,7 @@ defmodule Sudoku.Backtracking do
 
   def do_run(stack, moving_coords, map, output, count) do
 
-    if count === 100000, do: raise "count === #{count}"
+    # if count === 100000, do: raise "count === #{count}"
 
     if Sudoku.Validation.is_valid?(map) === false do
       if Sudoku.Validation.is_complete?(map) do
@@ -60,7 +59,7 @@ defmodule Sudoku.Backtracking do
   end
 
   def apply_stack_to_map(stack, map) do
-    Sudoku.Algo2.compute(map, Sudoku.DataStructureUtils.stack_to_map(stack))
+    Sudoku.Algo2.apply_values(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
   def is_last_value_to_test?([], _), do: raise Sudoku.Backtracking.EmptyStack
