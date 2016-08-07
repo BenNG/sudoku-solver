@@ -23,7 +23,7 @@ defmodule Sudoku.Backtracking do
 
   def do_run(stack, moving_coords, map, output, count) do
 
-    if count === 30, do: raise "count === #{count}"
+    if count === 100000, do: raise "count === #{count}"
 
     if Sudoku.Validation.is_valid?(map) === false do
       if Sudoku.Validation.is_complete?(map) do
@@ -90,13 +90,15 @@ defmodule Sudoku.Backtracking do
 
   def increase([], _, _), do: raise Sudoku.Backtracking.EmptyStack
   def increase([{coor, v}|t], _, map) do
+    # IO.inspect "map #{inspect map}"
+    # IO.inspect "increase from #{inspect {coor, v} }"
     values = Map.get(map, coor)
     index = Enum.find_index(values, fn(x) -> x == v end)
     if index === length(values) - 1 do
       raise Sudoku.Backtracking.EndOfElements
     else
       new_v = Enum.fetch!(values, index + 1)
-      # IO.inspect "increase from #{inspect {coor, v} } to #{inspect {coor, new_v} }"
+      # IO.inspect "to #{inspect {coor, new_v} }"
       [{coor, new_v}|t]
     end
   end

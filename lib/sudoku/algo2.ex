@@ -101,9 +101,8 @@
   end
 
   def compute(map, values) do
-    map
-    |> apply_values(values)
-    |> apply_isolated_values
+    map = apply_values(map, values)
+    # apply_isolated_values(map)
   end
 
   # We apply the given values to the map of possibilities

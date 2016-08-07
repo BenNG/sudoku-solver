@@ -255,7 +255,7 @@ defmodule SudokuAlgo2Test do
           {6, 0} => [3],
           {5, 0} => [1, 4, 9],
         })
-        
+
     assert Sudoku.Strategies.NakedSingle.run(map) == %{ {8, 0} => 6}
   end
 
