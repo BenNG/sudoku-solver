@@ -1,78 +1,91 @@
 defmodule Sudoku.Board do
 
-    @size 9
-    @board_cols Enum.reduce(0..@size - 1, [], fn(abs,acc) ->
-      col = Enum.reduce(0..@size - 1, [], &([{abs,&1}|&2]))
-      |> Enum.reverse
-      [col | acc]
-    end)
-    |> Enum.reverse
-
-    @board_rows Enum.reduce(0..@size - 1, [], fn(ord,acc) ->
-      col = Enum.reduce(0..@size - 1, [], &([{&1,ord}|&2]))
-      |> Enum.reverse
-      [col | acc]
-    end)
-    |> Enum.reverse
-
-    @board_boxes (range = Enum.slice([0..2, 3..5, 6..8], 0..div(@size,3) - 1 )
-
-    Enum.reduce(range, [], fn(r_ord,acc) ->
-      col_boxes = Enum.reduce(range, [], fn(r_abs, accu) ->
-        comp = for x <- r_abs,
-                   y <- r_ord,
-                   do: {x,y}
-        [comp | accu]
-      end)
-      |> Enum.reverse
-      acc ++ col_boxes
-    end))
-
     @doc """
-    generate coordinates for columns
-        [[{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],...]
+    generate coordinates for rows
+        [[{0, 0}, {1, 0}, {2, 0}, {3, 0}, {4, 0}, {5, 0}, {6, 0}, {7, 0}, {8, 0}],
+        [{0, 1}, {1, 1}, {2, 1}, {3, 1}, {4, 1}, {5, 1}, {6, 1}, {7, 1}, {8, 1}],
+        [{0, 2}, {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}],
+        [{0, 3}, {1, 3}, {2, 3}, {3, 3}, {4, 3}, {5, 3}, {6, 3}, {7, 3}, {8, 3}],
+        [{0, 4}, {1, 4}, {2, 4}, {3, 4}, {4, 4}, {5, 4}, {6, 4}, {7, 4}, {8, 4}],
+        [{0, 5}, {1, 5}, {2, 5}, {3, 5}, {4, 5}, {5, 5}, {6, 5}, {7, 5}, {8, 5}],
+        [{0, 6}, {1, 6}, {2, 6}, {3, 6}, {4, 6}, {5, 6}, {6, 6}, {7, 6}, {8, 6}],
+        [{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 7}, {8, 7}],
+        [{0, 8}, {1, 8}, {2, 8}, {3, 8}, {4, 8}, {5, 8}, {6, 8}, {7, 8}, {8, 8}]]
+
     """
-    def generate_board_columns(size \\ 9) do
-      @board_cols
+    def generate_rows(size \\ 9) do
+      Enum.reduce((size - 1)..0, [], &([generate_row(&1, size) | &2]))
     end
 
     @doc """
-    generate coordinates for rows
-        [[{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],...]
+    generate coordinates for columns
+        [[{0, 0}, {0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5}, {0, 6}, {0, 7}, {0, 8}],
+        [{1, 0}, {1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6}, {1, 7}, {1, 8}],
+        [{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, {2, 5}, {2, 6}, {2, 7}, {2, 8}],
+        [{3, 0}, {3, 1}, {3, 2}, {3, 3}, {3, 4}, {3, 5}, {3, 6}, {3, 7}, {3, 8}],
+        [{4, 0}, {4, 1}, {4, 2}, {4, 3}, {4, 4}, {4, 5}, {4, 6}, {4, 7}, {4, 8}],
+        [{5, 0}, {5, 1}, {5, 2}, {5, 3}, {5, 4}, {5, 5}, {5, 6}, {5, 7}, {5, 8}],
+        [{6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4}, {6, 5}, {6, 6}, {6, 7}, {6, 8}],
+        [{7, 0}, {7, 1}, {7, 2}, {7, 3}, {7, 4}, {7, 5}, {7, 6}, {7, 7}, {7, 8}],
+        [{8, 0}, {8, 1}, {8, 2}, {8, 3}, {8, 4}, {8, 5}, {8, 6}, {8, 7}, {8, 8}]]
+
     """
-    def generate_board_rows(size \\ 9) do
-      @board_rows
+    def generate_columns(size \\ 9) do
+      Enum.reduce((size - 1)..0, [], &([generate_column(&1, size) | &2]))
     end
 
     @doc """
     generate coordinates for boxes
-        [[{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}],...]
+        [[{0, 0}, {0, 1}, {0, 2}, {1, 0}, {1, 1}, {1, 2}, {2, 0}, {2, 1}, {2, 2}],
+        [{3, 0}, {3, 1}, {3, 2}, {4, 0}, {4, 1}, {4, 2}, {5, 0}, {5, 1}, {5, 2}],
+        [{6, 0}, {6, 1}, {6, 2}, {7, 0}, {7, 1}, {7, 2}, {8, 0}, {8, 1}, {8, 2}],
+        [{0, 3}, {0, 4}, {0, 5}, {1, 3}, {1, 4}, {1, 5}, {2, 3}, {2, 4}, {2, 5}],
+        [{3, 3}, {3, 4}, {3, 5}, {4, 3}, {4, 4}, {4, 5}, {5, 3}, {5, 4}, {5, 5}],
+        [{6, 3}, {6, 4}, {6, 5}, {7, 3}, {7, 4}, {7, 5}, {8, 3}, {8, 4}, {8, 5}],
+        [{0, 6}, {0, 7}, {0, 8}, {1, 6}, {1, 7}, {1, 8}, {2, 6}, {2, 7}, {2, 8}],
+        [{3, 6}, {3, 7}, {3, 8}, {4, 6}, {4, 7}, {4, 8}, {5, 6}, {5, 7}, {5, 8}],
+        [{6, 6}, {6, 7}, {6, 8}, {7, 6}, {7, 7}, {7, 8}, {8, 6}, {8, 7}, {8, 8}]]
     """
-    def generate_board_boxes(size \\ 3) do
-      @board_boxes
+    def generate_boxes(size \\ 9) do
+      Enum.reduce((size - 1)..0, [], &([generate_box(&1)|&2]))
+    end
+
+    @doc """
+    create_col(2,9)
+        [{2, 0}, {2, 1}, {2, 2}, {2, 3}, {2, 4}, {2, 5}, {2, 6}, {2, 7}, {2, 8}]
+    """
+    def generate_column(n, size \\ 9) do
+      Enum.reduce((size - 1)..0, [], &( [{n,&1} | &2]) )
+    end
+
+    @doc """
+    generate_row(7,9)
+        [{0, 7}, {1, 7}, {2, 7}, {3, 7}, {4, 7}, {5, 7}, {6, 7}, {7, 7}, {8, 7}]
+    """
+    def generate_row(n, size \\ 9) do
+      Enum.reduce((size - 1)..0, [], &( [{&1, n} | &2]) )
+    end
+
+    @doc """
+    generate_box(5)
+        [{6, 3}, {6, 4}, {6, 5}, {7, 3}, {7, 4}, {7, 5}, {8, 3}, {8, 4}, {8, 5}]
+    """
+    def generate_box(n) do
+      range = [0..2, 3..5, 6..8]
+      ord = div(n,3)
+      abs = rem(n,3)
+      for x <- Enum.at(range, abs),
+          y <- Enum.at(range, ord),
+          do: {x,y}
     end
 
     @doc """
     Return coordinates of the box
         {5,5} -> [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
     """
-    def get_box_coordinates(tuple) do
-      Enum.find(@board_boxes, &(Enum.member?(&1, tuple)))
+    def generate_box({abs, ord}) do
+      n = 3 * div(ord, 3) + div(abs, 3)
+      generate_box(n)
     end
 
-    @doc """
-    Return coordinates of the column
-        3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
-    """
-    def get_col_coordinates(col_num) do
-      Enum.at(@board_cols, col_num)
-    end
-
-    @doc """
-    Return coordinates of the row
-        3 -> [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
-    """
-    def get_row_coordinates(row_num) do
-      Enum.at(@board_rows, row_num)
-    end
 end

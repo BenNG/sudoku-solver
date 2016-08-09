@@ -20,9 +20,9 @@ defmodule Sudoku.Strategies.NakedSingle do
 
 
   def run(map) do
-    rows = Sudoku.Board.generate_board_rows
-    cols = Sudoku.Board.generate_board_columns
-    boxes = Sudoku.Board.generate_board_boxes
+    rows = Sudoku.Board.generate_rows
+    cols = Sudoku.Board.generate_columns
+    boxes = Sudoku.Board.generate_boxes
 
     Enum.reduce(1..9, %{}, fn(n, acc) ->
       ans3 = Enum.reduce([rows, cols, boxes], %{}, fn(items, acc) ->

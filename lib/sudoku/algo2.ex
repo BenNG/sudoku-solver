@@ -127,9 +127,9 @@
 
   def apply_value(map, {abs, ord} = tuple, value) do
     value = if is_list(value), do: Enum.at(value, 0), else: value
-    rows = Sudoku.Board.get_row_coordinates(ord) -- [tuple]
-    columns = Sudoku.Board.get_col_coordinates(abs) -- [tuple]
-    box = Sudoku.Board.get_box_coordinates(tuple) -- [tuple]
+    rows = Sudoku.Board.generate_row(ord) -- [tuple]
+    columns = Sudoku.Board.generate_column(abs) -- [tuple]
+    box = Sudoku.Board.generate_box(tuple) -- [tuple]
 
     map = Map.put(map, tuple, [value])
 
