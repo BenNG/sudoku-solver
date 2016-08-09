@@ -1,4 +1,14 @@
 defmodule Sudoku.Board do
+    @doc """
+    returns a fresh board with all the possibilities
+    """
+    def init do
+      generate_rows
+      |> List.flatten
+      |> Enum.reduce(%{}, fn(tuple,acc) ->
+        Map.put(acc, tuple, Integer.digits(123456789))
+      end)
+    end
 
     @doc """
     generate coordinates for rows
@@ -70,7 +80,7 @@ defmodule Sudoku.Board do
     generate_box(5)
         [{6, 3}, {6, 4}, {6, 5}, {7, 3}, {7, 4}, {7, 5}, {8, 3}, {8, 4}, {8, 5}]
     """
-    def generate_box(n) do
+    def generate_box(n) when is_integer(n) do
       range = [0..2, 3..5, 6..8]
       ord = div(n,3)
       abs = rem(n,3)

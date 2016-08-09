@@ -1,4 +1,5 @@
  defmodule Sudoku.Algo2 do
+  # import Sudoku.Board
   # import Sudoku.Display
   # import Sudoku.Validation
   # import Sudoku.Strategies.NakedSingle
@@ -41,24 +42,6 @@
     end)
   end
 
-  @doc """
-  Generate possibilities
-
-      "00600..."
-      %{
-        {0, 0} => [1,2,3,4,5,6,7,8,9],
-        {1, 0} => [1,2,3,4,5,6,7,8,9],
-        ...
-      }
-
-  """
-  def initial_posibilities_to_map() do
-    list = for  ord <- 0..8,
-                abs <- 0..8,
-                do: {{abs, ord}, Integer.digits(123456789)}
-    Enum.reduce(list, %{}, fn({tuple, v},acc) -> Map.put(acc, tuple, v) end)
-  end
-
   def order do
     for ord <- 0..8,
         abs <- 0..8,
@@ -68,7 +51,7 @@
   def run(raw, output \\ :map) do
     # IO.inspect "starting with #{raw}"
     input_values = input_to_map(raw)
-    initial_map = initial_posibilities_to_map
+    initial_map = Sudoku.Board.init
 
     # test only
     # map = apply_values(initial_map, input_values, false)
