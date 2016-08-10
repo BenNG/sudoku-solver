@@ -18,20 +18,12 @@
 
   """
   def input_to_map(raw) do
-
-    if String.length(raw) !== 81, do: raise Sudoku.Backtracking.BadInputLength
-
-    raw
-    |> String.codepoints
-    |> Enum.map(&String.to_integer(&1))
-    |> Enum.chunk(9,9)
-    |> Enum.with_index
-    |> Enum.reduce(%{}, fn({list, ord},acc) ->
-      list
-      |> Enum.with_index
-      |> Enum.reduce(acc, fn({value, abs}, acc) ->
-        if value !== 0, do: Map.put(acc, {abs, ord}, [value]), else: acc
-      end)
+    l = String.length(raw)
+    if l !== 81, do: raise Sudoku.Backtracking.BadInputLength
+    0..(l-1)
+    |> Enum.reduce(%{}, fn(n, acc) ->
+      v = String.at(raw, n)
+      if v !== "0", do: Map.put(acc, {rem(n,9), div(n,9)}, [String.to_integer(v)] ), else: acc
     end)
   end
 
@@ -50,7 +42,7 @@
 
     # test only
     # map = apply_values(initial_map, input_values, false)
-    map = apply_values(initial_map, input_values)
+    map = Sudoku.ApplyValues.run(initial_map, input_values)
 
     map = [
       fn(map) -> apply_isolated_values(map)   end,
@@ -70,7 +62,7 @@
       # IO.puts ""
       # IO.inspect ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
       # IO.inspect "failed to solve #{raw}"
-      # map |> Sudoku.Display.run
+      # map |> Sudoku.Display.pretty
       # IO.inspect "#{(map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left) - 81} extra values"
       # IO.inspect "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
       # IO.puts ""
@@ -81,47 +73,9 @@
     end
   end
 
-  # debug only
-  def apply_values(map, values, spread = false) do
-      Enum.reduce(Map.keys(values), map, fn(key, acc) ->
-        Map.put(acc, key, Map.get(values, key))
-      end)
-  end
-
-  # We apply the given values to the map of possibilities
-  # It possibly create new single values which values we can count on (like given values)
-  def apply_values(map, values) do
-      new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
-      new_values = new_single_value_found(new_map, map)
-
-      if Enum.empty?(new_values), do: new_map, else: apply_values(new_map, new_values)
-  end
-
-  def new_single_value_found(new_map, old_map) do
-    new_map = new_map |> Sudoku.DataStructureUtils.filter_fixed_values
-    old_map = old_map |> Sudoku.DataStructureUtils.filter_fixed_values
-    Map.drop(new_map, Map.keys(old_map))
-  end
-
-  def apply_value(map, {abs, ord} = tuple, value) do
-    value = if is_list(value), do: Enum.at(value, 0), else: value
-    rows = Sudoku.Board.generate_row(ord) -- [tuple]
-    columns = Sudoku.Board.generate_column(abs) -- [tuple]
-    box = Sudoku.Board.generate_box(tuple) -- [tuple]
-
-    map = Map.put(map, tuple, [value])
-
-    rows ++ columns ++ box
-    |> Enum.reduce(map, fn(coord, acc) ->
-      values = Map.get(acc, coord) -- [value]
-      Map.put(acc, coord, values)
-    end)
-
-  end
-
   def apply_isolated_values(map) do
     values = Sudoku.Strategies.NakedSingle.run(map)
-    map = apply_values(map, values)
+    map = Sudoku.ApplyValues.run(map, values)
     values = Sudoku.Strategies.NakedSingle.run(map)
     if Enum.empty?(values), do: map, else: apply_isolated_values(map)
   end

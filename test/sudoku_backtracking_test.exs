@@ -213,7 +213,7 @@ end
 
       map = Map.merge(Sudoku.Board.init, input)
 
-      # map |> Sudoku.Display.run
+      # map |> Sudoku.Display.pretty
 
       moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.put(map, {3,0}, [7,8,9])
@@ -237,7 +237,7 @@ end
 
     map = Map.merge(Sudoku.Board.init, input)
     map = Map.put(map, {1,0}, [7,8,9])
-    # map |> Sudoku.Display.run
+    # map |> Sudoku.Display.pretty
     Agent.start(fn -> map end, name: MV)
     assert Sudoku.Backtracking.drop([{{2,0}, 1}, {{1,0}, 9}, {{0,0}, 0}], map) == [{{0,0}, 0}]
     Agent.stop(MV)

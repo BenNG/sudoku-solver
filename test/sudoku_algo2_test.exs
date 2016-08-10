@@ -38,7 +38,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.Algo2.new_single_value_found(new_map, old_map) === %{
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
@@ -58,7 +58,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [8],
     }
 
-    assert Sudoku.Algo2.new_single_value_found(new_map, new_map) === %{}
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, new_map) === %{}
 
   end
 
@@ -67,7 +67,7 @@ defmodule SudokuAlgo2Test do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.Algo2.input_to_map(raw)
     values = Sudoku.Board.init
-    assert Sudoku.Algo2.apply_values(values, raw_map) == %{
+    assert Sudoku.ApplyValues.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
       {1,0} => [1,4,5,7,8,9],
       {2,0} => [3],
@@ -451,7 +451,7 @@ defmodule SudokuAlgo2Test do
   end
 
   # @tag :pending
-  # |> Sudoku.Display.run
+  # |> Sudoku.Display.pretty
   test "resolve harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
@@ -459,7 +459,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.run
+  # |> Sudoku.Display.pretty
   test "resolve harder harder harder sudoku" do
     raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
     answer = "859612437723854169164379528986147352375268914241593786432981675617425893598736241"
@@ -467,7 +467,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.run
+  # |> Sudoku.Display.pretty
   test "resolve harder harder harder harder sudoku" do
     raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
     answer = "145327698839654127672918543496185372218473956753296481367542819984761235521839764"
@@ -475,7 +475,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.run
+  # |> Sudoku.Display.pretty
   test "resolve --- euler 96 ---" do
     assert Sudoku.File.resolve_euler_96 == 24702
   end

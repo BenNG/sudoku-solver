@@ -1,6 +1,6 @@
 defmodule Sudoku.Display do
 
-  def run(map, are_coord_displayed? \\ true) do
+  def pretty(map, are_coord_displayed? \\ true) do
     IO.puts ""
     size_item = if are_coord_displayed?, do: 16, else: 10
 

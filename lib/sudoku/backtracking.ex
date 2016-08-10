@@ -7,7 +7,7 @@ defmodule Sudoku.Backtracking do
 
   def run(map, output \\ :map) do
     # IO.inspect "starting 1 ... with"
-    # map |> Sudoku.Display.run
+    # map |> Sudoku.Display.pretty
     Agent.start(fn -> map end, name: MV)
 
     moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(Sudoku.DataStructureUtils.filter_fixed_values(map))
@@ -16,7 +16,7 @@ defmodule Sudoku.Backtracking do
 
     stack = add([], moving_coords, map)
     map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-    # map |> Sudoku.Display.run
+    # map |> Sudoku.Display.pretty
     do_run(stack, moving_coords, map, output, 0)
   end
 
@@ -37,7 +37,7 @@ defmodule Sudoku.Backtracking do
         stack = add(stack, moving_coords, map)
         # IO.inspect "stack is now: #{inspect stack}"
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-        # map |> Sudoku.Display.run
+        # map |> Sudoku.Display.pretty
 
         do_run(stack, moving_coords, map, output, count + 1)
       end
@@ -59,7 +59,7 @@ defmodule Sudoku.Backtracking do
   end
 
   def apply_stack_to_map(stack, map) do
-    Sudoku.Algo2.apply_values(map, Sudoku.DataStructureUtils.stack_to_map(stack))
+    Sudoku.ApplyValues.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
   def is_last_value_to_test?([], _), do: raise Sudoku.Backtracking.EmptyStack
