@@ -78,7 +78,7 @@ end
     "900000050" <>
     "000000900")
 
-    moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+    moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
     map = Map.merge(Sudoku.Board.init, input)
     assert Sudoku.Backtracking.add([], moving_coords, map) == [{{1,0}, 1}]
   end
@@ -96,7 +96,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       map = Map.put(map, {2,0}, [7,8,9])
       assert Sudoku.Backtracking.add([], moving_coords, map) == [{{2,0}, 7}]
@@ -115,7 +115,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       map = Map.put(map, {3,0}, [7,8,9])
       stack = Sudoku.Backtracking.add([], moving_coords, map)
@@ -135,7 +135,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       assert_raise Sudoku.Backtracking.EmptyStack, fn -> Sudoku.Backtracking.increase([], moving_coords, map) end
 
@@ -153,7 +153,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       assert Sudoku.Backtracking.increase( [{{3,0}, 1}], moving_coords, map) == [{{3,0}, 2}]
 
@@ -171,7 +171,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       map = Map.put(map, {3,0}, [7,8,9])
       assert Sudoku.Backtracking.increase( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
@@ -191,7 +191,7 @@ end
       "900000050" <>
       "000000900")
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       map = Map.put(map, {3,0}, [7,8,9])
       assert_raise Sudoku.Backtracking.EndOfElements, fn -> Sudoku.Backtracking.increase( [{{3,0}, 9}], moving_coords, map) end
@@ -213,9 +213,9 @@ end
 
       map = Map.merge(Sudoku.Board.init, input)
 
-      # map |> Sudoku.Display.pretty
+      # map |> Sudoku.Display.run
 
-      moving_coords = Sudoku.Algo2.order -- Map.keys(input)
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.put(map, {3,0}, [7,8,9])
       assert Sudoku.Backtracking.increase( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
 
@@ -237,7 +237,7 @@ end
 
     map = Map.merge(Sudoku.Board.init, input)
     map = Map.put(map, {1,0}, [7,8,9])
-    # map |> Sudoku.Display.pretty
+    # map |> Sudoku.Display.run
     Agent.start(fn -> map end, name: MV)
     assert Sudoku.Backtracking.drop([{{2,0}, 1}, {{1,0}, 9}, {{0,0}, 0}], map) == [{{0,0}, 0}]
     Agent.stop(MV)

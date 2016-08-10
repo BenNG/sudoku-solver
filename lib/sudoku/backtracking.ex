@@ -7,16 +7,16 @@ defmodule Sudoku.Backtracking do
 
   def run(map, output \\ :map) do
     # IO.inspect "starting 1 ... with"
-    # map |> Sudoku.Display.pretty
+    # map |> Sudoku.Display.run
     Agent.start(fn -> map end, name: MV)
 
-    moving_coords = Sudoku.Algo2.order -- Map.keys(Sudoku.DataStructureUtils.filter_fixed_values(map))
+    moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(Sudoku.DataStructureUtils.filter_fixed_values(map))
 
     # IO.inspect "moving_coords: #{inspect moving_coords}"
 
     stack = add([], moving_coords, map)
     map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-    # map |> Sudoku.Display.pretty
+    # map |> Sudoku.Display.run
     do_run(stack, moving_coords, map, output, 0)
   end
 
@@ -37,7 +37,7 @@ defmodule Sudoku.Backtracking do
         stack = add(stack, moving_coords, map)
         # IO.inspect "stack is now: #{inspect stack}"
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-        # map |> Sudoku.Display.pretty
+        # map |> Sudoku.Display.run
 
         do_run(stack, moving_coords, map, output, count + 1)
       end

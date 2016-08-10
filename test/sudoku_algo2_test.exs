@@ -451,7 +451,7 @@ defmodule SudokuAlgo2Test do
   end
 
   # @tag :pending
-  # |> Sudoku.Display.pretty
+  # |> Sudoku.Display.run
   test "resolve harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
     answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
@@ -459,7 +459,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.pretty
+  # |> Sudoku.Display.run
   test "resolve harder harder harder sudoku" do
     raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
     answer = "859612437723854169164379528986147352375268914241593786432981675617425893598736241"
@@ -467,7 +467,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.pretty
+  # |> Sudoku.Display.run
   test "resolve harder harder harder harder sudoku" do
     raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
     answer = "145327698839654127672918543496185372218473956753296481367542819984761235521839764"
@@ -475,7 +475,7 @@ defmodule SudokuAlgo2Test do
     assert result == answer
   end
   # @tag :pending
-  # |> Sudoku.Display.pretty
+  # |> Sudoku.Display.run
   test "resolve --- euler 96 ---" do
     assert Sudoku.File.resolve_euler_96 == 24702
   end

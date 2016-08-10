@@ -36,16 +36,11 @@
   end
 
   def map_to_raw_data(map) do
-    order
+    Sudoku.Board.generate_rows
+    |> List.flatten
     |> Enum.reduce("", fn(tuple, acc) ->
       acc <> (Map.get(map,tuple) |> Enum.at(0) |> Integer.to_string)
     end)
-  end
-
-  def order do
-    for ord <- 0..8,
-        abs <- 0..8,
-        do: {abs, ord}
   end
 
   def run(raw, output \\ :map) do
@@ -75,7 +70,7 @@
       # IO.puts ""
       # IO.inspect ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
       # IO.inspect "failed to solve #{raw}"
-      # map |> Sudoku.Display.pretty
+      # map |> Sudoku.Display.run
       # IO.inspect "#{(map |> Sudoku.DataStructureUtils.nbr_of_possibilities_left) - 81} extra values"
       # IO.inspect "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
       # IO.puts ""
