@@ -30,7 +30,8 @@ defmodule Sudoku.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [ ex_doc: "~> 0.13.0",
-      earmark: "~> 1.0"
+      earmark: "~> 1.0",
+      benchfella: "~> 0.3.2",
     ]
   end
 end
