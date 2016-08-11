@@ -43,7 +43,7 @@ end
 
   # @tag :pending
   test "create built in map" do
-    assert Sudoku.Algo2.input_to_map("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
+    assert Sudoku.DataStructureUtils.input_str_to_map("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
       == %{
         {2,0} => [3],
         {4,0} => [2],
@@ -53,7 +53,7 @@ end
 
   # @tag :pending
   test "create built in map2" do
-    assert Sudoku.Algo2.input_to_map("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
+    assert Sudoku.DataStructureUtils.input_str_to_map("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
       == %{
         {2,0} => [3],
         {4,0} => [2],
@@ -67,7 +67,7 @@ end
   # @tag :pending
   test "add" do
 
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
     "300020600" <>
     "000000000" <>
     "500000030" <>
@@ -85,7 +85,7 @@ end
 
   # @tag :pending
   test "add 2" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "320020600" <>
       "000000000" <>
       "500000030" <>
@@ -104,7 +104,7 @@ end
 
   # @tag :pending
   test "add 3" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -124,7 +124,7 @@ end
   end
   # @tag :pending
   test "increase empty stack" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -142,7 +142,7 @@ end
   end
   # @tag :pending
   test "increase 1" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -160,7 +160,7 @@ end
   end
   # @tag :pending
   test "increase 2" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -180,7 +180,7 @@ end
 
   # @tag :pending
   test "increase 3" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -200,7 +200,7 @@ end
 
   # @tag :pending
   test "increase 4" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
       "500000030" <>
@@ -224,7 +224,7 @@ end
 
   # @tag :pending
   test "drop" do
-    input = Sudoku.Algo2.input_to_map(
+    input = Sudoku.DataStructureUtils.input_str_to_map(
       "000020600" <>
       "000000000" <>
       "500000030" <>

@@ -123,9 +123,4 @@ defmodule Sudoku.Backtracking do
     def message(_), do: "Could not operate on empty stack"
   end
 
-  defmodule BadInputLength do
-    defexception []
-    def message(_), do: "Please provide an input with 81 codepoints"
-  end
-
 end

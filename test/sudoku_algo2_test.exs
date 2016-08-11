@@ -65,7 +65,7 @@ defmodule SudokuAlgo2Test do
   # @tag :pending
   test "apply values" do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
-    raw_map = Sudoku.Algo2.input_to_map(raw)
+    raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)
     values = Sudoku.Board.init
     assert Sudoku.ApplyValues.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
@@ -437,7 +437,7 @@ defmodule SudokuAlgo2Test do
     raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
     answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
     {_, result} = raw |> Sudoku.Algo2.run
-    assert result |> Sudoku.Algo2.map_to_raw_data  == answer
+    assert result |> Sudoku.DataStructureUtils.map_to_raw_data  == answer
   end
 
   # @tag :pending

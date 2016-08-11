@@ -1,5 +1,36 @@
 defmodule Sudoku.DataStructureUtils do
 
+  @doc """
+  Generate a map that represents the input
+
+      "00600..."
+      %{
+        {2, 0} => 6
+      }
+
+  """
+  def input_str_to_map(input_str) do
+    l = String.length(input_str)
+    if l !== 81, do: raise Sudoku.DataStructureUtils.BadInputLength
+      Enum.reduce(0..(l-1), %{}, fn(n, acc) ->
+      char = String.at(input_str, n)
+      if char !== "0" do
+        value = [String.to_integer(char)]
+        Map.put(acc, {rem(n,9), div(n,9)}, value)
+      else
+        acc
+      end
+    end)
+  end
+
+  def map_to_raw_data(map) do
+    Sudoku.Board.generate_rows
+    |> List.flatten
+    |> Enum.reduce("", fn(tuple, acc) ->
+      acc <> (Map.get(map,tuple) |> Enum.at(0) |> Integer.to_string)
+    end)
+  end
+
   def map_to_stack(map) do
     Map.keys(map)
     |> Enum.reduce([], fn(coor, acc) ->
@@ -34,6 +65,11 @@ defmodule Sudoku.DataStructureUtils do
 
   def nbr_of_possibilities_left(map) do
     Enum.reduce(Map.values(map), 0 , &(&2 + length(&1)))
+  end
+
+  defmodule BadInputLength do
+    defexception []
+    def message(_), do: "Please provide an input with 81 codepoints"
   end
 
 end
