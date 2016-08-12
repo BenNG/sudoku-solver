@@ -5,7 +5,7 @@ defmodule Sudoku.Backtracking do
     End now
   """
 
-  def run(map, output \\ :map) do
+  def run(map) do
     # IO.inspect "starting 1 ... with"
     # map |> Sudoku.Display.pretty
     Agent.start(fn -> map end, name: MV)
@@ -17,21 +17,16 @@ defmodule Sudoku.Backtracking do
     stack = add([], moving_coords, map)
     map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
     # map |> Sudoku.Display.pretty
-    do_run(stack, moving_coords, map, output, 0)
+    do_run(stack, moving_coords, map)
   end
 
-  def do_run(stack, moving_coords, map, output, count) do
-
-    # if count === 100000, do: raise "count === #{count}"
+  def do_run(stack, moving_coords, map) do
 
     if Sudoku.Validation.is_valid?(map) === false do
       if Sudoku.Validation.is_complete?(map) do
         # IO.inspect "c'est bon !"
         Agent.stop(MV)
-        case output do
-          :map -> map
-          :raw -> Sudoku.Algo2.map_to_raw_data(map)
-        end
+        map
       else
         # IO.inspect "valid: add"
         stack = add(stack, moving_coords, map)
@@ -39,7 +34,7 @@ defmodule Sudoku.Backtracking do
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
         # map |> Sudoku.Display.pretty
 
-        do_run(stack, moving_coords, map, output, count + 1)
+        do_run(stack, moving_coords, map)
       end
     else
       if is_last_possibility?(stack, Agent.get(MV, &(&1))) do
@@ -48,12 +43,12 @@ defmodule Sudoku.Backtracking do
         # IO.inspect "stack is now: #{inspect stack}"
         stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-        do_run(stack, moving_coords, map, output, count + 1)
+        do_run(stack, moving_coords, map)
       else
         # IO.inspect "not valid: iterate"
         stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
-        do_run(stack, moving_coords, map, output, count + 1)
+        do_run(stack, moving_coords, map)
       end
     end
   end
@@ -70,7 +65,7 @@ defmodule Sudoku.Backtracking do
     index === length(possibilities) - 1
   end
 
-  def add([], [coor|_] = _, map) do
+  def add([], [coor|_], map) do
     values = Map.get(map, coor)
     v = Enum.fetch!(values, 0)
     # IO.inspect "adding: #{inspect {coor, v}}"
@@ -102,7 +97,7 @@ defmodule Sudoku.Backtracking do
   end
 
   def drop([], _), do: raise Sudoku.Backtracking.EmptyStack
-  def drop([_h|t] = stack, map) do
+  def drop([_h|t], map) do
     # IO.inspect "droping: #{inspect _h}"
     # IO.inspect "stack: #{inspect stack}"
     if is_last_possibility?(t, Agent.get(MV, &(&1))) do
