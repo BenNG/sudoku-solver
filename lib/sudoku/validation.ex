@@ -1,6 +1,6 @@
 defmodule Sudoku.Validation do
   def is_valid?(map) do
-    map
+    false === map
     |> Map.values
     |> Enum.any?(&(Enum.empty?(&1)))
   end

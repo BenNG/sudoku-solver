@@ -358,7 +358,7 @@ defmodule SudokuAlgo2Test do
 
   # @tag :pending
   test "is_valid?" do
-    assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == false
+    assert %{"ze" => [1]} |> Sudoku.Validation.is_valid?  == true
   end
 
   # @tag :pending

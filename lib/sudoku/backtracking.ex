@@ -22,7 +22,7 @@ defmodule Sudoku.Backtracking do
 
   def do_run(stack, moving_coords, map) do
 
-    if Sudoku.Validation.is_valid?(map) === false do
+    if Sudoku.Validation.is_valid?(map) do
       if Sudoku.Validation.is_complete?(map) do
         # IO.inspect "c'est bon !"
         Agent.stop(MV)
