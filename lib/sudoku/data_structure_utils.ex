@@ -69,7 +69,7 @@ defmodule Sudoku.DataStructureUtils do
 
   defmodule BadInputLength do
     defexception []
-    def message(_), do: "Please provide an input with 81 codepoints"
+    def message(_), do: "Please provide an input with 81 numbers"
   end
 
 end

@@ -123,7 +123,7 @@ end
 
   end
   # @tag :pending
-  test "increase empty stack" do
+  test "iterate empty stack" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
@@ -137,11 +137,11 @@ end
 
       moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
-      assert_raise Sudoku.Backtracking.EmptyStack, fn -> Sudoku.Backtracking.increase([], moving_coords, map) end
+      assert_raise Sudoku.Backtracking.EmptyStack, fn -> Sudoku.Backtracking.iterate([], moving_coords, map) end
 
   end
   # @tag :pending
-  test "increase 1" do
+  test "iterate 1" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
@@ -155,31 +155,11 @@ end
 
       moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
-      assert Sudoku.Backtracking.increase( [{{3,0}, 1}], moving_coords, map) == [{{3,0}, 2}]
+      assert Sudoku.Backtracking.iterate( [{{3,0}, 1}], moving_coords, map) == [{{3,0}, 2}]
 
   end
   # @tag :pending
-  test "increase 2" do
-    input = Sudoku.DataStructureUtils.input_str_to_map(
-      "325020600" <>
-      "000000000" <>
-      "500000030" <>
-      "070000000" <>
-      "000000000" <>
-      "000000000" <>
-      "005000020" <>
-      "900000050" <>
-      "000000900")
-
-      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
-      map = Map.merge(Sudoku.Board.init, input)
-      map = Map.put(map, {3,0}, [7,8,9])
-      assert Sudoku.Backtracking.increase( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
-
-  end
-
-  # @tag :pending
-  test "increase 3" do
+  test "iterate 2" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
@@ -194,12 +174,32 @@ end
       moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.merge(Sudoku.Board.init, input)
       map = Map.put(map, {3,0}, [7,8,9])
-      assert_raise Sudoku.Backtracking.EndOfElements, fn -> Sudoku.Backtracking.increase( [{{3,0}, 9}], moving_coords, map) end
+      assert Sudoku.Backtracking.iterate( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
 
   end
 
   # @tag :pending
-  test "increase 4" do
+  test "iterate 3" do
+    input = Sudoku.DataStructureUtils.input_str_to_map(
+      "325020600" <>
+      "000000000" <>
+      "500000030" <>
+      "070000000" <>
+      "000000000" <>
+      "000000000" <>
+      "005000020" <>
+      "900000050" <>
+      "000000900")
+
+      moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
+      map = Map.merge(Sudoku.Board.init, input)
+      map = Map.put(map, {3,0}, [7,8,9])
+      assert_raise Sudoku.Backtracking.NoMorePossibilitiesForThisElement, fn -> Sudoku.Backtracking.iterate( [{{3,0}, 9}], moving_coords, map) end
+
+  end
+
+  # @tag :pending
+  test "iterate 4" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
       "000000000" <>
@@ -217,7 +217,7 @@ end
 
       moving_coords = (Sudoku.Board.generate_rows |> List.flatten) -- Map.keys(input)
       map = Map.put(map, {3,0}, [7,8,9])
-      assert Sudoku.Backtracking.increase( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
+      assert Sudoku.Backtracking.iterate( [{{3,0}, 8}], moving_coords, map) == [{{3,0}, 9}]
 
   end
 

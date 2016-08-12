@@ -42,16 +42,16 @@ defmodule Sudoku.Backtracking do
         do_run(stack, moving_coords, map, output, count + 1)
       end
     else
-      if is_last_value_to_test?(stack, Agent.get(MV, &(&1))) do
+      if is_last_possibility?(stack, Agent.get(MV, &(&1))) do
         # IO.inspect "not valid: drop"
         stack = drop(stack, map)
         # IO.inspect "stack is now: #{inspect stack}"
-        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
         do_run(stack, moving_coords, map, output, count + 1)
       else
-        # IO.inspect "not valid: increase"
-        stack = increase(stack, moving_coords, Agent.get(MV, &(&1)))
+        # IO.inspect "not valid: iterate"
+        stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
         map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
         do_run(stack, moving_coords, map, output, count + 1)
       end
@@ -62,13 +62,12 @@ defmodule Sudoku.Backtracking do
     Sudoku.ApplyValues.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
-  def is_last_value_to_test?([], _), do: raise Sudoku.Backtracking.EmptyStack
-  def is_last_value_to_test?([{coor,v}|_], map) do
-    mv = Map.get(map, coor)
-    index = Enum.find_index(mv, fn(x) -> x == v end)
-    bool = index === length(mv) - 1
+  def is_last_possibility?([], _), do: raise Sudoku.Backtracking.EmptyStack
+  def is_last_possibility?([{coor,v}|_], map) do
+    possibilities = Map.get(map, coor)
+    index = Enum.find_index(possibilities, fn(x) -> x == v end)
     # IO.inspect "last value for : #{inspect {coor, v}} --> #{bool}"
-    if bool, do: true, else: false
+    index === length(possibilities) - 1
   end
 
   def add([], [coor|_] = _, map) do
@@ -87,14 +86,14 @@ defmodule Sudoku.Backtracking do
     [{coor, v}|stack]
   end
 
-  def increase([], _, _), do: raise Sudoku.Backtracking.EmptyStack
-  def increase([{coor, v}|t], _, map) do
+  def iterate([], _, _), do: raise Sudoku.Backtracking.EmptyStack
+  def iterate([{coor, v}|t], _, map) do
     # IO.inspect "map #{inspect map}"
-    # IO.inspect "increase from #{inspect {coor, v} }"
+    # IO.inspect "iterate from #{inspect {coor, v} }"
     values = Map.get(map, coor)
     index = Enum.find_index(values, fn(x) -> x == v end)
     if index === length(values) - 1 do
-      raise Sudoku.Backtracking.EndOfElements
+      raise Sudoku.Backtracking.NoMorePossibilitiesForThisElement
     else
       new_v = Enum.fetch!(values, index + 1)
       # IO.inspect "to #{inspect {coor, new_v} }"
@@ -106,14 +105,14 @@ defmodule Sudoku.Backtracking do
   def drop([_h|t] = stack, map) do
     # IO.inspect "droping: #{inspect _h}"
     # IO.inspect "stack: #{inspect stack}"
-    if is_last_value_to_test?(t, Agent.get(MV, &(&1))) do
+    if is_last_possibility?(t, Agent.get(MV, &(&1))) do
       drop(t, map)
     else
       t
     end
   end
 
-  defmodule EndOfElements do
+  defmodule NoMorePossibilitiesForThisElement do
     defexception []
     def message(_), do: "No more values, you probably have to drop the element"
   end
