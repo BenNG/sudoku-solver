@@ -15,7 +15,7 @@ defmodule Sudoku.Backtracking do
     # IO.inspect "moving_coords: #{inspect moving_coords}"
 
     stack = add([], moving_coords, map)
-    map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+    map = update_map(stack, Agent.get(MV, &(&1)))
     # map |> Sudoku.Display.pretty
     do_run(stack, moving_coords, map)
   end
@@ -31,7 +31,7 @@ defmodule Sudoku.Backtracking do
         # IO.inspect "valid: add"
         stack = add(stack, moving_coords, map)
         # IO.inspect "stack is now: #{inspect stack}"
-        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        map = update_map(stack, Agent.get(MV, &(&1)))
         # map |> Sudoku.Display.pretty
 
         do_run(stack, moving_coords, map)
@@ -42,18 +42,18 @@ defmodule Sudoku.Backtracking do
         stack = drop(stack, map)
         # IO.inspect "stack is now: #{inspect stack}"
         stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
-        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        map = update_map(stack, Agent.get(MV, &(&1)))
         do_run(stack, moving_coords, map)
       else
         # IO.inspect "not valid: iterate"
         stack = iterate(stack, moving_coords, Agent.get(MV, &(&1)))
-        map = apply_stack_to_map(stack, Agent.get(MV, &(&1)))
+        map = update_map(stack, Agent.get(MV, &(&1)))
         do_run(stack, moving_coords, map)
       end
     end
   end
 
-  def apply_stack_to_map(stack, map) do
+  def update_map(stack, map) do
     Sudoku.ApplyValues.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
