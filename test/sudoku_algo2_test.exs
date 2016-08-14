@@ -432,7 +432,7 @@ defmodule SudokuAlgo2Test do
     assert map == new_map
   end
 
-# @tag :pending
+  # @tag :pending
   test "resolve simple sudoku" do
     raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
     answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
@@ -450,7 +450,7 @@ defmodule SudokuAlgo2Test do
 
   end
 
-  # @tag :pending
+  # # @tag :pending
   # |> Sudoku.Display.pretty
   test "resolve harder harder sudoku" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"

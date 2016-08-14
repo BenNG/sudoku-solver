@@ -61,8 +61,9 @@ defmodule Sudoku.Backtracking do
   def is_last_possibility?([{coor,v}|_], map) do
     possibilities = Map.get(map, coor)
     index = Enum.find_index(possibilities, fn(x) -> x == v end)
+    bool = index === length(possibilities) - 1
     # IO.inspect "last value for : #{inspect {coor, v}} --> #{bool}"
-    index === length(possibilities) - 1
+    bool
   end
 
   def add([], [coor|_], map) do
@@ -97,7 +98,12 @@ defmodule Sudoku.Backtracking do
   end
 
   def drop([], _), do: raise Sudoku.Backtracking.EmptyStack
-  def drop([_h|t], map) do
+  def drop([h|[]] = stack, map) do
+    # IO.inspect "do not drop last element"
+    stack
+    # on ne retire pas le dernier element on le laise pour qu'il soit ierate
+  end
+  def drop([_h|t] = stack, map) do
     # IO.inspect "droping: #{inspect _h}"
     # IO.inspect "stack: #{inspect stack}"
     if is_last_possibility?(t, Agent.get(MV, &(&1))) do
