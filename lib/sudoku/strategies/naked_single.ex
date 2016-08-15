@@ -18,8 +18,14 @@ defmodule Sudoku.Strategies.NakedSingle do
       | ------------------------------ | ------------------------------ | ------------------------------ |
   """
 
-
   def run(map) do
+    values = Sudoku.Strategies.NakedSingle.do_run(map)
+    map = Sudoku.ApplyValuesFast.run(map, values)
+    values = Sudoku.Strategies.NakedSingle.do_run(map)
+    if Enum.empty?(values), do: map, else: run(map)
+  end
+
+  def do_run(map) do
     rows = Sudoku.Board.generate_rows
     cols = Sudoku.Board.generate_columns
     boxes = Sudoku.Board.generate_boxes

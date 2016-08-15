@@ -1,7 +1,7 @@
 defmodule SudokuApplyValuesTest do
   use ExUnit.Case, async: true
 
-  @tag :pending
+  # @tag :pending
   test "new values found" do
 
     new_map = %{
@@ -28,12 +28,12 @@ defmodule SudokuApplyValuesTest do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.ApplyValues.new_single_value_found(new_map, old_map) === %{
+    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
   end
-  @tag :pending
+  # @tag :pending
   test "no new values found" do
 
     new_map = %{
@@ -48,16 +48,16 @@ defmodule SudokuApplyValuesTest do
       {8,0} => [8],
     }
 
-    assert Sudoku.ApplyValues.new_single_value_found(new_map, new_map) === %{}
+    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, new_map) === %{}
 
   end
 
-  @tag :pending
+  # @tag :pending
   test "apply values" do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)
     values = Sudoku.Board.init
-    assert Sudoku.ApplyValues.run(values, raw_map) == %{
+    assert Sudoku.ApplyValuesFast.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
       {1,0} => [1,4,5,7,8,9],
       {2,0} => [3],

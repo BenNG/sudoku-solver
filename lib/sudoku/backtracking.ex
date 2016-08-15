@@ -54,7 +54,7 @@ defmodule Sudoku.Backtracking do
   end
 
   def update_map(stack, map) do
-    Sudoku.ApplyValues.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
+    Sudoku.ApplyValuesFast.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
   def is_last_possibility?([], _), do: raise Sudoku.Backtracking.EmptyStack

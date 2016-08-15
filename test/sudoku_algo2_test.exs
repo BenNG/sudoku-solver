@@ -38,7 +38,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.ApplyValues.new_single_value_found(new_map, old_map) === %{
+    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
@@ -58,16 +58,16 @@ defmodule SudokuAlgo2Test do
       {8,0} => [8],
     }
 
-    assert Sudoku.ApplyValues.new_single_value_found(new_map, new_map) === %{}
+    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, new_map) === %{}
 
   end
 
-  @tag :pending
+  # @tag :pending
   test "apply values" do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)
     values = Sudoku.Board.init
-    assert Sudoku.ApplyValues.run(values, raw_map) == %{
+    assert Sudoku.ApplyValuesFast.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
       {1,0} => [1,4,5,7,8,9],
       {2,0} => [3],
@@ -167,7 +167,7 @@ defmodule SudokuAlgo2Test do
           {5, 0} => [1, 4, 9],
         })
 
-    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {8, 0} => 6}
+    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {8, 0} => 6}
   end
 
   # @tag :pending
@@ -184,7 +184,7 @@ defmodule SudokuAlgo2Test do
           {1, 7} => [2],
           {1, 1} => [6],
         })
-    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {1, 0} => 4}
+    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {1, 0} => 4}
   end
 
   # @tag :pending
@@ -201,7 +201,7 @@ defmodule SudokuAlgo2Test do
       {1,8} => [5,8,9],
       {2,8} => [4],
     })
-    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {0, 8} => 6}
+    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {0, 8} => 6}
   end
 
   # @tag :pending
@@ -236,7 +236,7 @@ defmodule SudokuAlgo2Test do
       {1, 8} => [5,8,9],
       {2, 8} => [4],
     })
-    assert Sudoku.Strategies.NakedSingle.run(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
+    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {0, 8} => 6, {1, 0} => 4, {8, 0} => 6 }
   end
 
   # @tag :pending
@@ -331,7 +331,7 @@ defmodule SudokuAlgo2Test do
           {7, 3} => [2, 3, 7, 9]
       }
 
-  assert Sudoku.Strategies.NakedSingle.run(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
+  assert Sudoku.Strategies.NakedSingle.do_run(blocked_map) == %{{0, 8} => 6, {1, 0} => 4, {1, 5} => 8, {3, 6} => 6, {4, 6} => 5, {5, 2} => 4, {6, 4} => 6, {8, 0} => 6}
 
   end
 
@@ -450,7 +450,7 @@ defmodule SudokuAlgo2Test do
 
   end
 
-  @tag :pending
+  # @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_3" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
@@ -458,7 +458,7 @@ defmodule SudokuAlgo2Test do
     {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
-  @tag :pending
+  # @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_4" do
     raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
@@ -466,7 +466,7 @@ defmodule SudokuAlgo2Test do
     {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
-  @tag :pending
+  # @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_5" do
     raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
@@ -474,7 +474,7 @@ defmodule SudokuAlgo2Test do
     {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
-  @tag :pending
+  # @tag :pending
   # |> Sudoku.Display.pretty
   test "resolve --- euler 96 ---" do
     assert Sudoku.File.resolve_euler_96 == 24702
