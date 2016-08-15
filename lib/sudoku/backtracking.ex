@@ -65,7 +65,9 @@ defmodule Sudoku.Backtracking do
     # IO.inspect "last value for : #{inspect {coor, v}} --> #{bool}"
     bool
   end
-
+  @doc """
+  As the stack is empty, we add the fisrt moving element with his first value
+  """
   def add([], [coor|_], map) do
     values = Map.get(map, coor)
     v = Enum.fetch!(values, 0)
@@ -98,10 +100,18 @@ defmodule Sudoku.Backtracking do
   end
 
   def drop([], _), do: raise Sudoku.Backtracking.EmptyStack
-  def drop([h|[]] = stack, map) do
-    # IO.inspect "do not drop last element"
-    stack
-    # on ne retire pas le dernier element on le laise pour qu'il soit ierate
+  @doc """
+    The tail is empty which is going raise error in iteration
+    So in this situation we keep the last element
+  """
+  def drop([h|[]] = stack, map), do: stack
+  def drop([_h|t] = stack, map) do
+    if is_last_possibility?(t, Agent.get(MV, &(&1))) do
+      # we drop more than one element
+      drop(t, map)
+    else
+      t
+    end
   end
   def drop([_h|t] = stack, map) do
     # IO.inspect "droping: #{inspect _h}"

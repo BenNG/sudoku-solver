@@ -75,7 +75,6 @@ defmodule Sudoku.DataStructureUtils do
     values = Map.values(fixed_map)
   end
 
-
   defmodule BadInputLength do
     defexception []
     def message(_), do: "Please provide an input with 81 numbers"

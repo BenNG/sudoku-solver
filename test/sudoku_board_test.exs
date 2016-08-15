@@ -1,7 +1,7 @@
 defmodule SudokuBoardTest do
   use ExUnit.Case, async: true
 
-  @tag :pending
+  # @tag :pending
   test "generate_columns" do
     assert Sudoku.Board.generate_columns == [
       [{0,0},{0,1},{0,2},{0,3},{0,4},{0,5},{0,6},{0,7},{0,8},],
@@ -16,7 +16,7 @@ defmodule SudokuBoardTest do
     ]
   end
 
-  @tag :pending
+  # @tag :pending
   test "generate_rows" do
     assert Sudoku.Board.generate_rows == [
       [{0,0},{1,0},{2,0},{3,0},{4,0},{5,0},{6,0},{7,0},{8,0},],
@@ -31,7 +31,7 @@ defmodule SudokuBoardTest do
     ]
   end
 
-  @tag :pending
+  # @tag :pending
   test "generate_boxes" do
     assert Sudoku.Board.generate_boxes == [
       [{0,0},{0,1},{0,2},{1,0},{1,1},{1,2},{2,0},{2,1},{2,2}],
@@ -46,32 +46,32 @@ defmodule SudokuBoardTest do
     ]
   end
 
-  @tag :pending
+  # @tag :pending
   test "get coordinates of box {5,5} " do
     assert Sudoku.Board.generate_box({5,5}) ==
       [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
   end
 
-  @tag :pending
+  # @tag :pending
   test "get coordinates of box 4" do
     assert Sudoku.Board.generate_box(4) ==
       [{3,3},{3,4},{3,5},{4,3},{4,4},{4,5},{5,3},{5,4},{5,5}]
   end
 
-  @tag :pending
+  # @tag :pending
   test "get coordinates of column number 3" do
     assert Sudoku.Board.generate_column(3) ==
       [{3,0},{3,1},{3,2},{3,3},{3,4},{3,5},{3,6},{3,7},{3,8}]
   end
 
-  @tag :pending
+  # @tag :pending
   test "get coordinates of row number 4 (0 based)" do
     assert Sudoku.Board.generate_row(4) ==
       [{0,4},{1,4},{2,4},{3,4},{4,4},{5,4},{6,4},{7,4},{8,4}]
   end
 
 
-  @tag :pending
+  # @tag :pending
   test "initial values" do
     map = Sudoku.Board.init
     assert map == %{
