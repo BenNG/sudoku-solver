@@ -1,7 +1,7 @@
 defmodule SudokuApplyValuesTest do
   use ExUnit.Case, async: true
 
-  # @tag :pending
+  @tag :pending
   test "new values found" do
 
     new_map = %{
@@ -33,7 +33,7 @@ defmodule SudokuApplyValuesTest do
     }
 
   end
-  # @tag :pending
+  @tag :pending
   test "no new values found" do
 
     new_map = %{
@@ -52,7 +52,7 @@ defmodule SudokuApplyValuesTest do
 
   end
 
-  # @tag :pending
+  @tag :pending
   test "apply values" do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)

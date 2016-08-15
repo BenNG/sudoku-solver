@@ -73,8 +73,8 @@ defmodule Sudoku.Backtracking do
     [{coor, v}]
   end
 
-  def add([h|_] = stack, moving_coords, map) do
-    index = Enum.find_index(moving_coords, fn(x) -> x == elem(h,0) end)
+  def add([{h_coor, _}|_] = stack, moving_coords, map) do
+    index = Enum.find_index(moving_coords, &(&1 == h_coor))
     coor = Enum.fetch!(moving_coords, index + 1)
     values = Map.get(map, coor)
     v = Enum.fetch!(values, 0)

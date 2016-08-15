@@ -40,6 +40,7 @@ defmodule Sudoku.DataStructureUtils do
 
   def stack_to_map(stack) do
     Enum.reduce(stack, %{}, fn({coor,v}, acc) ->
+      v = if is_list(v), do: v, else: [v]
       Map.merge(acc, %{coor => v})
     end)
   end
@@ -66,6 +67,14 @@ defmodule Sudoku.DataStructureUtils do
   def nbr_of_possibilities_left(map) do
     Enum.reduce(Map.values(map), 0 , &(&2 + length(&1)))
   end
+
+
+  def map_to_list_of_fixed_values(map, coords) do
+    map = Map.take(map, coords)
+    fixed_map = Sudoku.DataStructureUtils.filter_fixed_values(map)
+    values = Map.values(fixed_map)
+  end
+
 
   defmodule BadInputLength do
     defexception []

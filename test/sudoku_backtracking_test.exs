@@ -41,7 +41,7 @@ defmodule SudokuBacktrackingTest do
     ]
 end
 
-  # @tag :pending
+  @tag :pending
   test "create built in map" do
     assert Sudoku.DataStructureUtils.input_str_to_map("003020600000000000000000000000000000000000000000000000000000000000000000000000000")
       == %{
@@ -51,7 +51,7 @@ end
       }
   end
 
-  # @tag :pending
+  @tag :pending
   test "create built in map2" do
     assert Sudoku.DataStructureUtils.input_str_to_map("003020600" <> "000000000" <> "000000000" <> "070000000" <> "000000000" <> "000000000" <> "005000000" <> "000000000" <> "000000900")
       == %{
@@ -64,7 +64,7 @@ end
       }
   end
 
-  # @tag :pending
+  @tag :pending
   test "add" do
 
     input = Sudoku.DataStructureUtils.input_str_to_map(
@@ -83,7 +83,7 @@ end
     assert Sudoku.Backtracking.add([], moving_coords, map) == [{{1,0}, 1}]
   end
 
-  # @tag :pending
+  @tag :pending
   test "add 2" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "320020600" <>
@@ -102,7 +102,7 @@ end
       assert Sudoku.Backtracking.add([], moving_coords, map) == [{{2,0}, 7}]
   end
 
-  # @tag :pending
+  @tag :pending
   test "add 3" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -122,7 +122,7 @@ end
       assert Sudoku.Backtracking.add(stack, moving_coords, map) == [{{5,0}, 1}, {{3,0}, 7}]
 
   end
-  # @tag :pending
+  @tag :pending
   test "iterate empty stack" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -140,7 +140,7 @@ end
       assert_raise Sudoku.Backtracking.EmptyStack, fn -> Sudoku.Backtracking.iterate([], moving_coords, map) end
 
   end
-  # @tag :pending
+  @tag :pending
   test "iterate 1" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -158,7 +158,7 @@ end
       assert Sudoku.Backtracking.iterate( [{{3,0}, 1}], moving_coords, map) == [{{3,0}, 2}]
 
   end
-  # @tag :pending
+  @tag :pending
   test "iterate 2" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -178,7 +178,7 @@ end
 
   end
 
-  # @tag :pending
+  @tag :pending
   test "iterate 3" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -198,7 +198,7 @@ end
 
   end
 
-  # @tag :pending
+  @tag :pending
   test "iterate 4" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "325020600" <>
@@ -222,7 +222,7 @@ end
   end
 
 
-  # @tag :pending
+  @tag :pending
   test "drop" do
     input = Sudoku.DataStructureUtils.input_str_to_map(
       "000020600" <>
@@ -243,7 +243,7 @@ end
     Agent.stop(MV)
   end
 
-  # @tag :pending
+  @tag :pending
   test "drop 2" do
     Agent.start(fn -> %{} end, name: MV)
     assert_raise Sudoku.Backtracking.EmptyStack, fn ->  Sudoku.Backtracking.drop([], %{})  end

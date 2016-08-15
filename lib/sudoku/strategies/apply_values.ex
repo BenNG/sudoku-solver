@@ -1,7 +1,7 @@
 defmodule Sudoku.ApplyValues do
 
     # debug only
-    def run(map, values, spread = false) do
+    def run(map, values) do
         Enum.reduce(Map.keys(values), map, fn(key, acc) ->
           Map.put(acc, key, Map.get(values, key))
         end)
@@ -9,12 +9,12 @@ defmodule Sudoku.ApplyValues do
 
     # We apply the given values to the map of possibilities
     # It possibly create new single values which values we can count on (like given values)
-    def run(map, values) do
-        new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
-        new_values = new_single_value_found(new_map, map)
-
-        if Enum.empty?(new_values), do: new_map, else: Sudoku.ApplyValues.run(new_map, new_values)
-    end
+    # def run(map, values) do
+    #     new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
+    #     new_values = new_single_value_found(new_map, map)
+    #
+    #     if Enum.empty?(new_values), do: new_map, else: Sudoku.ApplyValues.run(new_map, new_values)
+    # end
 
     def new_single_value_found(new_map, old_map) do
       new_map = new_map |> Sudoku.DataStructureUtils.filter_fixed_values
