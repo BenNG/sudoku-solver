@@ -28,7 +28,7 @@ defmodule SudokuApplyValuesTest do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, old_map) === %{
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
@@ -48,7 +48,7 @@ defmodule SudokuApplyValuesTest do
       {8,0} => [8],
     }
 
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, new_map) === %{}
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, new_map) === %{}
 
   end
 
@@ -57,7 +57,7 @@ defmodule SudokuApplyValuesTest do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)
     values = Sudoku.Board.init
-    assert Sudoku.ApplyValuesFast.run(values, raw_map) == %{
+    assert Sudoku.ApplyValues.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
       {1,0} => [1,4,5,7,8,9],
       {2,0} => [3],

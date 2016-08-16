@@ -20,7 +20,7 @@ defmodule Sudoku.Strategies.NakedSingle do
 
   def run(map) do
     values = Sudoku.Strategies.NakedSingle.do_run(map)
-    map = Sudoku.ApplyValuesFast.run(map, values)
+    map = Sudoku.ApplyValues.run(map, values)
     values = Sudoku.Strategies.NakedSingle.do_run(map)
     if Enum.empty?(values), do: map, else: run(map)
   end

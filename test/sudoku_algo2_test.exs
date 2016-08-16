@@ -1,6 +1,21 @@
 defmodule SudokuAlgo2Test do
   use ExUnit.Case, async: true
 
+  setup do
+    [
+      input_str_1: "003020600900305001001806400008102900700000008006708200002609500800203009005010300",
+      input_str_1_result: "483921657967345821251876493548132976729564138136798245372689514814253769695417382",
+      input_str_2: "200080300060070084030500209000105408000000000402706000301007040720040060004010003",
+      input_str_2_result: "245981376169273584837564219976125438513498627482736951391657842728349165654812793",
+      input_str_3: "100920000524010000000000070050008102000000000402700090060000000000030945000071006",
+      input_str_3_result: "176923584524817639893654271957348162638192457412765398265489713781236945349571826",
+      input_str_4: "850002400720000009004000000000107002305000900040000000000080070017000000000036040",
+      input_str_4_result: "859612437723854169164379528986147352375268914241593786432981675617425893598736241",
+      input_str_5: "005300000800000020070010500400005300010070006003200080060500009004000030000009700",
+      input_str_5_result: "145327698839654127672918543496185372218473956753296481367542819984761235521839764",
+    ]
+  end
+
   # @tag :pending
   test "length values == 1 in map" do
     assert Sudoku.DataStructureUtils.filter_fixed_values(%{
@@ -38,7 +53,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [1,2,3,4,5,6,7,8,9],
     }
 
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, old_map) === %{
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, old_map) === %{
       {8,0} => [8],
     }
 
@@ -58,7 +73,7 @@ defmodule SudokuAlgo2Test do
       {8,0} => [8],
     }
 
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, new_map) === %{}
+    assert Sudoku.ApplyValues.new_single_value_found(new_map, new_map) === %{}
 
   end
 
@@ -67,7 +82,7 @@ defmodule SudokuAlgo2Test do
     raw = "003020600000000000000000000000000000000000000000000000000000000000000000000000000"
     raw_map = Sudoku.DataStructureUtils.input_str_to_map(raw)
     values = Sudoku.Board.init
-    assert Sudoku.ApplyValuesFast.run(values, raw_map) == %{
+    assert Sudoku.ApplyValues.run(values, raw_map) == %{
       {0,0} => [1,4,5,7,8,9],
       {1,0} => [1,4,5,7,8,9],
       {2,0} => [3],
@@ -433,46 +448,44 @@ defmodule SudokuAlgo2Test do
   end
 
   # @tag :pending
-  test "sudoku input_str_1" do
-    raw = "003020600900305001001806400008102900700000008006708200002609500800203009005010300"
-    answer = "483921657967345821251876493548132976729564138136798245372689514814253769695417382"
-    {_, result} = raw |> Sudoku.Algo2.run
-    assert result |> Sudoku.DataStructureUtils.map_to_raw_data  == answer
+  test "sudoku input_str_1", context do
+    input_str_1 = context[:input_str_1]
+    input_str_1_result = context[:input_str_1_result]
+    {:ok , result} = Sudoku.Algo2.run(input_str_1, :raw)
+    assert result == input_str_1_result
   end
 
   # @tag :pending
-  test "sudoku input_str_2" do
-    raw = "200080300060070084030500209000105408000000000402706000301007040720040060004010003"
-    answer = "245981376169273584837564219976125438513498627482736951391657842728349165654812793"
-
-    {_, result} = raw |> Sudoku.Algo2.run(:raw)
-    assert result == answer
-
+  test "sudoku input_str_2", context do
+    input_str_2 = context[:input_str_2]
+    input_str_2_result = context[:input_str_2_result]
+    {:ok , result} = Sudoku.Algo2.run(input_str_2, :raw)
+    assert result == input_str_2_result
   end
 
   # @tag :pending
   # |> Sudoku.Display.pretty
-  test "sudoku input_str_3" do
-    raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
-    answer = "176923584524817639893654271957348162638192457412765398265489713781236945349571826"
-    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
-    assert result == answer
+  test "sudoku input_str_3", context do
+    input_str_3 = context[:input_str_3]
+    input_str_3_result = context[:input_str_3_result]
+    {:ok , result} = Sudoku.Algo2.run(input_str_3, :raw)
+    assert result == input_str_3_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
-  test "sudoku input_str_4" do
-    raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
-    answer = "859612437723854169164379528986147352375268914241593786432981675617425893598736241"
-    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
-    assert result == answer
+  test "sudoku input_str_4", context do
+    input_str_4 = context[:input_str_4]
+    input_str_4_result = context[:input_str_4_result]
+    {:ok , result} = Sudoku.Algo2.run(input_str_4, :raw)
+    assert result == input_str_4_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
-  test "sudoku input_str_5" do
-    raw = "005300000800000020070010500400005300010070006003200080060500009004000030000009700"
-    answer = "145327698839654127672918543496185372218473956753296481367542819984761235521839764"
-    {:ok , result} = Sudoku.Algo2.run(raw, :raw)
-    assert result == answer
+  test "sudoku input_str_5", context do
+    input_str_5 = context[:input_str_5]
+    input_str_5_result = context[:input_str_5_result]
+    {:ok , result} = Sudoku.Algo2.run(input_str_5, :raw)
+    assert result == input_str_5_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
