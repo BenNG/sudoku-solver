@@ -11,56 +11,6 @@ defmodule SudokuAlgo2Test do
         "wxc" => [1]
       }
   end
-  # @tag :pending
-  test "new values found" do
-
-    new_map = %{
-      {0,0} => [1],
-      {1,0} => [1,2],
-      {2,0} => [1,2,3,4,5,6,7,8,9],
-      {3,0} => [1,2,3,4,5,6,7,8,9],
-      {4,0} => [1,2,3],
-      {5,0} => [1,2,3,5,6,7,8,9],
-      {6,0} => [1,2,3,4,5,6,7,8,9],
-      {7,0} => [1,2,3,4,5,6,7,8,9],
-      {8,0} => [8],
-    }
-
-    old_map = %{
-      {0,0} => [1],
-      {1,0} => [1,2],
-      {2,0} => [1,2,3,4,5,6,7,8,9],
-      {3,0} => [1,2,3,4,5,6,7,8,9],
-      {4,0} => [1,2,3],
-      {5,0} => [1,2,3,5,6,7,8,9],
-      {6,0} => [1,2,3,4,5,6,7,8,9],
-      {7,0} => [1,2,3,4,5,6,7,8,9],
-      {8,0} => [1,2,3,4,5,6,7,8,9],
-    }
-
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, old_map) === %{
-      {8,0} => [8],
-    }
-
-  end
-  # @tag :pending
-  test "no new values found" do
-
-    new_map = %{
-      {0,0} => [1],
-      {1,0} => [1,2],
-      {2,0} => [1,2,3,4,5,6,7,8,9],
-      {3,0} => [1,2,3,4,5,6,7,8,9],
-      {4,0} => [1,2,3],
-      {5,0} => [1,2,3,5,6,7,8,9],
-      {6,0} => [1,2,3,4,5,6,7,8,9],
-      {7,0} => [1,2,3,4,5,6,7,8,9],
-      {8,0} => [8],
-    }
-
-    assert Sudoku.ApplyValuesFast.new_single_value_found(new_map, new_map) === %{}
-
-  end
 
   # @tag :pending
   test "apply values" do
@@ -450,7 +400,7 @@ defmodule SudokuAlgo2Test do
 
   end
 
-  # @tag :pending
+  @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_3" do
     raw = "100920000524010000000000070050008102000000000402700090060000000000030945000071006"
@@ -458,7 +408,7 @@ defmodule SudokuAlgo2Test do
     {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
-  # @tag :pending
+  @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_4" do
     raw = "850002400720000009004000000000107002305000900040000000000080070017000000000036040"
@@ -474,7 +424,7 @@ defmodule SudokuAlgo2Test do
     {:ok , result} = Sudoku.Algo2.run(raw, :raw)
     assert result == answer
   end
-  # @tag :pending
+  @tag :pending
   # |> Sudoku.Display.pretty
   test "resolve --- euler 96 ---" do
     assert Sudoku.File.resolve_euler_96 == 24702

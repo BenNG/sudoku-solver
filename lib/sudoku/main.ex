@@ -13,7 +13,7 @@
     input_map = Sudoku.DataStructureUtils.input_str_to_map(input_str)
     initial_map = Sudoku.Board.init
 
-    map = Sudoku.ApplyValuesFast.run(initial_map, input_map)
+    map = Sudoku.ApplyValues.run(initial_map, input_map)
 
     map = [
       fn(map) -> Sudoku.Strategies.NakedSingle.run(map)   end,
