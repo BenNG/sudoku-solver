@@ -97,5 +97,11 @@ defmodule Sudoku.Board do
       n = 3 * div(ord, 3) + div(abs, 3)
       generate_box(n)
     end
+    @doc """
+    Returns all the possible units
+    """
+    def generate_units do
+      generate_rows ++ generate_columns ++ generate_boxes
+    end
 
 end

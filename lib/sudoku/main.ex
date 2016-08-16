@@ -1,25 +1,18 @@
- defmodule Sudoku.Algo2 do
-  # import Sudoku.Board
-  # import Sudoku.Display
-  # import Sudoku.Validation
-  # import Sudoku.Strategies.NakedSingle
-  @moduledoc """
-    Provide set of functions to solve sudoku puzzles
-    Using Constraint Propagation
-  """
+ defmodule Sudoku.Main do
 
   def run(input_str, output \\ :map) do
-    # IO.inspect "starting with #{input_str}"
+    
     input_map = Sudoku.DataStructureUtils.input_str_to_map(input_str)
     initial_map = Sudoku.Board.init
 
     map = Sudoku.ApplyValues.run(initial_map, input_map)
 
-    map = [
+    strategies = [
       fn(map) -> Sudoku.Strategies.NakedSingle.run(map)   end,
       fn(map) -> Sudoku.Backtracking.run(map) end,
     ]
-    |> Enum.reduce_while(map, fn(strategy, acc) ->
+
+    map = Enum.reduce_while(strategies, map, fn(strategy, acc) ->
       if Sudoku.Validation.is_complete?(acc), do: {:halt, acc}, else: {:cont, strategy.(acc) }
     end)
 
