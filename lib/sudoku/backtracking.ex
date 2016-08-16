@@ -57,14 +57,6 @@ defmodule Sudoku.Backtracking do
     Sudoku.ApplyValuesFast.run(map, Sudoku.DataStructureUtils.stack_to_map(stack))
   end
 
-  def is_last_possibility?([], _), do: raise Sudoku.Backtracking.EmptyStack
-  def is_last_possibility?([{coor,v}|_], map) do
-    possibilities = Map.get(map, coor)
-    index = Enum.find_index(possibilities, fn(x) -> x == v end)
-    bool = index === length(possibilities) - 1
-    # IO.inspect "last value for : #{inspect {coor, v}} --> #{bool}"
-    bool
-  end
   @doc """
   As the stack is empty, we add the fisrt moving element with his first value
   """
@@ -74,7 +66,9 @@ defmodule Sudoku.Backtracking do
     # IO.inspect "adding: #{inspect {coor, v}}"
     [{coor, v}]
   end
-
+  @doc """
+  add the next moving element with it's first value
+  """
   def add([{h_coor, _}|_] = stack, moving_coords, map) do
     index = Enum.find_index(moving_coords, &(&1 == h_coor))
     coor = Enum.fetch!(moving_coords, index + 1)
@@ -85,6 +79,9 @@ defmodule Sudoku.Backtracking do
   end
 
   def iterate([], _, _), do: raise Sudoku.Backtracking.EmptyStack
+  @doc """
+  Give the next value to the element at the head of the stack
+  """
   def iterate([{coor, v}|t], _, map) do
     # IO.inspect "map #{inspect map}"
     # IO.inspect "iterate from #{inspect {coor, v} }"
@@ -105,22 +102,25 @@ defmodule Sudoku.Backtracking do
     So in this situation we keep the last element
   """
   def drop([h|[]] = stack, map), do: stack
+  @doc """
+    Drop the head element of the stack.
+    It drops recursively if the following element reach the last possibility
+  """
   def drop([_h|t] = stack, map) do
-    if is_last_possibility?(t, Agent.get(MV, &(&1))) do
-      # we drop more than one element
-      drop(t, map)
-    else
-      t
-    end
+    history = Agent.get(MV, &(&1))
+    if is_last_possibility?(t, history), do: drop(t, map), else: t
   end
-  def drop([_h|t] = stack, map) do
-    # IO.inspect "droping: #{inspect _h}"
-    # IO.inspect "stack: #{inspect stack}"
-    if is_last_possibility?(t, Agent.get(MV, &(&1))) do
-      drop(t, map)
-    else
-      t
-    end
+
+  def is_last_possibility?([], _), do: raise Sudoku.Backtracking.EmptyStack
+  @doc """
+  Tells is the element has reach his last value
+  """
+  def is_last_possibility?([{coor,v}|_], map) do
+    possibilities = Map.get(map, coor)
+    index = Enum.find_index(possibilities, fn(x) -> x == v end)
+    bool = index === length(possibilities) - 1
+    # IO.inspect "last value for : #{inspect {coor, v}} --> #{bool}"
+    bool
   end
 
   defmodule NoMorePossibilitiesForThisElement do

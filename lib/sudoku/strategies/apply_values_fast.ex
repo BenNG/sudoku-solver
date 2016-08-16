@@ -7,7 +7,9 @@ defmodule Sudoku.ApplyValuesFast do
 
     """
     def run(map, values) do
-        new_map = Enum.reduce(Map.keys(values), map, &(apply_value(&2, &1, Map.get(values, &1))))
+        new_map = Enum.reduce(Map.keys(values), map, fn(key, acc) ->
+          apply_value(acc, key, Map.get(values, key))
+        end)
         new_values = new_single_value_found(new_map, map)
 
         if Enum.empty?(new_values), do: new_map, else: run(new_map, new_values)
