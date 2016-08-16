@@ -23,7 +23,7 @@ defmodule Sudoku.DataStructureUtils do
     end)
   end
 
-  def map_to_raw_data(map) do
+  def map_to_input_str(map) do
     Sudoku.Board.generate_rows
     |> List.flatten
     |> Enum.reduce("", fn(tuple, acc) ->

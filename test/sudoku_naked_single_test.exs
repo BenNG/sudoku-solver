@@ -3,7 +3,6 @@ defmodule SudokuNakedSingleTest do
 
   # @tag :pending
   test "no naked single" do
-    initial_map = Sudoku.Board.init
     assert Sudoku.Strategies.NakedSingle.run(Sudoku.Board.init) === Sudoku.Board.init
   end
 

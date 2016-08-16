@@ -1,9 +1,10 @@
 defmodule Sudoku.File do
   def run_file(filename) do
     Sudoku.Loader.load_file(filename)
-    |> Enum.map(fn(raw) ->
-      {:ok, result} = Sudoku.Algo2.run(raw, :raw)
+    |> Enum.map(fn(input_str) ->
+      {:ok, result} = Sudoku.Main.run(input_str)
       result
+      |> Sudoku.DataStructureUtils.map_to_input_str
     end)
   end
 

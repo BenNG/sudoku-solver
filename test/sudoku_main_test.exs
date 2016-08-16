@@ -1,4 +1,4 @@
-defmodule SudokuAlgo2Test do
+defmodule SudokuMainTest do
   use ExUnit.Case, async: true
 
   setup do
@@ -218,16 +218,16 @@ defmodule SudokuAlgo2Test do
   test "sudoku input_str_1", context do
     input_str_1 = context[:input_str_1]
     input_str_1_result = context[:input_str_1_result]
-    {:ok , result} = Sudoku.Algo2.run(input_str_1, :raw)
-    assert result == input_str_1_result
+    {:ok , result} = Sudoku.Main.run(input_str_1)
+    assert result |> Sudoku.DataStructureUtils.map_to_input_str == input_str_1_result
   end
 
   # @tag :pending
   test "sudoku input_str_2", context do
     input_str_2 = context[:input_str_2]
     input_str_2_result = context[:input_str_2_result]
-    {:ok , result} = Sudoku.Algo2.run(input_str_2, :raw)
-    assert result == input_str_2_result
+    {:ok , result} = Sudoku.Main.run(input_str_2)
+    assert result |> Sudoku.DataStructureUtils.map_to_input_str == input_str_2_result
   end
 
   # @tag :pending
@@ -235,24 +235,24 @@ defmodule SudokuAlgo2Test do
   test "sudoku input_str_3", context do
     input_str_3 = context[:input_str_3]
     input_str_3_result = context[:input_str_3_result]
-    {:ok , result} = Sudoku.Algo2.run(input_str_3, :raw)
-    assert result == input_str_3_result
+    {:ok , result} = Sudoku.Main.run(input_str_3)
+    assert result |> Sudoku.DataStructureUtils.map_to_input_str == input_str_3_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_4", context do
     input_str_4 = context[:input_str_4]
     input_str_4_result = context[:input_str_4_result]
-    {:ok , result} = Sudoku.Algo2.run(input_str_4, :raw)
-    assert result == input_str_4_result
+    {:ok , result} = Sudoku.Main.run(input_str_4)
+    assert result |> Sudoku.DataStructureUtils.map_to_input_str == input_str_4_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
   test "sudoku input_str_5", context do
     input_str_5 = context[:input_str_5]
     input_str_5_result = context[:input_str_5_result]
-    {:ok , result} = Sudoku.Algo2.run(input_str_5, :raw)
-    assert result == input_str_5_result
+    {:ok , result} = Sudoku.Main.run(input_str_5)
+    assert result |> Sudoku.DataStructureUtils.map_to_input_str == input_str_5_result
   end
   # @tag :pending
   # |> Sudoku.Display.pretty
