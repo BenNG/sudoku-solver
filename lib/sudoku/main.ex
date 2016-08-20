@@ -4,6 +4,8 @@ defmodule Sudoku.Main do
   """
 
   def run(input_str) do
+    alias Sudoku.Validation
+
     input_map = Sudoku.DataStructureUtils.input_str_to_map(input_str)
     map = Sudoku.ApplyValues.run(Sudoku.Board.init, input_map)
 
@@ -13,10 +15,9 @@ defmodule Sudoku.Main do
     ]
 
     map = Enum.reduce_while(strategies, map, fn(strategy, acc) ->
-      if Sudoku.Validation.is_complete?(acc), do: {:halt, acc}, else: {:cont, strategy.(acc) }
+      if Validation.is_complete?(acc), do: {:halt, acc}, else: {:cont, strategy.(acc) }
     end)
 
-    if Sudoku.Validation.is_complete?(map), do: {:ok, map}, else: {:error, map}
+    if Validation.is_complete?(map), do: {:ok, map}, else: {:error, map}
   end
-
 end

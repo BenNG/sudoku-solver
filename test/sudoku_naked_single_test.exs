@@ -10,18 +10,18 @@ defmodule SudokuNakedSingleTest do
   test "naked single row" do
     map = Map.merge(Sudoku.Board.init,
         %{
-          {4, 8} => '\b',
-          {0, 8} => [2],
-          {2, 8} => [5, 7, 9],
-          {8, 8} => [1, 5, 6, 7],
-          {7, 8} => [1, 5, 7],
-          {1, 8} => [1, 4, 5, 7, 9],
-          {3, 8} => [4, 9],
-          {6, 8} => [3],
-          {5, 8} => [1, 4, 9],
+          {4, 0} => '\b',
+          {0, 0} => [2],
+          {2, 0} => [5, 7, 9],
+          {8, 0} => [1, 5, 6, 7],
+          {7, 0} => [1, 5, 7],
+          {1, 0} => [1, 4, 5, 7, 9],
+          {3, 0} => [4, 9],
+          {6, 0} => [3],
+          {5, 0} => [1, 4, 9],
         })
 
-    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {8, 8} => 6}
+    assert Sudoku.Strategies.NakedSingle.do_run(map) == %{ {8, 0} => 6}
   end
 
   # @tag :pending

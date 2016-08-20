@@ -23,9 +23,11 @@ defmodule Sudoku.Strategies.NakedSingle do
   run recursively the algorithm
   """
   def run(map) do
-    values = Sudoku.Strategies.NakedSingle.do_run(map)
-    map = Sudoku.ApplyValues.run(map, values)
-    values = Sudoku.Strategies.NakedSingle.do_run(map)
+    alias Sudoku.ApplyValues
+
+    values = do_run(map)
+    map = ApplyValues.run(map, values)
+    values = do_run(map)
     if Enum.empty?(values), do: map, else: run(map)
   end
 
