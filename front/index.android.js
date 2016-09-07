@@ -52,7 +52,7 @@ class front extends Component {
     }
     if (key.startsWith('Validation')) {
       return <Validation
-              goBack={this.handleBackAction}
+              goBack= {this.handleBackAction}
               onPress={this._handleAction.bind(this,
               { type: 'push', key: 'Result' + Date.now() })} />
     }
