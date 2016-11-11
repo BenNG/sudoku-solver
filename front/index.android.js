@@ -11,24 +11,45 @@ import {
   Platform,
   Text,
   View,
+  ListView,
   Image,
   CameraRoll,
 } from 'react-native';
+let groupByEveryN = require('groupByEveryN');
 
 export default class front extends Component {
 
+  constructor() {
+    super();
+    this._renderRow = this._renderRow.bind(this);
+    const ds = new ListView.DataSource({ rowHasChanged: this._rowHasChanged });
+    this.state = {
+      dataSource: ds,
+    };
+  }
+
+  _rowHasChanged(r1, r2) {
+    if (r1.length !== r2.length) {
+      return true;
+    }
+
+    for (let i = 0; i < r1.length; i++) {
+      if (r1[i] !== r2[i]) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   _fetch(clear = false) {
 
-    var fetchParams = {
-      first: 5,
+    let fetchParams = {
+      first: 20,
       groupTypes: 'SavedPhotos',
       assetType: 'Photos',
     };
 
-    console.log("-----------------------------");
-    console.log(this.props);
-    console.log("-----------------------------");
-    console.log(Platform.OS);
 
     if (Platform.OS === 'android') {
       // not supported in android
@@ -36,30 +57,30 @@ export default class front extends Component {
     }
 
 
-    console.log("-----------------------------");
-    console.log(fetchParams);
 
     CameraRoll.getPhotos(fetchParams)
       .then((data) => this._appendAssets(data), (e) => logError(e));
   }
 
   _appendAssets(data) {
-    var assets = data.edges;
+    let assets = data.edges;
 
-    console.log("-----------------------------");
-    console.log(assets[0].node.image.uri);
 
     let state = {
-      assets,
+      dataSource: this.state.dataSource.cloneWithRows(
+        groupByEveryN(assets, 2)
+      ),
     };
+
+
 
     this.setState(state);
 
   }
 
-  renderImage(asset) {
-    var imageSize = 150;
-    var imageStyle = [styles.image, { width: imageSize, height: imageSize }];
+  renderImagee(asset) {
+    let imageSize = 150;
+    let imageStyle = [styles.image, { width: imageSize, height: imageSize }];
     return (
       <Image
         source={asset.node.image}
@@ -68,16 +89,27 @@ export default class front extends Component {
     );
   }
 
+  // rowData is an array of images
+  _renderRow(assets, a, b) {
+    let that = this;
+    let images = assets.map((asset) => {
+
+      if (asset === null) {
+        return null;
+      }
+      return that.renderImagee(asset);
+    });
+
+
+
+    return (
+      <View style={styles.row}>
+        {images}
+      </View>
+    );
+  }
 
   render() {
-
-    console.log("-------- state ------------------");
-    console.log(this.state);
-
-    let images;
-    if(this.state && this.state.assets){
-      images = this.state.assets.map((asset) => this.renderImage(asset)); 
-    }
 
     return (
       <View style={styles.container}>
@@ -91,19 +123,25 @@ export default class front extends Component {
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
-        {images}
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow}
+          />
       </View>
     );
   }
 
   componentDidMount() {
-    console.log("componentDidMount");
     this._fetch();
   }
 
 }
 
 const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
