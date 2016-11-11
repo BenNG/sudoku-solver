@@ -50,7 +50,7 @@ export default class front extends Component {
     console.log(assets[0].node.image.uri);
 
     let state = {
-      imageToShow: assets[0],
+      assets,
     };
 
     this.setState(state);
@@ -74,9 +74,9 @@ export default class front extends Component {
     console.log("-------- state ------------------");
     console.log(this.state);
 
-    let image;
-    if(this.state && this.state.imageToShow){
-      image = this.renderImage(this.state.imageToShow);
+    let images;
+    if(this.state && this.state.assets){
+      images = this.state.assets.map((asset) => this.renderImage(asset)); 
     }
 
     return (
@@ -91,7 +91,7 @@ export default class front extends Component {
           Double tap R on your keyboard to reload,{'\n'}
           Shake or press menu button for dev menu
         </Text>
-        {image}
+        {images}
       </View>
     );
   }
