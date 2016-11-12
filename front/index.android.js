@@ -9,11 +9,13 @@ import {
   AppRegistry,
   StyleSheet,
   Platform,
+  ActivityIndicator,
   Text,
   View,
   ListView,
   Image,
   CameraRoll,
+  TouchableOpacity,
 } from 'react-native';
 let groupByEveryN = require('groupByEveryN');
 
@@ -22,71 +24,97 @@ export default class front extends Component {
   constructor() {
     super();
     this._renderRow = this._renderRow.bind(this);
+    this._renderFooterSpinner = this._renderFooterSpinner.bind(this);
+    this._onEndReached = this._onEndReached.bind(this);
+
+    this.state = this.getInitialState();
+  }
+
+  getInitialState() {
     const ds = new ListView.DataSource({ rowHasChanged: this._rowHasChanged });
-    this.state = {
+    return {
+      isEnd: false, // end of all pictures
+      isLoading: false, // can't trigger several requests in the same time 
+      assets: [],
       dataSource: ds,
     };
   }
 
-  _rowHasChanged(r1, r2) {
-    if (r1.length !== r2.length) {
-      return true;
+  fetch(clear) {
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true }, () => { this._fetch(clear) });
     }
-
-    for (let i = 0; i < r1.length; i++) {
-      if (r1[i] !== r2[i]) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
-  _fetch(clear = false) {
+  _fetch(clear) {
+    if (clear) {
+      this.setState(this.getInitialState(), this.fetch);
+      return;
+    }
 
     let fetchParams = {
-      first: 20,
+      first: this.props.batchSize,
       groupTypes: 'SavedPhotos',
       assetType: 'Photos',
     };
-
 
     if (Platform.OS === 'android') {
       // not supported in android
       delete fetchParams.groupTypes;
     }
 
-
+    if (this.state.lastCursor) {
+      fetchParams.after = this.state.lastCursor;
+    }
 
     CameraRoll.getPhotos(fetchParams)
-      .then((data) => this._appendAssets(data), (e) => logError(e));
+      .then((data) => this._getPhotosSuccessCB(data), (e) => logError(e));
   }
 
-  _appendAssets(data) {
+  _onEndReached() {
+    if (!this.state.isEnd) { // here is where we scroll still the end 
+      this.fetch();
+    }
+  }
+
+  _getPhotosSuccessCB(data) {
     let assets = data.edges;
-
-
-    let state = {
-      dataSource: this.state.dataSource.cloneWithRows(
-        groupByEveryN(assets, 2)
-      ),
+    let newState = {
+      isLoading: false,
     };
 
+    if (!data.page_info.has_next_page) {
+      newState.isEnd = true;
+    }
 
+    if (assets.length) {
+      newState.lastCursor = data.page_info.end_cursor;
+      newState.assets = this.state.assets.concat(assets);
+      newState.dataSource = this.state.dataSource.cloneWithRows(
+        groupByEveryN(newState.assets, this.props.imagesPerRow)
+      );
+    }
 
-    this.setState(state);
-
+    this.setState(newState);
   }
 
-  renderImagee(asset) {
+  renderImage(asset) {
     let imageSize = 150;
     let imageStyle = [styles.image, { width: imageSize, height: imageSize }];
     return (
-      <Image
-        source={asset.node.image}
-        style={imageStyle}
-        />
+
+      <TouchableOpacity key={asset} onPress={this._getPhotosSuccessCB.bind(this, asset)}>
+        <Image source={asset.node.image} style={imageStyle} />
+      </TouchableOpacity>
+
     );
+  }
+
+  _renderFooterSpinner() {
+    if (!this.state.isEnd) {
+      return <ActivityIndicator />;
+    }
+    return null;
   }
 
   // rowData is an array of images
@@ -97,10 +125,8 @@ export default class front extends Component {
       if (asset === null) {
         return null;
       }
-      return that.renderImagee(asset);
+      return that.renderImage(asset);
     });
-
-
 
     return (
       <View style={styles.row}>
@@ -110,7 +136,6 @@ export default class front extends Component {
   }
 
   render() {
-
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
@@ -125,6 +150,8 @@ export default class front extends Component {
         </Text>
         <ListView
           dataSource={this.state.dataSource}
+          onEndReached={this._onEndReached}
+          renderFooter={this._renderFooterSpinner}
           renderRow={this._renderRow}
           />
       </View>
@@ -132,7 +159,22 @@ export default class front extends Component {
   }
 
   componentDidMount() {
-    this._fetch();
+    this.fetch();
+  }
+
+  // private
+  _rowHasChanged(r1, r2) {
+    if (r1.length !== r2.length) {
+      return true;
+    }
+
+    for (let i = 0; i < r1.length; i++) {
+      if (r1[i] !== r2[i]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
 }
@@ -164,3 +206,8 @@ const styles = StyleSheet.create({
 });
 
 AppRegistry.registerComponent('front', () => front);
+
+front.defaultProps = {
+  imagesPerRow: 2,
+  batchSize: 5,
+};
