@@ -4,7 +4,9 @@ import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import createLogger from 'redux-logger';
 import { thunkMiddleware } from 'redux-thunk';
 import Immutable from 'immutable';
-import FrontSudoku from './src/home';
+import FrontSudoku from './src/containers/appContainer.js';
+import * as types from './src/actions/types';
+
 
 import {
   AppRegistry,
@@ -18,9 +20,9 @@ const greetingsInitialState = {
 };
 const greetings = (state = Immutable.fromJS(greetingsInitialState), action) => {
   switch (action.type) {
-    case 'NORMAL':
+    case types.NORMAL:
       return state.setIn(["message"], "Salut");
-    case 'RESPECT':
+    case types.RESPECT:
       return state.setIn(["message"], "Bonjour");
     default:
       return state;
@@ -32,9 +34,9 @@ const colorInitialState = {
 };
 const color = (state = Immutable.fromJS(colorInitialState), action) => {
   switch (action.type) {
-    case 'BLACK':
+    case types.BLACK:
       return state.setIn(["value"], "black");
-    case 'GREEN':
+    case types.GREEN:
       return state.setIn(["value"], "green");
     default:
       return state;
