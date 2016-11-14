@@ -41,7 +41,15 @@ const color = (state = Immutable.fromJS(colorInitialState), action) => {
   }
 };
 
-const store = createStore(combineReducers({ greetings, color }));
+const loggerMiddleware = createLogger({predicate: (getState, action) => __DEV__});
+
+const enhancers = compose(
+  applyMiddleware(
+    loggerMiddleware,
+  )
+);
+
+const store = createStore(combineReducers({ greetings, color }), enhancers);
 
 const App = () => {
   return (
