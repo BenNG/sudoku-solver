@@ -3,11 +3,12 @@ import { bindActionCreators } from 'redux';
 import { Provider, connect } from 'react-redux';
 import { ActionCreators } from '../actions'
 import Home from './home';
+import TabView from '../tabs/tabView';
 
 class AppContainer extends Component {
     render() {
         return (
-            <Home {...this.props} />
+            <TabView {...this.props} />
         );
     }
 }

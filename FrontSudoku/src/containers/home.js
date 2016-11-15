@@ -11,7 +11,7 @@ import {
     Button,
 } from 'react-native';
 
-class Home extends Component {
+class AppContainer extends Component {
     render() {
 
         console.log(this.props);
@@ -63,4 +63,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(ActionCreators, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
