@@ -4,6 +4,10 @@ import { Provider, connect } from 'react-redux';
 import { ActionCreators } from '../actions'
 import * as types from '../actions/types';
 import MenuItem from './menuItem';
+import Home from '../containers/home';
+import Puzzle from '../component/puzzle';
+
+
 
 import {
     StyleSheet,
@@ -26,6 +30,23 @@ class TabView extends Component {
             this.props.onTabSelect(tab);
         }
         this.refs.drawer.closeDrawer();
+    }
+
+    renderScene(tab) {
+
+        let component;
+        switch (tab) {
+            case 'home':
+                component = Home;
+                break;
+            case 'sudoku':
+                component = Puzzle;
+                break;
+        }
+
+        return (<View style={{ flex: 1 }}>
+            {React.createElement(component, this.props)}
+        </View>);
     }
 
     renderNavigationView() {
@@ -55,7 +76,7 @@ class TabView extends Component {
                 renderNavigationView={this.renderNavigationView}
                 drawerWidth={300}
                 drawerPosition={DrawerLayoutAndroid.positions.Left}>
-                <Text>Blaaaaaaaaaaaaaaaaaaaaaaaaaaa ! {this.props.navigation.get("tab")}</Text>
+                {this.renderScene(this.props.navigation.get("tab"))}
             </DrawerLayoutAndroid>
         );
     }
