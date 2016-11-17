@@ -1,14 +1,27 @@
 import * as types from './types';
 
-export function goToHome(tab){
+export function switchTab(tab) {
     return {
-        type: types.SWITCH_TAB_TO_HOME,
-        tab: "home",
+        type: types.SWITCH_TAB,
+        tab,
     };
 }
-export function goToSudoku(tab){
+
+export function navigate(action) {
+    return navigateForward(action);
+}
+
+function navigateForward(state) {
     return {
-        type: types.SWITCH_TAB_TO_SUDOKU,
-        tab: "sudoku",
+        type: types.NAVIGATION_FORWARD,
+        state,
+    };
+}
+
+export function navigateBack() {
+    return (dispatch, getState) => {
+        dispatch({
+            type: types.NAVIGATION_BACK,
+        });
     };
 }

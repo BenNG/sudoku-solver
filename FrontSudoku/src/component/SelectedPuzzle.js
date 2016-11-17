@@ -8,17 +8,15 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
 } from 'react-native';
 
-class Puzzle extends Component {
+class SelectedPuzzle extends Component {
     render() {
         return (
             <View style={styles.container}>
                 <Text>
-                    Puzzle
+                    SelectedPuzzle
                 </Text>
-                <Button title="go to selected" onPress={ () => { this.props.navigate({key: "SelectedPuzzle", id: 345}) } } />
             </View>
         );
     }
@@ -33,4 +31,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Puzzle;
+export default SelectedPuzzle;

@@ -4,5 +4,7 @@ export const BLACK = "BLACK";
 export const GREEN = "GREEN";
 
 // navigation
-export const SWITCH_TAB_TO_HOME = "SWITCH_TAB_TO_HOME";
-export const SWITCH_TAB_TO_SUDOKU = "SWITCH_TAB_TO_SUDOKU";
+export const SWITCH_TAB = "SWITCH_TAB";
+
+export const NAVIGATION_FORWARD = "NAVIGATION_FORWARD";
+export const NAVIGATION_BACK  = "NAVIGATION_BACK ";

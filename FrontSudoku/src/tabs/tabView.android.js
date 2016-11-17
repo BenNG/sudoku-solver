@@ -58,13 +58,13 @@ class TabView extends Component {
                     icon={require('./img/home-outline.png')}
                     selectedIcon={require('./img/home-outline.png')}
                     selected={tab === 'home'}
-                    onPress={this.props.goToHome} />
+                    onPress={this.props.switchTab.bind(this, 'home')} />
                 <MenuItem
                     title="Your Sudokus"
                     icon={require('./img/grid.png')}
                     selectedIcon={require('./img/grid.png')}
                     selected={tab === 'sudoku'}
-                    onPress={this.props.goToSudoku} />
+                    onPress={this.props.switchTab.bind(this, 'sudoku')} />
             </View>
         );
     }
@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         navigation: state.navigation,
+        navigationState: state.navigationState,
+        navigationParams: state.navigationParams,
     }
 }
 
