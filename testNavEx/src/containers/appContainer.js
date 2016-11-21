@@ -14,9 +14,21 @@ const {
 } = NavigationExperimental;
 
 
-function reducer(state, action) {
-    let { type } = action;
+function initialState() {
+    return {
+        navigation: {
+            index: 0,
+            routes: [
+                { key: 'apple' },
+                { key: 'banana' },
+                { key: 'orange' },
+            ],
+        },
+    };
+}
 
+function navigationStateReducer(state, action) {
+    let { type } = action;
 
     switch (type) {
         case 'selectTab':
@@ -32,20 +44,11 @@ export default class AppContainer extends Component {
         super(props);
         this._renderScene = this._renderScene.bind(this);
         this.navigate = this.navigate.bind(this);
-
-        this.state = {
-            navigation: {
-                index: 0,
-                routes: [
-                    { key: 'page 1' },
-                    { key: 'page 2' },
-                ],
-            },
-        };
+        this.state = initialState();
     }
 
     navigate(state, action) {
-        const newState = reducer(state, action);
+        const newState = navigationStateReducer(state, action);
 
         // console.log(o);
         if (state !== newState) {
@@ -61,8 +64,9 @@ export default class AppContainer extends Component {
                 <Text>
                     {sceneProps.scene.route.key}
                 </Text>
-                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "page 1" }) } } title="page 1"></Button>
-                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "page 2" }) } } title="page 2"></Button>
+                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "apple" }) } } title="apple"></Button>
+                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "banana" }) } } title="banana"></Button>
+                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "orange" }) } } title="orange"></Button>
             </View>
         );
     }
