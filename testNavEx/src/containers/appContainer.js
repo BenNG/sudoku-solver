@@ -4,84 +4,68 @@ import {
     StyleSheet,
     Text,
     View,
+    Button,
     NavigationExperimental,
 } from 'react-native';
 
-const { NavigationStateUtils } = NavigationExperimental;
+const {
+    CardStack: NavigationCardStack,
+    StateUtils: NavigationStateUtils,
+} = NavigationExperimental;
 
-function initialState() {
-    return {
-        tabsNavigationState: {
-            index: 0,
-            routes: [
-                { key: 'apple' },
-                { key: 'banana' },
-                { key: 'orange' },
-            ],
-        },
-        apple: {
-            index: 0,
-            routes: [{ key: 'Apple Home' }],
-        },
-        banana: {
-            index: 0,
-            routes: [{ key: 'Banana Home' }],
-        },
-        orange: {
-            index: 0,
-            routes: [{ key: 'Orange Home' }],
-        },
-    };
-}
 
 function reducer(state, action) {
-    let { type } = action;
-    let tabsNavigationState;
-    let tabIndex;
-    let tabKey;
-    let subNavigationState;
-    let route;
 
-    if (type === 'BackAction') {
-        type = 'pop';
-    }
-
-    if (type === 'push' || type === 'pop') {
-        tabsNavigationState = state.tabsNavigationState;
-        tabIndex = tabsNavigationState.index;
-        tabKey = tabsNavigationState.routes[tabIndex]
-        subNavigationState = state[tabKey];
-        route = action.route;
-    }
+    console.log(state);
 
     switch (type) {
-        case 'push':
-            subNavigationState = subNavigationStateUtils.push(subNavigationState, route);
-            return Object.assign({}, state, { [tabKey]: subNavigationState });
-        case 'pop':
-            subNavigationState = subNavigationStateUtils.pop(subNavigationState);
-            return Object.assign({}, state, { [tabKey]: subNavigationState });
         case 'selectTab':
             tabKey = action.tabKey; // we will go there
-            tabsNavigationState = subNavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+            tabsNavigationState = NavigationStateUtils.jumpTo(state, tabKey);
             return Object.assign({}, state, { tabs: tabsNavigationState });
     }
 }
 
+
 export default class AppContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            navigation: {
+                index: 0,
+                routes: [
+                    { key: 'page 1' },
+                    { key: 'page 2' },
+                ],
+            },
+        };
+    }
+
+    navigate(state, action) {
+        const newState = reducer(state, action);
+
+        if (state !== newState) {
+            this.setState(newState);
+        }
+    }
+
+    _renderScene(sceneProps) {
+        console.log(sceneProps);
+        return (
+            <View>
+                <Text>
+                    {sceneProps.scene.route.key}
+                </Text>
+            </View>
+        );
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    Welcome to React Native!
-        </Text>
-                <Text style={styles.instructions}>
-                    To get started, edit index.android.js
-        </Text>
-                <Text style={styles.instructions}>
-                    Shake or press menu button for dev menu
-        </Text>
-            </View>
+            <NavigationCardStack
+                navigationState={this.state.navigation}
+                renderScene={this._renderScene}
+                />
         );
     }
 }
