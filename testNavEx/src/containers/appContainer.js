@@ -15,14 +15,14 @@ const {
 
 
 function reducer(state, action) {
+    let { type } = action;
 
-    console.log(state);
 
     switch (type) {
         case 'selectTab':
             tabKey = action.tabKey; // we will go there
-            tabsNavigationState = NavigationStateUtils.jumpTo(state, tabKey);
-            return Object.assign({}, state, { tabs: tabsNavigationState });
+            let newState = NavigationStateUtils.jumpTo(state, tabKey);
+            return Object.assign({}, newState);
     }
 }
 
@@ -30,6 +30,9 @@ function reducer(state, action) {
 export default class AppContainer extends Component {
     constructor(props) {
         super(props);
+        this._renderScene = this._renderScene.bind(this);
+        this.navigate = this.navigate.bind(this);
+
         this.state = {
             navigation: {
                 index: 0,
@@ -44,18 +47,22 @@ export default class AppContainer extends Component {
     navigate(state, action) {
         const newState = reducer(state, action);
 
+        // console.log(o);
         if (state !== newState) {
-            this.setState(newState);
+            let o = { navigation: {} };
+            o.navigation = Object.assign({}, newState);
+            this.setState(o);
         }
     }
 
     _renderScene(sceneProps) {
-        console.log(sceneProps);
         return (
             <View>
                 <Text>
                     {sceneProps.scene.route.key}
                 </Text>
+                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "page 1" }) } } title="page 1"></Button>
+                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "page 2" }) } } title="page 2"></Button>
             </View>
         );
     }
