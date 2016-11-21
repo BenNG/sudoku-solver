@@ -1,4 +1,6 @@
+import Immutable from 'immutable';
 import React, { Component } from 'react';
+
 import {
     AppRegistry,
     StyleSheet,
@@ -25,6 +27,24 @@ function initialState() {
                     { key: 'orange' },
                 ],
             },
+            apple: {
+                index: 0,
+                routes: [
+                    { key: "details apple" },
+                ]
+            },
+            banana: {
+                index: 0,
+                routes: [
+                    { key: "details banana" },
+                ]
+            },
+            orange: {
+                index: 0,
+                routes: [
+                    { key: "details orange" },
+                ]
+            },
         },
     };
 }
@@ -32,16 +52,31 @@ function initialState() {
 function navigationStateReducer(state, action) {
     let { type } = action;
     let { navigation } = state;
+    let tabsNavigationState = navigation.tabs;
+    let index;
+    let key;
+    let subNavigationState;
+    let newState;
+    let returnObject = {}
+    let imState;
+
 
     switch (type) {
-        case 'selectTab':
-            let tabsNavigationState = navigation.tabs; 
-            tabKey = action.tabKey; // we will go there
-            let newState = NavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+        case 'push':
+            index = tabsNavigationState.index;
+            key = tabsNavigationState.routes[index].key;
+            subNavigationState = navigation[key];
+            newState = NavigationStateUtils.push(subNavigationState, action.route);
 
-            let o = { navigation: { tabs: {} } };
-            o.navigation.tabs = Object.assign({}, newState);
-            return o;
+            imState = Immutable.fromJS(state);
+            return imState.setIn(['navigation', key], newState).toJS();
+
+        case 'selectTab':
+            tabKey = action.tabKey; // we will go there
+            newState = NavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+
+            imState = Immutable.fromJS(state);
+            return imState.setIn(['navigation', 'tabs'], newState).toJS();
     }
 }
 
@@ -71,14 +106,28 @@ export default class AppContainer extends Component {
                 <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "apple" }) } } title="apple"></Button>
                 <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "banana" }) } } title="banana"></Button>
                 <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "orange" }) } } title="orange"></Button>
+
+                <Button onPress={() => { this.navigate(this.state, { type: "push", route: { key: sceneProps.scene.route.key + Date.now() } }) } } title="push"></Button>
+                <Button onPress={() => { this.navigate(this.state, { type: "pop" }) } } title="pop"></Button>
             </View>
         );
     }
 
     render() {
 
-        let subNavigationState = this.state.navigation.tabs;
-        // console.log(subNavigationState);
+        let { navigation } = this.state;
+        let tabsNavigationState;
+        let index;
+        let key;
+        let subNavigationState;
+        let newState;
+        let returnObject = {}
+
+        tabsNavigationState = navigation.tabs;
+        index = tabsNavigationState.index;
+        key = tabsNavigationState.routes[index].key;
+        subNavigationState = navigation[key];
+
         return (
             <NavigationCardStack
                 navigationState={subNavigationState}
