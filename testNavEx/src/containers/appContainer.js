@@ -17,24 +17,31 @@ const {
 function initialState() {
     return {
         navigation: {
-            index: 0,
-            routes: [
-                { key: 'apple' },
-                { key: 'banana' },
-                { key: 'orange' },
-            ],
+            tabs: {
+                index: 0,
+                routes: [
+                    { key: 'apple' },
+                    { key: 'banana' },
+                    { key: 'orange' },
+                ],
+            },
         },
     };
 }
 
 function navigationStateReducer(state, action) {
     let { type } = action;
+    let { navigation } = state;
 
     switch (type) {
         case 'selectTab':
+            let tabsNavigationState = navigation.tabs; 
             tabKey = action.tabKey; // we will go there
-            let newState = NavigationStateUtils.jumpTo(state, tabKey);
-            return Object.assign({}, newState);
+            let newState = NavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+
+            let o = { navigation: { tabs: {} } };
+            o.navigation.tabs = Object.assign({}, newState);
+            return o;
     }
 }
 
@@ -50,11 +57,8 @@ export default class AppContainer extends Component {
     navigate(state, action) {
         const newState = navigationStateReducer(state, action);
 
-        // console.log(o);
         if (state !== newState) {
-            let o = { navigation: {} };
-            o.navigation = Object.assign({}, newState);
-            this.setState(o);
+            this.setState(newState);
         }
     }
 
@@ -64,17 +68,20 @@ export default class AppContainer extends Component {
                 <Text>
                     {sceneProps.scene.route.key}
                 </Text>
-                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "apple" }) } } title="apple"></Button>
-                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "banana" }) } } title="banana"></Button>
-                <Button onPress={() => { this.navigate(this.state.navigation, { type: "selectTab", tabKey: "orange" }) } } title="orange"></Button>
+                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "apple" }) } } title="apple"></Button>
+                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "banana" }) } } title="banana"></Button>
+                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "orange" }) } } title="orange"></Button>
             </View>
         );
     }
 
     render() {
+
+        let subNavigationState = this.state.navigation.tabs;
+        // console.log(subNavigationState);
         return (
             <NavigationCardStack
-                navigationState={this.state.navigation}
+                navigationState={subNavigationState}
                 renderScene={this._renderScene}
                 />
         );
