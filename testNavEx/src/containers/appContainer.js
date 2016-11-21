@@ -3,12 +3,15 @@ import {
     AppRegistry,
     StyleSheet,
     Text,
-    View
+    View,
+    NavigationExperimental,
 } from 'react-native';
+
+const { NavigationStateUtils } = NavigationExperimental;
 
 function initialState() {
     return {
-        tabs: {
+        tabsNavigationState: {
             index: 0,
             routes: [
                 { key: 'apple' },
@@ -29,6 +32,40 @@ function initialState() {
             routes: [{ key: 'Orange Home' }],
         },
     };
+}
+
+function reducer(state, action) {
+    let { type } = action;
+    let tabsNavigationState;
+    let tabIndex;
+    let tabKey;
+    let subNavigationState;
+    let route;
+
+    if (type === 'BackAction') {
+        type = 'pop';
+    }
+
+    if (type === 'push' || type === 'pop') {
+        tabsNavigationState = state.tabsNavigationState;
+        tabIndex = tabsNavigationState.index;
+        tabKey = tabsNavigationState.routes[tabIndex]
+        subNavigationState = state[tabKey];
+        route = action.route;
+    }
+
+    switch (type) {
+        case 'push':
+            subNavigationState = subNavigationStateUtils.push(subNavigationState, route);
+            return Object.assign({}, state, { [tabKey]: subNavigationState });
+        case 'pop':
+            subNavigationState = subNavigationStateUtils.pop(subNavigationState);
+            return Object.assign({}, state, { [tabKey]: subNavigationState });
+        case 'selectTab':
+            tabKey = action.tabKey; // we will go there
+            tabsNavigationState = subNavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+            return Object.assign({}, state, { tabs: tabsNavigationState });
+    }
 }
 
 export default class AppContainer extends Component {
