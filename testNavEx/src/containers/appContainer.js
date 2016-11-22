@@ -1,4 +1,4 @@
-import Immutable from 'immutable';
+import Immutable from 'immutable'; // perte de perf mais au moins c'est lisible
 import React, { Component } from 'react';
 
 import {
@@ -67,6 +67,14 @@ function navigationStateReducer(state, action) {
             key = tabsNavigationState.routes[index].key;
             subNavigationState = navigation[key];
             newState = NavigationStateUtils.push(subNavigationState, action.route);
+
+            imState = Immutable.fromJS(state);
+            return imState.setIn(['navigation', key], newState).toJS();
+        case 'pop':
+            index = tabsNavigationState.index;
+            key = tabsNavigationState.routes[index].key;
+            subNavigationState = navigation[key];
+            newState = NavigationStateUtils.pop(subNavigationState);
 
             imState = Immutable.fromJS(state);
             return imState.setIn(['navigation', key], newState).toJS();
