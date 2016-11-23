@@ -43,9 +43,6 @@ function initialState() {
 
 export const navigation = (state = initialState(), action) => {
     let { type } = action;
-
-    console.log(state);
-
     let tabsNavigationState = state.tabs;
     let index;
     let key;

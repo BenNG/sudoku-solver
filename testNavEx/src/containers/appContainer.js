@@ -11,6 +11,7 @@ import {
     View,
     Button,
     NavigationExperimental,
+    DrawerLayoutAndroid,
 } from 'react-native';
 
 const {
@@ -25,28 +26,38 @@ class AppContainer extends Component {
     }
 
     _renderScene(sceneProps) {
-
         const { switchTab, push, pop } = this.props;
 
-        return (
-            <View>
-                <Text>
-                    {sceneProps.scene.route.key}
-                </Text>
-                <Button onPress={() => { switchTab("apple") } } title="apple"></Button>
-                <Button onPress={() => { switchTab("banana") } } title="banana"></Button>
-                <Button onPress={() => { switchTab("orange") } } title="orange"></Button>
-
-                <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
-                <Button onPress={() => { pop() } } title="pop"></Button>
+        var insideDrawer = (
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+                <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
+                <Button onPress={() => { switchTab("apple"); this._drawer.closeDrawer(); } } title="apple"></Button>
+                <Button onPress={() => { switchTab("banana"); this._drawer.closeDrawer(); } } title="banana"></Button>
+                <Button onPress={() => { switchTab("orange"); this._drawer.closeDrawer(); } } title="orange"></Button>
             </View>
+        );
+
+        return (
+            <DrawerLayoutAndroid
+                drawerWidth={300}
+                drawerPosition={DrawerLayoutAndroid.positions.Left}
+                renderNavigationView={() => insideDrawer}
+                ref={ref => this._drawer = ref}>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>Hello</Text>
+                    <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>World!</Text>
+                    <Text>
+                        {sceneProps.scene.route.key}
+                    </Text>
+                    <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
+                    <Button onPress={() => { pop() } } title="pop"></Button>
+                </View>
+            </DrawerLayoutAndroid>
         );
     }
 
     render() {
-
         let { navigation } = this.props;
-        // console.log(navigation);
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
@@ -71,7 +82,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators(ActionCreators, dispatch);
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(AppContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
 
 const styles = StyleSheet.create({
     container: {
