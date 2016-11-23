@@ -14,12 +14,28 @@ import {
     Button,
     NavigationExperimental,
     DrawerLayoutAndroid,
+    TouchableNativeFeedback,
 } from 'react-native';
 
 const {
     CardStack: NavigationCardStack,
     StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
+
+
+class DrawerItem extends Component {
+    render() {
+        const itemStyle = this.props.isSelected ? styles.selectedItem : styles.item;
+        return (
+            <TouchableNativeFeedback onPress={this.props.onPress} style={{ flexDirection: 'row' }}>
+                <View style={itemStyle} >
+                    <Icon name={this.props.iconName} size={20} color="#222" style={styles.icon} />
+                    <Text>{this.props.label}</Text>
+                </View>
+            </TouchableNativeFeedback>
+        );
+    }
+}
 
 class AppContainer extends Component {
     constructor(props) {
@@ -28,15 +44,18 @@ class AppContainer extends Component {
     }
 
     _renderScene(sceneProps) {
-        const { switchTab, push, pop } = this.props;
+        let { navigation } = this.props;
+        let tabsNavigationState = navigation.tabs;
+        let index = tabsNavigationState.index;
+        let key = tabsNavigationState.routes[index].key;
+        const { switchTabApple, switchTabOrange, switchTabBanana, push, pop } = this.props;
 
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <Icon name="rocket" size={30} color="#900" />
-                <Button onPress={() => { switchTab("apple"); this._drawer.closeDrawer(); } } title="apple"></Button>
-                <Button onPress={() => { switchTab("banana"); this._drawer.closeDrawer(); } } title="banana"></Button>
-                <Button onPress={() => { switchTab("orange"); this._drawer.closeDrawer(); } } title="orange"></Button>
+                <DrawerItem label="apple"  targetTab="apple" iconName="apple" isSelected={'apple' === key} onPress={switchTabApple}></DrawerItem>
+                <DrawerItem label="orange" targetTab="orange" iconName="glass" isSelected={'orange' === key} onPress={switchTabOrange}></DrawerItem>
+                <DrawerItem label="banana" targetTab="banana" iconName="music" isSelected={'banana' === key} onPress={switchTabBanana}></DrawerItem>
             </View>
         );
 
@@ -73,6 +92,10 @@ class AppContainer extends Component {
                 />
         );
     }
+
+    componentDidMount() {
+        this._drawer.openDrawer(); // __debug__
+    }
 }
 
 function mapStateToProps(state) {
@@ -88,11 +111,17 @@ function mapDispatchToProps(dispatch) {
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
+    item: {
+        flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+    },
+    selectedItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: 'red'
+    },
+    icon: {
+        margin: 10,
     },
     welcome: {
         fontSize: 20,

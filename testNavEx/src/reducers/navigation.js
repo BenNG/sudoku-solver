@@ -66,9 +66,16 @@ export const navigation = (state = initialState(), action) => {
             newState = NavigationStateUtils.pop(subNavigationState);
             imState = Immutable.fromJS(state);
             return imState.set(key, newState).toJS();
-        case types.SWITCH_TAB:
-            tabKey = action.tabKey; // we will go there
-            newState = NavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
+        case types.SWITCH_TAB_APPLE:
+            newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_APPLE);
+            imState = Immutable.fromJS(state);
+            return imState.set("tabs", newState).toJS();
+        case types.SWITCH_TAB_ORANGE:
+            newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_ORANGE);
+            imState = Immutable.fromJS(state);
+            return imState.set("tabs", newState).toJS();
+        case types.SWITCH_TAB_BANANA:
+            newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_BANANA);
             imState = Immutable.fromJS(state);
             return imState.set("tabs", newState).toJS();
         default:

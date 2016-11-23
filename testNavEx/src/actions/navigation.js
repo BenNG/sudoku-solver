@@ -1,9 +1,18 @@
 import * as types from './types';
 
-export function switchTab(tabKey) {
+export function switchTabApple() {
     return {
-        type: types.SWITCH_TAB,
-        tabKey,
+        type: types.SWITCH_TAB_APPLE,
+    };
+}
+export function switchTabOrange() {
+    return {
+        type: types.SWITCH_TAB_ORANGE,
+    };
+}
+export function switchTabBanana() {
+    return {
+        type: types.SWITCH_TAB_BANANA,
     };
 }
 export function push(key) {
