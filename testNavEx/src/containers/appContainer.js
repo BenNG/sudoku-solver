@@ -1,5 +1,8 @@
 import Immutable from 'immutable'; // perte de perf mais au moins c'est lisible
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../actions'
 
 import {
     AppRegistry,
@@ -15,126 +18,39 @@ const {
     StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
 
-
-function initialState() {
-    return {
-        navigation: {
-            tabs: {
-                index: 0,
-                routes: [
-                    { key: 'apple' },
-                    { key: 'banana' },
-                    { key: 'orange' },
-                ],
-            },
-            apple: {
-                index: 0,
-                routes: [
-                    { key: "details apple" },
-                ]
-            },
-            banana: {
-                index: 0,
-                routes: [
-                    { key: "details banana" },
-                ]
-            },
-            orange: {
-                index: 0,
-                routes: [
-                    { key: "details orange" },
-                ]
-            },
-        },
-    };
-}
-
-function navigationStateReducer(state, action) {
-    let { type } = action;
-    let { navigation } = state;
-    let tabsNavigationState = navigation.tabs;
-    let index;
-    let key;
-    let subNavigationState;
-    let newState;
-    let returnObject = {}
-    let imState;
-
-
-    switch (type) {
-        case 'push':
-            index = tabsNavigationState.index;
-            key = tabsNavigationState.routes[index].key;
-            subNavigationState = navigation[key];
-            newState = NavigationStateUtils.push(subNavigationState, action.route);
-
-            imState = Immutable.fromJS(state);
-            return imState.setIn(['navigation', key], newState).toJS();
-        case 'pop':
-            index = tabsNavigationState.index;
-            key = tabsNavigationState.routes[index].key;
-            subNavigationState = navigation[key];
-            newState = NavigationStateUtils.pop(subNavigationState);
-
-            imState = Immutable.fromJS(state);
-            return imState.setIn(['navigation', key], newState).toJS();
-
-        case 'selectTab':
-            tabKey = action.tabKey; // we will go there
-            newState = NavigationStateUtils.jumpTo(tabsNavigationState, tabKey);
-
-            imState = Immutable.fromJS(state);
-            return imState.setIn(['navigation', 'tabs'], newState).toJS();
-    }
-}
-
-
-export default class AppContainer extends Component {
+class AppContainer extends Component {
     constructor(props) {
         super(props);
         this._renderScene = this._renderScene.bind(this);
-        this.navigate = this.navigate.bind(this);
-        this.state = initialState();
-    }
-
-    navigate(state, action) {
-        const newState = navigationStateReducer(state, action);
-
-        if (state !== newState) {
-            this.setState(newState);
-        }
     }
 
     _renderScene(sceneProps) {
+
+        const { switchTab, push, pop } = this.props;
+
         return (
             <View>
                 <Text>
                     {sceneProps.scene.route.key}
                 </Text>
-                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "apple" }) } } title="apple"></Button>
-                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "banana" }) } } title="banana"></Button>
-                <Button onPress={() => { this.navigate(this.state, { type: "selectTab", tabKey: "orange" }) } } title="orange"></Button>
+                <Button onPress={() => { switchTab("apple") } } title="apple"></Button>
+                <Button onPress={() => { switchTab("banana") } } title="banana"></Button>
+                <Button onPress={() => { switchTab("orange") } } title="orange"></Button>
 
-                <Button onPress={() => { this.navigate(this.state, { type: "push", route: { key: sceneProps.scene.route.key + Date.now() } }) } } title="push"></Button>
-                <Button onPress={() => { this.navigate(this.state, { type: "pop" }) } } title="pop"></Button>
+                <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
+                <Button onPress={() => { pop() } } title="pop"></Button>
             </View>
         );
     }
 
     render() {
 
-        let { navigation } = this.state;
-        let tabsNavigationState;
-        let index;
-        let key;
-        let subNavigationState;
-        let newState;
-        let returnObject = {}
-
-        tabsNavigationState = navigation.tabs;
-        index = tabsNavigationState.index;
-        key = tabsNavigationState.routes[index].key;
-        subNavigationState = navigation[key];
+        let { navigation } = this.props;
+        // console.log(navigation);
+        let tabsNavigationState = navigation.tabs;
+        let index = tabsNavigationState.index;
+        let key = tabsNavigationState.routes[index].key;
+        let subNavigationState = navigation[key];
 
         return (
             <NavigationCardStack
@@ -144,6 +60,18 @@ export default class AppContainer extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        navigation: state.navigation,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(ActionCreators, dispatch);
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(AppContainer);
 
 const styles = StyleSheet.create({
     container: {
