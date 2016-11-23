@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions'
 
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 import {
     AppRegistry,
     StyleSheet,
@@ -31,6 +33,7 @@ class AppContainer extends Component {
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
+                <Icon name="rocket" size={30} color="#900" />
                 <Button onPress={() => { switchTab("apple"); this._drawer.closeDrawer(); } } title="apple"></Button>
                 <Button onPress={() => { switchTab("banana"); this._drawer.closeDrawer(); } } title="banana"></Button>
                 <Button onPress={() => { switchTab("orange"); this._drawer.closeDrawer(); } } title="orange"></Button>
