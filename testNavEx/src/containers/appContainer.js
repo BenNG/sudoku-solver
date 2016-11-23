@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions'
+import * as types from '../actions/types';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -53,9 +54,9 @@ class AppContainer extends Component {
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <DrawerItem label="apple"  targetTab="apple" iconName="apple" isSelected={'apple' === key} onPress={switchTabApple}></DrawerItem>
-                <DrawerItem label="orange" targetTab="orange" iconName="glass" isSelected={'orange' === key} onPress={switchTabOrange}></DrawerItem>
-                <DrawerItem label="banana" targetTab="banana" iconName="music" isSelected={'banana' === key} onPress={switchTabBanana}></DrawerItem>
+                <DrawerItem label="apple"  targetTab="apple" iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
+                <DrawerItem label="orange" targetTab="orange" iconName="glass" isSelected={types.TAB_NAME_ORANGE === key} onPress={switchTabOrange}></DrawerItem>
+                <DrawerItem label="banana" targetTab="banana" iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={switchTabBanana}></DrawerItem>
             </View>
         );
 

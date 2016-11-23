@@ -15,24 +15,24 @@ function initialState() {
         tabs: {
             index: 0,
             routes: [
-                { key: 'apple' },
-                { key: 'banana' },
-                { key: 'orange' },
+                { key: types.TAB_NAME_APPLE },
+                { key: types.TAB_NAME_BANANA },
+                { key: types.TAB_NAME_ORANGE },
             ],
         },
-        apple: {
+        [types.TAB_NAME_APPLE]: {
             index: 0,
             routes: [
                 { key: "details apple" },
             ]
         },
-        banana: {
+        [types.TAB_NAME_BANANA]: {
             index: 0,
             routes: [
                 { key: "details banana" },
             ]
         },
-        orange: {
+        [types.TAB_NAME_ORANGE]: {
             index: 0,
             routes: [
                 { key: "details orange" },
