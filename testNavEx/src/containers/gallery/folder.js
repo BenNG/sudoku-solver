@@ -4,12 +4,12 @@ import {
 } from 'react-native';
 import React, { Component } from 'react';
 
-export default class Folders extends Component {
+export default class Folder extends Component {
     render() {
         return (
             <View>
                 <Text>
-                    Folderssssss
+                    Folder
                 </Text>
             </View>
         );

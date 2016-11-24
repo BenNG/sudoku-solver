@@ -4,6 +4,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions'
 import * as types from '../actions/types';
+import Folders from './gallery/folders';
+import Folder from './gallery/folder';
+import Picture from './gallery/picture';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -38,6 +41,18 @@ class DrawerItem extends Component {
     }
 }
 
+class DefaultView extends Component {
+    render() {
+        return (
+            <View>
+                <Text>
+                    Default
+                </Text>
+            </View>
+        );
+    }
+}
+
 class AppContainer extends Component {
     constructor(props) {
         super(props);
@@ -49,16 +64,40 @@ class AppContainer extends Component {
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
-        const { switchTabApple, switchTabGallery, switchTabBanana, push, pop } = this.props;
+        const { switchTabApple, switchTabGallery, switchTabBanana, push, pop, forward, backward } = this.props;
 
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <DrawerItem label="apple"  targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
+                <DrawerItem label="apple" targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
                 <DrawerItem label="gallery" targetTab={types.TAB_NAME_GALLERY} iconName="picture-o" isSelected={types.TAB_NAME_GALLERY === key} onPress={switchTabGallery}></DrawerItem>
                 <DrawerItem label="banana" targetTab={types.TAB_NAME_BANANA} iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={switchTabBanana}></DrawerItem>
             </View>
         );
+
+        let componentToRender = DefaultView;
+
+        if (sceneProps.scene.isActive) {
+            console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+            console.log(sceneProps);
+
+            console.log(sceneProps.scene);
+
+            switch (sceneProps.scene.route.key) {
+                case "folders":
+                    componentToRender = Folders;
+                    break;
+                case "folder":
+                    componentToRender = Folder;
+                    break;
+                case "picture":
+                    componentToRender = Picture;
+                    break;
+                default:
+                    componentToRender = DefaultView;
+                    break;
+            }
+        }
 
         return (
             <DrawerLayoutAndroid
@@ -69,15 +108,18 @@ class AppContainer extends Component {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>Hello</Text>
                     <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>World!</Text>
-                    <Text>
-                        {sceneProps.scene.route.key}
-                    </Text>
+                    {
+                        React.createElement(componentToRender)                        
+                    }
+                    <Button onPress={forward} title="forward"></Button>
+                    <Button onPress={backward} title="backward"></Button>
                     <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
                     <Button onPress={() => { pop() } } title="pop"></Button>
                 </View>
             </DrawerLayoutAndroid>
         );
     }
+
 
     render() {
         let { navigation } = this.props;
@@ -94,9 +136,9 @@ class AppContainer extends Component {
         );
     }
 
-    componentDidMount() {
-        this._drawer.openDrawer(); // __debug__
-    }
+    // componentDidMount() {
+    //     this._drawer.openDrawer(); // __debug__
+    // }
 }
 
 function mapStateToProps(state) {

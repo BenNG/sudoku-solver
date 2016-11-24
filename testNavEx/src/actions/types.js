@@ -1,6 +1,8 @@
 // navigation
 export const PUSH = "PUSH";
 export const POP = "POP";
+export const FORWARD = "FORWARD";
+export const BACKWARD = "BACKWARD";
 export const SWITCH_TAB_APPLE = "SWITCH_TAB_APPLE";
 export const SWITCH_TAB_GALLERY = "SWITCH_TAB_GALLERY";
 export const SWITCH_TAB_BANANA = "SWITCH_TAB_BANANA";

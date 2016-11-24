@@ -35,7 +35,9 @@ function initialState() {
         [types.TAB_NAME_GALLERY]: {
             index: 0,
             routes: [
-                { key: "details gallery" },
+                { key: "folders" },
+                { key: "folder" },
+                { key: "picture" },
             ]
         },
     };
@@ -44,7 +46,7 @@ function initialState() {
 export const navigation = (state = initialState(), action) => {
     let { type } = action;
     let tabsNavigationState = state.tabs;
-    let index;
+    let index, subIndex, maxIndex;
     let key;
     let subNavigationState;
     let newState;
@@ -60,6 +62,25 @@ export const navigation = (state = initialState(), action) => {
     switch (action.type) {
         case types.PUSH:
             newState = NavigationStateUtils.push(subNavigationState, action.route);
+            imState = Immutable.fromJS(state);
+            return imState.set(key, newState).toJS();
+        case types.FORWARD:
+            maxIndex = subNavigationState.routes.length - 1;
+            subIndex = subNavigationState.index;
+            if (subIndex < maxIndex) {
+                newState = NavigationStateUtils.jumpToIndex(subNavigationState, subIndex + 1);
+                imState = Immutable.fromJS(state);
+                return imState.set(key, newState).toJS();
+            } else {
+                return state;
+            }
+        case types.BACKWARD:
+            subIndex = subNavigationState.index;
+            if (subIndex > 0) {
+                newState = NavigationStateUtils.jumpToIndex(subNavigationState, subIndex - 1);
+            }else{
+                return state;
+            }
             imState = Immutable.fromJS(state);
             return imState.set(key, newState).toJS();
         case types.POP:
