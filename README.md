@@ -1,24 +1,7 @@
 # Sudoku
 
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
-
-  1. Add `sudoku` to your list of dependencies in `mix.exs`:
-
-    ```elixir
-    def deps do
-      [{:sudoku, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `sudoku` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:sudoku]]
-    end
-    ```
-
+## React Native app
+- after installed react-native-camera-roll don't forget to react-native link !
+- update android build tools!
+  - tools/android list sdk -a |grep Build
+  - tools/android update sdk -a -u -t 8 
