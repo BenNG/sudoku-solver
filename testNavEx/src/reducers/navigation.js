@@ -17,7 +17,7 @@ function initialState() {
             routes: [
                 { key: types.TAB_NAME_APPLE },
                 { key: types.TAB_NAME_BANANA },
-                { key: types.TAB_NAME_ORANGE },
+                { key: types.TAB_NAME_GALLERY },
             ],
         },
         [types.TAB_NAME_APPLE]: {
@@ -32,10 +32,10 @@ function initialState() {
                 { key: "details banana" },
             ]
         },
-        [types.TAB_NAME_ORANGE]: {
+        [types.TAB_NAME_GALLERY]: {
             index: 0,
             routes: [
-                { key: "details orange" },
+                { key: "details gallery" },
             ]
         },
     };
@@ -70,8 +70,8 @@ export const navigation = (state = initialState(), action) => {
             newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_APPLE);
             imState = Immutable.fromJS(state);
             return imState.set("tabs", newState).toJS();
-        case types.SWITCH_TAB_ORANGE:
-            newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_ORANGE);
+        case types.SWITCH_TAB_GALLERY:
+            newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_GALLERY);
             imState = Immutable.fromJS(state);
             return imState.set("tabs", newState).toJS();
         case types.SWITCH_TAB_BANANA:

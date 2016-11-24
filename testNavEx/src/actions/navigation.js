@@ -5,9 +5,9 @@ export function switchTabApple() {
         type: types.SWITCH_TAB_APPLE,
     };
 }
-export function switchTabOrange() {
+export function switchTabGallery() {
     return {
-        type: types.SWITCH_TAB_ORANGE,
+        type: types.SWITCH_TAB_GALLERY,
     };
 }
 export function switchTabBanana() {

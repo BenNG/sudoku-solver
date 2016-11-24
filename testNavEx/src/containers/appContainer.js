@@ -49,14 +49,14 @@ class AppContainer extends Component {
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
-        const { switchTabApple, switchTabOrange, switchTabBanana, push, pop } = this.props;
+        const { switchTabApple, switchTabGallery, switchTabBanana, push, pop } = this.props;
 
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <DrawerItem label="apple"  targetTab="apple" iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
-                <DrawerItem label="orange" targetTab="orange" iconName="glass" isSelected={types.TAB_NAME_ORANGE === key} onPress={switchTabOrange}></DrawerItem>
-                <DrawerItem label="banana" targetTab="banana" iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={switchTabBanana}></DrawerItem>
+                <DrawerItem label="apple"  targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
+                <DrawerItem label="gallery" targetTab={types.TAB_NAME_GALLERY} iconName="picture-o" isSelected={types.TAB_NAME_GALLERY === key} onPress={switchTabGallery}></DrawerItem>
+                <DrawerItem label="banana" targetTab={types.TAB_NAME_BANANA} iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={switchTabBanana}></DrawerItem>
             </View>
         );
 
