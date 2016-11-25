@@ -100,23 +100,28 @@ class AppContainer extends Component {
         }
 
         return (
-            <DrawerLayoutAndroid
-                drawerWidth={300}
-                drawerPosition={DrawerLayoutAndroid.positions.Left}
-                renderNavigationView={() => insideDrawer}
-                ref={ref => this._drawer = ref}>
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>Hello</Text>
-                    <Text style={{ margin: 10, fontSize: 15, textAlign: 'right' }}>World!</Text>
-                    {
-                        React.createElement(componentToRender)                        
-                    }
-                    <Button onPress={forward} title="forward"></Button>
-                    <Button onPress={backward} title="backward"></Button>
-                    <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
-                    <Button onPress={() => { pop() } } title="pop"></Button>
-                </View>
-            </DrawerLayoutAndroid>
+            <View style={{ flex: 1, backgroundColor: "green" }}>
+                <DrawerLayoutAndroid style={{flex: 1}}
+                    drawerWidth={300}
+                    drawerPosition={DrawerLayoutAndroid.positions.Left}
+                    renderNavigationView={() => insideDrawer}
+                    ref={ref => this._drawer = ref}>
+
+                    <View style={{ flex: 1 }}>
+                        
+                        {
+                            React.createElement(componentToRender)
+                        }
+
+                        <Button onPress={forward} title="forward"></Button>
+                        <Button onPress={backward} title="backward"></Button>
+                        <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
+                        <Button onPress={() => { pop() } } title="pop"></Button>
+                    </View>
+
+                </DrawerLayoutAndroid>
+
+            </View>
         );
     }
 
@@ -131,8 +136,7 @@ class AppContainer extends Component {
         return (
             <NavigationCardStack
                 navigationState={subNavigationState}
-                renderScene={this._renderScene}
-                />
+                renderScene={this._renderScene} />
         );
     }
 
