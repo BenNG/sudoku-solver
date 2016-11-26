@@ -100,7 +100,7 @@ class AppContainer extends Component {
         }
 
         return (
-            <View style={{ flex: 1, backgroundColor: "green" }}>
+            <View style={{ flex: 1 }}>
                 <DrawerLayoutAndroid style={{flex: 1}}
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}

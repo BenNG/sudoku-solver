@@ -35,7 +35,7 @@ function initialState() {
         [types.TAB_NAME_GALLERY]: {
             index: 0,
             routes: [
-                { key: "folders" },
+                // { key: "folders" }, // for now we can't list the folders, we display all the pictures in all folders
                 { key: "folder" },
                 { key: "picture" },
             ]
