@@ -19,19 +19,15 @@ function initialState() {
 
 export const gallery = (state = initialState(), action) => {
     const uri = action.uri;
-    const {selectedItems} = state; 
+    const {selectedItems} = state;
     let index;
     switch (action.type) {
         case types.SELECTED_ITEM:
-            // newState = NavigationStateUtils.jumpTo(tabsNavigationState, types.TAB_NAME_BANANA);
-
-            if ((index = state.selectedItems.indexOf(uri)) === -1) {
-                state.selectedItems = selectedItems.concat([uri]);
-            } else {
-                selectedItems.splice(index, 1);
-                state.selectedItems = selectedItems.slice(); 
-            }
-            return Object.assign({}, state);
+            imState = Immutable.fromJS(state);
+            return imState.set("selectedItems", [uri]).toJS();
+        case types.BACKWARD:
+            imState = Immutable.fromJS(state);
+            return imState.set("selectedItems", []).toJS();
         default:
             return state;
     }

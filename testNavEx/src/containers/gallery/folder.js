@@ -140,8 +140,11 @@ class Folder extends Component {
     }
 
     _onImagePress(uri) {
-        console.log(this.props)
         this.props.selectedItem(uri);
+        if (!this.props.multiSelection) {
+            this.props.forward();
+        }
+
     }
 
     // rowData is an array of images

@@ -19,6 +19,7 @@ import {
     NavigationExperimental,
     DrawerLayoutAndroid,
     TouchableNativeFeedback,
+    BackAndroid,
 } from 'react-native';
 
 const {
@@ -78,11 +79,6 @@ class AppContainer extends Component {
         let componentToRender = DefaultView;
 
         if (sceneProps.scene.isActive) {
-            console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-            console.log(sceneProps);
-
-            console.log(sceneProps.scene);
-
             switch (sceneProps.scene.route.key) {
                 case "folders":
                     componentToRender = Folders;
@@ -101,22 +97,24 @@ class AppContainer extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <DrawerLayoutAndroid style={{flex: 1}}
+                <DrawerLayoutAndroid style={{ flex: 1 }}
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}
                     renderNavigationView={() => insideDrawer}
                     ref={ref => this._drawer = ref}>
 
                     <View style={{ flex: 1 }}>
-                        
+
                         {
                             React.createElement(componentToRender)
                         }
 
+                        {/** 
                         <Button onPress={forward} title="forward"></Button>
                         <Button onPress={backward} title="backward"></Button>
                         <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
-                        <Button onPress={() => { pop() } } title="pop"></Button>
+                        <Button onPress={() => { pop() } } title="pop"></Button>    
+                         */}
                     </View>
 
                 </DrawerLayoutAndroid>
@@ -127,7 +125,8 @@ class AppContainer extends Component {
 
 
     render() {
-        let { navigation } = this.props;
+        const { navigation, backward } = this.props;
+
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
@@ -135,14 +134,31 @@ class AppContainer extends Component {
 
         return (
             <NavigationCardStack
+                onNavigateBack={backward}
                 navigationState={subNavigationState}
                 renderScene={this._renderScene} />
         );
     }
 
-    // componentDidMount() {
-    //     this._drawer.openDrawer(); // __debug__
-    // }
+    componentDidMount() {
+        // this._drawer.openDrawer(); // __debug__
+
+        const { navigation, backward } = this.props;
+
+        let tabsNavigationState = navigation.tabs;
+        let index = tabsNavigationState.index;
+        console.log({index});
+        BackAndroid.addEventListener('hardwareBackPress', function () {
+            // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
+            // Typically you would use the navigator here to go to the last state.
+
+            if (index !== 0) {
+                backward();
+                return true;
+            }
+            return false;
+        });
+    }
 }
 
 function mapStateToProps(state) {
