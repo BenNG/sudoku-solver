@@ -7,6 +7,7 @@ import * as types from '../actions/types';
 import Folders from './gallery/folders';
 import Folder from './gallery/folder';
 import Picture from './gallery/picture';
+import Header from './header';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -97,6 +98,7 @@ class AppContainer extends Component {
 
         return (
             <View style={{ flex: 1 }}>
+                <Header></Header>
                 <DrawerLayoutAndroid style={{ flex: 1 }}
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}

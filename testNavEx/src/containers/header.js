@@ -11,20 +11,27 @@ export default class MyNewComponent extends Component {
     render() {
         console.log(this.props)
         return (
-            <Icon.ToolbarAndroid
-                // actions={toolbarActions}
-                navIconName="bars"
-                // onActionSelected={this._onActionSelected}
-                onIconClicked={this.props.onPress}
-                // style={styles.toolbar}
-                // subtitle={this.state.actionText}
-                title="Toolbar" >
+            <ToolbarAndroid
+                navIcon={require("./menu.png")}
+                logo={require("./emoticon.png")}
+                title="Toolbar"
+                actions={[{ title: 'Settings', icon: require('./settings.png'), show: 'always' }]}
+                onActionSelected={this.onActionSelected}
+                onIconClicked={this.onIconClicked}>
                 <View>
                     <Text>HHHHHHHHH</Text>
                     <Text>HHHHHHHHH</Text>
                     <Text>HHHHHHHHH</Text>
                 </View>
-            </Icon.ToolbarAndroid>
+            </ToolbarAndroid>
         );
+    }
+    onActionSelected(position) {
+        console.log(position);
+    }
+    onIconClicked() {
+        console.log("onIconClicked");
+        console.log(arguments);
+
     }
 }
