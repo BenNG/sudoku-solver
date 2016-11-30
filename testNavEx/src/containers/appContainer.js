@@ -59,6 +59,7 @@ class AppContainer extends Component {
     constructor(props) {
         super(props);
         this._renderScene = this._renderScene.bind(this);
+        this.open = this.open.bind(this);
     }
 
     _renderScene(sceneProps) {
@@ -98,7 +99,6 @@ class AppContainer extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <Header></Header>
                 <DrawerLayoutAndroid style={{ flex: 1 }}
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}
@@ -107,6 +107,7 @@ class AppContainer extends Component {
 
                     <View style={{ flex: 1 }}>
 
+                        <Header openDrawerFn={this.open}></Header>
                         {
                             React.createElement(componentToRender)
                         }
@@ -124,7 +125,12 @@ class AppContainer extends Component {
             </View>
         );
     }
+    
 
+    open(){
+        console.log("open");
+        this._drawer.openDrawer();
+    }
 
     render() {
         const { navigation, backward } = this.props;

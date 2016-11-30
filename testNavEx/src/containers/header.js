@@ -8,6 +8,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export default class MyNewComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.onIconClicked = this.onIconClicked.bind(this);
+    }
     render() {
         console.log(this.props)
         return (
@@ -27,10 +31,12 @@ export default class MyNewComponent extends Component {
         );
     }
     onActionSelected(position) {
+        console.log("onActionSelected");
         console.log(position);
     }
     onIconClicked() {
         console.log("onIconClicked");
+        this.props.openDrawerFn();
         console.log(arguments);
 
     }
