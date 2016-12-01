@@ -12,7 +12,7 @@ import Immutable from 'immutable';
 function initialState() {
     return {
         tabs: {
-            index: 2,
+            index: 0,
             routes: [
                 { key: types.TAB_NAME_APPLE },
                 { key: types.TAB_NAME_BANANA },

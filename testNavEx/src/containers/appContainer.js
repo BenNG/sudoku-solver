@@ -60,9 +60,20 @@ class AppContainer extends Component {
     constructor(props) {
         super(props);
         this._renderScene = this._renderScene.bind(this);
+        this._renderHeader = this._renderHeader.bind(this);
     }
 
-
+    _renderHeader(sceneProps) {
+        const { drawer_open } = this.props;
+        let config = {
+            leftIcon: {
+                onPress: drawer_open,
+            }
+        }
+        return (
+            <Header {...config} title={sceneProps.scene.route.key}></Header>
+        );
+    }
     _renderScene(sceneProps) {
         const { navigation, switchTabApple, switchTabGallery, switchTabBanana, push, pop, forward, backward, drawer_open, drawer_close, drawer } = this.props;
         let tabsNavigationState = navigation.tabs;
@@ -75,7 +86,7 @@ class AppContainer extends Component {
                 drawer_close();
             };
         }
-    
+
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
@@ -118,18 +129,11 @@ class AppContainer extends Component {
                     onOpen={drawer_open}
                     onOpenStart={() => { console.log("onOpenStart") } }
                     onClose={drawer_close}
-                    onCloseStart={() => { console.log("onCloseStart") } }
-                    >
-
+                    onCloseStart={() => { console.log("onCloseStart") } }>
                     <View style={{ flex: 1 }}>
-                        <Header openDrawerFn={drawer_open}></Header>
-                        {
-                            React.createElement(componentToRender)
-                        }
+                        {React.createElement(componentToRender)}
                     </View>
-
                 </Drawer>
-
             </View>
         );
     }
@@ -146,7 +150,8 @@ class AppContainer extends Component {
             <NavigationCardStack
                 onNavigateBack={backward}
                 navigationState={subNavigationState}
-                renderScene={this._renderScene} />
+                renderScene={this._renderScene}
+                renderHeader={this._renderHeader} />
         );
     }
 

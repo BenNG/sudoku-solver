@@ -11,7 +11,7 @@ import Immutable from 'immutable';
 
 function initialState() {
     return {
-        isDrawerOpen: true
+        isDrawerOpen: false,
     };
 }
 
