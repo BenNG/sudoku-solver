@@ -8,13 +8,12 @@ import Folders from './gallery/folders';
 import Folder from './gallery/folder';
 import Picture from './gallery/picture';
 import Header from './header';
+import Drawer, { DrawerItem } from './tabs/drawer';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Drawer from 'react-native-drawer'
 
 import {
     AppRegistry,
-    StyleSheet,
     Text,
     View,
     Button,
@@ -28,21 +27,6 @@ const {
     CardStack: NavigationCardStack,
     StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
-
-
-class DrawerItem extends Component {
-    render() {
-        const itemStyle = this.props.isSelected ? styles.selectedItem : styles.item;
-        return (
-            <TouchableNativeFeedback onPress={this.props.onPress} style={{ flexDirection: 'row' }}>
-                <View style={itemStyle} >
-                    <Icon name={this.props.iconName} size={20} color="#222" style={styles.icon} />
-                    <Text>{this.props.label}</Text>
-                </View>
-            </TouchableNativeFeedback>
-        );
-    }
-}
 
 class DefaultView extends Component {
     render() {
@@ -76,26 +60,10 @@ class AppContainer extends Component {
         );
     }
     _renderScene(sceneProps) {
-        const { navigation, switchTabApple, switchTabGallery, switchTabBanana, push, pop, forward, backward, drawer_open, drawer_close, drawer } = this.props;
+        const { navigation, backward, drawer_open, drawer_close } = this.props;
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
-
-        const actionThenClose = (fn) => {
-            return () => {
-                fn();
-                drawer_close();
-            };
-        }
-
-        var insideDrawer = (
-            <View style={{ flex: 1, backgroundColor: '#fff' }}>
-                <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <DrawerItem label="apple" targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={actionThenClose(switchTabApple)}></DrawerItem>
-                <DrawerItem label="gallery" targetTab={types.TAB_NAME_GALLERY} iconName="picture-o" isSelected={types.TAB_NAME_GALLERY === key} onPress={actionThenClose(switchTabGallery)}></DrawerItem>
-                <DrawerItem label="banana" targetTab={types.TAB_NAME_BANANA} iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={actionThenClose(switchTabBanana)}></DrawerItem>
-            </View>
-        );
 
         let componentToRender = DefaultView;
 
@@ -121,7 +89,7 @@ class AppContainer extends Component {
                 <DrawerLayoutAndroid
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}
-                    renderNavigationView={() => insideDrawer}
+                    renderNavigationView={() => <Drawer navigationKey={key} />}
                     onDrawerClose={drawer_close}
                     onDrawerOpen={drawer_open}>
                     <View style={{ flexDirection: "column" }}>
@@ -182,28 +150,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppContainer);
-
-const styles = StyleSheet.create({
-    item: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    selectedItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'red'
-    },
-    icon: {
-        margin: 10,
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
-});
