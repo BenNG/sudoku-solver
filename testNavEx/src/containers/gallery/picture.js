@@ -11,9 +11,6 @@ import React, { Component } from 'react';
 
 class Picture extends Component {
     render() {
-
-        console.log(this.props.gallery.selectedItems[0]);
-
         return (
             <View style={{flex:1}}>
                 <Image source={{ uri: this.props.gallery.selectedItems[0] }} style={{ flex:1 }}></Image>

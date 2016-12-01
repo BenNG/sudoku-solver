@@ -11,6 +11,7 @@ import Immutable from 'immutable';
 
 function initialState() {
     return {
+        trigger: false,
         isDrawerOpen: false,
     };
 }
@@ -25,6 +26,9 @@ export const drawer = (state = initialState(), action) => {
         case types.DRAWER_CLOSE:
             imState = Immutable.fromJS(state);
             return imState.set("isDrawerOpen", false).toJS();
+        case types.DRAWER_TRIGGER_ACTION:
+            imState = Immutable.fromJS(state);
+            return imState.set("trigger", !imState.get('trigger')).toJS();
         default:
             return state;
     }

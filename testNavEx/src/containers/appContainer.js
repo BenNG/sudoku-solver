@@ -48,15 +48,15 @@ class AppContainer extends Component {
     }
 
     _renderHeader(sceneProps) {
-        const {  drawer_open } = this.props;
+        const {  drawer_open, drawer_trigger_action } = this.props;
 
         let config = {
             leftIcon: {
-                onPress: drawer_open,
+                onPress: drawer_trigger_action,
             }
         }
         return (
-            <Header {...config} title={sceneProps.scene.route.key}></Header>            
+            <Header {...config} title={sceneProps.scene.route.key}></Header>
         );
     }
     _renderScene(sceneProps) {
@@ -87,6 +87,7 @@ class AppContainer extends Component {
         return (
             <View style={{ flex: 1 }}>
                 <DrawerLayoutAndroid
+                    ref={(ref) => { this._drawer = ref; } }
                     drawerWidth={300}
                     drawerPosition={DrawerLayoutAndroid.positions.Left}
                     renderNavigationView={() => <Drawer navigationKey={key} />}
@@ -117,6 +118,16 @@ class AppContainer extends Component {
         );
     }
 
+    componentWillReceiveProps({drawer}) {
+        const { isDrawerOpen, drawer_cancel_action } = this.props;
+        const { trigger } = drawer;
+
+        if (this.props.drawer.trigger !== trigger) {
+            isDrawerOpen ? this._drawer.closeDrawer() : this._drawer.openDrawer();
+        }
+
+    }
+
     componentDidMount() {
         // this._drawer.openDrawer(); // __debug__
 
@@ -124,7 +135,6 @@ class AppContainer extends Component {
 
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
-        console.log({ index });
         BackAndroid.addEventListener('hardwareBackPress', function () {
             // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
             // Typically you would use the navigator here to go to the last state.

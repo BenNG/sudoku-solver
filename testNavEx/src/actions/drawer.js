@@ -10,3 +10,8 @@ export function drawer_close() {
         type: types.DRAWER_CLOSE,
     };
 }
+export function drawer_trigger_action() {
+    return {
+        type: types.DRAWER_TRIGGER_ACTION,
+    };
+}
