@@ -144,7 +144,6 @@ class Folder extends Component {
         if (!this.props.multiSelection) {
             this.props.forward();
         }
-
     }
 
     // rowData is an array of images

@@ -93,7 +93,7 @@ class AppContainer extends Component {
                     renderNavigationView={() => <Drawer navigationKey={key} />}
                     onDrawerClose={drawer_close}
                     onDrawerOpen={drawer_open}>
-                    <View style={{ flexDirection: "column" }}>
+                    <View style={{ flexDirection: "column", flex:1 }}>
                         {this._renderHeader(sceneProps)}
                         {React.createElement(componentToRender)}
                     </View>

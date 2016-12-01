@@ -35,8 +35,8 @@ function initialState() {
             index: 0,
             routes: [
                 // { key: "folders" }, // for now we can't list the folders, we display all the pictures in all folders
-                { key: "folder", title: "aaa" },
-                { key: "picture", title: "bbb" },
+                { key: "folder" },
+                { key: "picture" },
             ]
         },
     };
