@@ -64,14 +64,15 @@ class AppContainer extends Component {
     }
 
     _renderHeader(sceneProps) {
-        const { drawer_open } = this.props;
+        const {  drawer_open } = this.props;
+
         let config = {
             leftIcon: {
                 onPress: drawer_open,
             }
         }
         return (
-            <Header {...config} title={sceneProps.scene.route.key}></Header>
+            <Header {...config} title={sceneProps.scene.route.key}></Header>            
         );
     }
     _renderScene(sceneProps) {
@@ -117,23 +118,17 @@ class AppContainer extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <Drawer style={{ flex: 1 }}
-                    type="overlay"
-                    openDrawerOffset={100}
-                    tapToClose={true}
-                    acceptPan={true}
-                    panOpenMask={0.10}
-                    ref={ref => this._drawer = ref}
-                    content={insideDrawer}
-                    open={drawer.isDrawerOpen}
-                    onOpen={drawer_open}
-                    onOpenStart={() => { console.log("onOpenStart") } }
-                    onClose={drawer_close}
-                    onCloseStart={() => { console.log("onCloseStart") } }>
-                    <View style={{ flex: 1 }}>
+                <DrawerLayoutAndroid
+                    drawerWidth={300}
+                    drawerPosition={DrawerLayoutAndroid.positions.Left}
+                    renderNavigationView={() => insideDrawer}
+                    onDrawerClose={drawer_close}
+                    onDrawerOpen={drawer_open}>
+                    <View style={{ flexDirection: "column" }}>
+                        {this._renderHeader(sceneProps)}
                         {React.createElement(componentToRender)}
                     </View>
-                </Drawer>
+                </DrawerLayoutAndroid>
             </View>
         );
     }
@@ -150,8 +145,7 @@ class AppContainer extends Component {
             <NavigationCardStack
                 onNavigateBack={backward}
                 navigationState={subNavigationState}
-                renderScene={this._renderScene}
-                renderHeader={this._renderHeader} />
+                renderScene={this._renderScene} />
         );
     }
 
