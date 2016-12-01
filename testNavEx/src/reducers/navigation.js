@@ -3,7 +3,6 @@ import {
 } from 'react-native';
 
 const {
-    CardStack: NavigationCardStack,
     StateUtils: NavigationStateUtils,
 } = NavigationExperimental;
 

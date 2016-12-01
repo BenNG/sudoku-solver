@@ -10,6 +10,7 @@ import Picture from './gallery/picture';
 import Header from './header';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Drawer from 'react-native-drawer'
 
 import {
     AppRegistry,
@@ -59,22 +60,28 @@ class AppContainer extends Component {
     constructor(props) {
         super(props);
         this._renderScene = this._renderScene.bind(this);
-        this.open = this.open.bind(this);
     }
 
+
     _renderScene(sceneProps) {
-        let { navigation } = this.props;
+        const { navigation, switchTabApple, switchTabGallery, switchTabBanana, push, pop, forward, backward, drawer_open, drawer_close, drawer } = this.props;
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
         let key = tabsNavigationState.routes[index].key;
-        const { switchTabApple, switchTabGallery, switchTabBanana, push, pop, forward, backward } = this.props;
 
+        const actionThenClose = (fn) => {
+            return () => {
+                fn();
+                drawer_close();
+            };
+        }
+    
         var insideDrawer = (
             <View style={{ flex: 1, backgroundColor: '#fff' }}>
                 <Text style={{ margin: 10, fontSize: 15, textAlign: 'left' }}>I'm in the Drawer!</Text>
-                <DrawerItem label="apple" targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={switchTabApple}></DrawerItem>
-                <DrawerItem label="gallery" targetTab={types.TAB_NAME_GALLERY} iconName="picture-o" isSelected={types.TAB_NAME_GALLERY === key} onPress={switchTabGallery}></DrawerItem>
-                <DrawerItem label="banana" targetTab={types.TAB_NAME_BANANA} iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={switchTabBanana}></DrawerItem>
+                <DrawerItem label="apple" targetTab={types.TAB_NAME_APPLE} iconName="apple" isSelected={types.TAB_NAME_APPLE === key} onPress={actionThenClose(switchTabApple)}></DrawerItem>
+                <DrawerItem label="gallery" targetTab={types.TAB_NAME_GALLERY} iconName="picture-o" isSelected={types.TAB_NAME_GALLERY === key} onPress={actionThenClose(switchTabGallery)}></DrawerItem>
+                <DrawerItem label="banana" targetTab={types.TAB_NAME_BANANA} iconName="music" isSelected={types.TAB_NAME_BANANA === key} onPress={actionThenClose(switchTabBanana)}></DrawerItem>
             </View>
         );
 
@@ -99,37 +106,32 @@ class AppContainer extends Component {
 
         return (
             <View style={{ flex: 1 }}>
-                <DrawerLayoutAndroid style={{ flex: 1 }}
-                    drawerWidth={300}
-                    drawerPosition={DrawerLayoutAndroid.positions.Left}
-                    renderNavigationView={() => insideDrawer}
-                    ref={ref => this._drawer = ref}>
+                <Drawer style={{ flex: 1 }}
+                    type="overlay"
+                    openDrawerOffset={100}
+                    tapToClose={true}
+                    acceptPan={true}
+                    panOpenMask={0.10}
+                    ref={ref => this._drawer = ref}
+                    content={insideDrawer}
+                    open={drawer.isDrawerOpen}
+                    onOpen={drawer_open}
+                    onOpenStart={() => { console.log("onOpenStart") } }
+                    onClose={drawer_close}
+                    onCloseStart={() => { console.log("onCloseStart") } }
+                    >
 
                     <View style={{ flex: 1 }}>
-
-                        <Header openDrawerFn={this.open}></Header>
+                        <Header openDrawerFn={drawer_open}></Header>
                         {
                             React.createElement(componentToRender)
                         }
-
-                        {/** 
-                        <Button onPress={forward} title="forward"></Button>
-                        <Button onPress={backward} title="backward"></Button>
-                        <Button onPress={() => { push(sceneProps.scene.route.key + Date.now()) } } title="push"></Button>
-                        <Button onPress={() => { pop() } } title="pop"></Button>    
-                         */}
                     </View>
 
-                </DrawerLayoutAndroid>
+                </Drawer>
 
             </View>
         );
-    }
-    
-
-    open(){
-        console.log("open");
-        this._drawer.openDrawer();
     }
 
     render() {
@@ -155,7 +157,7 @@ class AppContainer extends Component {
 
         let tabsNavigationState = navigation.tabs;
         let index = tabsNavigationState.index;
-        console.log({index});
+        console.log({ index });
         BackAndroid.addEventListener('hardwareBackPress', function () {
             // this.onMainScreen and this.goBack are just examples, you need to use your own implementation here
             // Typically you would use the navigator here to go to the last state.
@@ -172,6 +174,7 @@ class AppContainer extends Component {
 function mapStateToProps(state) {
     return {
         navigation: state.navigation,
+        drawer: state.drawer,
     };
 }
 

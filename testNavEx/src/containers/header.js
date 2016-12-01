@@ -2,12 +2,13 @@ import {
     Text,
     View,
     ToolbarAndroid,
+    StyleSheet,
 } from 'react-native';
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
-export default class MyNewComponent extends Component {
+export default class Header extends Component {
     constructor(props) {
         super(props);
         this.onIconClicked = this.onIconClicked.bind(this);
@@ -19,14 +20,8 @@ export default class MyNewComponent extends Component {
                 navIcon={require("./menu.png")}
                 logo={require("./emoticon.png")}
                 title="Toolbar"
-                actions={[{ title: 'Settings', icon: require('./settings.png'), show: 'always' }]}
-                onActionSelected={this.onActionSelected}
-                onIconClicked={this.onIconClicked}>
-                <View>
-                    <Text>HHHHHHHHH</Text>
-                    <Text>HHHHHHHHH</Text>
-                    <Text>HHHHHHHHH</Text>
-                </View>
+                onIconClicked={this.onIconClicked}
+                style={[styles.toolbar, this.props.styles]}>
             </ToolbarAndroid>
         );
     }
@@ -41,3 +36,10 @@ export default class MyNewComponent extends Component {
 
     }
 }
+
+
+const styles = StyleSheet.create({
+    toolbar: {
+        height: 50,
+    },
+});
