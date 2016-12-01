@@ -168,7 +168,7 @@ class Folder extends Component {
 
     render() {
         return (
-            <ListView style={{ flex: 1 }}
+            <ListView
                 dataSource={this.state.dataSource}
                 onEndReached={this._onEndReached}
                 renderFooter={this._renderFooterSpinner}
