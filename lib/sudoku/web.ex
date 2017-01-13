@@ -9,7 +9,7 @@ defmodule Sudoku.Web do
     options
   end
 
-  post "/sudokus" do
+  get "/sudokus" do
     conn
     |> Plug.Conn.fetch_query_params
     |> sudokus
