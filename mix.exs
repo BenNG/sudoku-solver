@@ -3,7 +3,7 @@ defmodule Sudoku.Mixfile do
 
   def project do
     [app: :sudoku,
-     version: "0.1.0",
+     version: "0.1.1",
      name: "Sudoku",
      source_url: "https://bitbucket.org/BenNG/sudoku",
      elixir: "~> 1.3",
